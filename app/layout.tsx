@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
-import "./globals.css";
+// app/layout.tsx
+import './globals.css';
 
-export const metadata: Metadata = {
-  title: "Global Pi Newsroom",
-  description: "Pi Network News",
+export const metadata = {
+  title: 'Global Pi Newsroom',
+  description: 'News for Pi Network',
 };
 
 export default function RootLayout({
