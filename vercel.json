@@ -1,0 +1,19 @@
+{
+  "rewrites": [
+    {
+      "source": "/validation-key.txt",
+      "destination": "/validation-key.txt"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/validation-key.txt",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain"
+        }
+      ]
+    }
+  ]
+}
