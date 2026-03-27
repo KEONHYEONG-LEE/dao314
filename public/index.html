@@ -3,121 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GPNR (Global Pi News Room)</title>
-    <meta name="pi-domain-verification" content="your-verification-code">
-    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <title>GPNR - Global Pi News Room</title>
     <style>
-        :root { 
-            --primary-color: #6c5ce7; 
-            --bg-color: #f4f7f6;
+        :root {
+            --pi-color: #6d28d9; /* 파이 네트워크 상징색 */
+            --bg-color: #f8fafc;
         }
-        body { 
-            font-family: 'Pretendard', sans-serif; 
-            margin: 0; 
-            background-color: var(--bg-color); 
-            color: #333;
-        }
-        header { 
-            background: #1a237e; 
-            color: white; 
-            padding: 20px 15px;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .category-wrapper { 
-            overflow-x: auto; 
-            white-space: nowrap;
-            padding: 10px 5px;
-            background: #fff;
-            border-bottom: 1px solid #ddd;
-        }
-        .category-btn { 
-            display: inline-block; 
-            padding: 8px 15px;
-            margin: 0 5px;
-            border-radius: 20px;
-            border: 1px solid #ddd;
-            background: #fff;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .category-btn.active { 
-            background: var(--primary-color); 
-            color: white; 
-            border-color: var(--primary-color);
-        }
-        .container { padding: 15px; }
-        .card { 
-            background: white; 
-            border-radius: 12px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            overflow: hidden;
-            transition: transform 0.2s;
-        }
-        .card:active { transform: scale(0.98); }
-        .card-body { padding: 15px; }
-        .source-tag { 
-            font-size: 0.7rem; 
-            color: var(--primary-color); 
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-        }
-        .card-title { 
-            font-size: 1.1rem; 
-            margin: 0 0 8px 0;
-            line-height: 1.4;
-        }
-        .card-desc { 
-            font-size: 0.9rem; 
-            color: #666;
-            line-height: 1.5;
+        body {
+            font-family: 'Pretendard', sans-serif;
             margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+        }
+        header {
+            background-color: var(--pi-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        /* 17개 카테고리 가로 스크롤 영역 */
+        .category-container {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            background: white;
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            -webkit-overflow-scrolling: touch;
+        }
+        .category-container::-webkit-scrollbar {
+            display: none; /* 스크롤바 숨기기 */
+        }
+        .category-item {
+            display: inline-block;
+            padding: 8px 16px;
+            margin-right: 8px;
+            background: #f1f5f9;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .category-item.active {
+            background: var(--pi-color);
+            color: white;
+        }
+        /* 뉴스 리스트 영역 */
+        .news-section {
+            padding: 15px;
+        }
+        .news-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .news-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1rem;
+            color: #1e293b;
+        }
+        .news-card p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+        .status-badge {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            color: var(--pi-color);
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1 style="margin:0; font-size: 1.5rem;">GPNR</h1>
-        <p style="margin:5px 0 0 0; font-size: 0.8rem; opacity: 0.8;">Global Pi News Room</p>
-    </header>
 
-    <div class="category-wrapper">
-        <div class="category-btn active">전체</div>
-        <div class="category-btn">Pi Network</div>
-        <div class="category-btn">Global News</div>
-        <div class="category-btn">GCV Trend</div>
+<header>
+    GPNR (Global Pi News Room)
+</header>
+
+<div class="category-container" id="categoryBar">
     </div>
 
-    <div class="container" id="news-list">
-        <div class="card">
-            <div class="card-body">
-                <span class="source-tag">Pi News</span>
-                <h3 class="card-title">GPNR 서비스가 성공적으로 연결되었습니다</h3>
-                <p class="card-desc">이제 Pi 브라우저에서 GPNR의 실시간 소식을 만나보실 수 있습니다.</p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                <span class="source-tag">Ecosystem</span>
-                <h3 class="card-title">글로벌 파이 생태계 업데이트</h3>
-                <p class="card-desc">전 세계 파이 노드 및 커뮤니티의 주요 변화를 확인하세요.</p>
-            </div>
-        </div>
+<div class="news-section" id="newsList">
+    <div class="news-card">
+        <h3>뉴스를 불러오는 중입니다...</h3>
+        <p>카테고리를 선택하여 최신 소식을 확인하세요.</p>
     </div>
+</div>
 
-    <script>
-        // Pi SDK 초기화
-        try {
-            Pi.init({ version: "2.0", sandbox: false });
-            console.log("Pi SDK Initialized");
-        } catch (err) {
-            console.error("Pi SDK Load Failed", err);
-        }
-    </script>
+<script>
+    // 17개 카테고리 목록
+    const categories = [
+        "전체", "Mainnet", "Node", "GCV", "Ecosystem", 
+        "Apps", "Mining", "Wallet", "KYC", "Security", 
+        "Exchanges", "Blockchain", "Community", "Tutorial", 
+        "Developer", "Governance", "Events"
+    ];
+
+    const categoryBar = document.getElementById('categoryBar');
+    const newsList = document.getElementById('newsList');
+
+    // 카테고리 버튼 생성
+    categories.forEach((cat, index) => {
+        const div = document.createElement('div');
+        div.className = 'category-item' + (index === 0 ? ' active' : '');
+        div.innerText = cat;
+        div.onclick = () => selectCategory(div, cat);
+        categoryBar.appendChild(div);
+    });
+
+    // 카테고리 클릭 시 처리
+    function selectCategory(element, name) {
+        // 활성화 스타일 변경
+        document.querySelectorAll('.category-item').forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+
+        // 선택된 카테고리에 따른 임시 뉴스 생성 (실제 API 연결 시 이 부분 수정)
+        newsList.innerHTML = `
+            <div class="news-card">
+                <span class="status-badge">Latest Update</span>
+                <h3>${name} 관련 최신 뉴스 헤드라인</h3>
+                <p>${name} 분야의 새로운 소식이 업데이트되었습니다. 자세한 내용을 확인하시려면 클릭하세요.</p>
+            </div>
+            <div class="news-card">
+                <h3>${name} 시장 동향 보고서</h3>
+                <p>글로벌 파이 생태계의 ${name} 지표가 긍정적인 신호를 보이고 있습니다.</p>
+            </div>
+        `;
+    }
+
+    // 초기 화면 로드
+    selectCategory(document.querySelector('.category-item'), '전체');
+</script>
+
 </body>
 </html>
