@@ -1,24 +1,7 @@
-
 "use client";
 
 import React from "react";
-// Youtube 대신 YouTube로 이름을 변경하여 가져옵니다 (Lucide 라이브러리 버전에 따라 다를 수 있음)
-import { Youtube as YouTubeIcon, Calendar, ArrowUpRight, Share2 } from "lucide-react";
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
-
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
-interface NewsCardProps {
-  title: string;
-  description: string;
-  date: string;
-  category: string;
-  url: string;
-  thumbnail?: string;
-}
+import { Calendar, ArrowUpRight, Share2 } from "lucide-react";
 
 export default function NewsCard({
   title,
@@ -27,57 +10,34 @@ export default function NewsCard({
   category,
   url,
   thumbnail,
-}: NewsCardProps) {
+}: any) {
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-4 transition-all hover:bg-white/10">
       <div className="flex flex-col gap-4">
         <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-800">
           {thumbnail ? (
-            <img
-              src={thumbnail}
-              alt={title}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
+            <img src={thumbnail} alt={title} className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-500/20 to-purple-500/20">
-              {/* 여기도 YouTubeIcon으로 변경했습니다 */}
-              <YouTubeIcon className="h-10 w-10 text-white/20" />
+            <div className="flex h-full w-full items-center justify-center bg-gray-700">
+              <span className="text-white/20">Video</span>
             </div>
           )}
-          <div className="absolute top-2 left-2 rounded-full bg-black/50 px-3 py-1 text-xs font-medium text-white backdrop-blur-md">
+          <div className="absolute top-2 left-2 rounded-full bg-black/50 px-3 py-1 text-xs text-white">
             {category}
           </div>
         </div>
-
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2 text-xs text-gray-400">
             <Calendar className="h-3 w-3" />
             <span>{date}</span>
           </div>
-          <h3 className="line-clamp-2 text-lg font-bold text-white group-hover:text-indigo-400">
-            {title}
-          </h3>
-          <p className="line-clamp-2 text-sm text-gray-400">
-            {description}
-          </p>
+          <h3 className="line-clamp-2 text-lg font-bold text-white">{title}</h3>
+          <p className="line-clamp-2 text-sm text-gray-400">{description}</p>
         </div>
-
         <div className="mt-2 flex items-center justify-between">
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 text-sm font-semibold text-indigo-400 transition-colors hover:text-indigo-300"
-          >
-            자세히 보기
-            <ArrowUpRight className="h-4 w-4" />
+          <a href={url} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-indigo-400">
+            자세히 보기 <ArrowUpRight className="h-4 w-4 inline" />
           </a>
-          <button 
-            className="rounded-full p-2 text-gray-400 transition-colors hover:bg-white/10 hover:text-white"
-            aria-label="공유하기"
-          >
-            <Share2 className="h-4 w-4" />
-          </button>
         </div>
       </div>
     </div>
