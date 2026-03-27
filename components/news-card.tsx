@@ -1,11 +1,11 @@
+
 "use client";
 
 import React from "react";
-import { Youtube, Calendar, ArrowUpRight, Share2 } from "lucide-react"; // 'Youtube' 오타 수정 완료
+import { Youtube, Calendar, ArrowUpRight, Share2 } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-// Tailwind 클래스 합치기 유틸리티
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -30,7 +30,6 @@ export default function NewsCard({
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-4 transition-all hover:bg-white/10">
       <div className="flex flex-col gap-4">
-        {/* 썸네일 영역 */}
         <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-800">
           {thumbnail ? (
             <img
@@ -40,7 +39,7 @@ export default function NewsCard({
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-500/20 to-purple-500/20">
-              <Youtube className="h-10 w-10 text-white/20" /> {/* 오타 수정된 아이콘 사용 */}
+              <Youtube className="h-10 w-10 text-white/20" />
             </div>
           )}
           <div className="absolute top-2 left-2 rounded-full bg-black/50 px-3 py-1 text-xs font-medium text-white backdrop-blur-md">
@@ -48,7 +47,6 @@ export default function NewsCard({
           </div>
         </div>
 
-        {/* 콘텐츠 영역 */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2 text-xs text-gray-400">
             <Calendar className="h-3 w-3" />
@@ -62,7 +60,6 @@ export default function NewsCard({
           </p>
         </div>
 
-        {/* 하단 버튼 영역 */}
         <div className="mt-2 flex items-center justify-between">
           <a
             href={url}
@@ -84,4 +81,3 @@ export default function NewsCard({
     </div>
   );
 }
-
