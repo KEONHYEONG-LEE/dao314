@@ -4,84 +4,120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPNR (Global Pi News Room)</title>
-    <meta name="pi-domain-verification" content="25b84b0f52a9d3e014d1c801426eaf04de27d975">
+    <meta name="pi-domain-verification" content="your-verification-code">
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <style>
-        :root { --primary-color: #6c5ce7; --bg-color: #f0f2f5; }
-        body { font-family: 'Pretendard', sans-serif; margin: 0; background: var(--bg-color); }
-        header { background: #1a237e; color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 1000; }
-        .category-wrapper { overflow-x: auto; white-space: nowrap; background: white; padding: 10px; border-bottom: 1px solid #ddd; position: sticky; top: 60px; z-index: 100; }
-        .category-btn { display: inline-block; padding: 8px 15px; margin-right: 5px; border-radius: 20px; border: 1px solid var(--primary-color); background: white; color: var(--primary-color); cursor: pointer; font-size: 0.9rem; }
-        .category-btn.active { background: var(--primary-color); color: white; }
+        :root { 
+            --primary-color: #6c5ce7; 
+            --bg-color: #f4f7f6;
+        }
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            margin: 0; 
+            background-color: var(--bg-color); 
+            color: #333;
+        }
+        header { 
+            background: #1a237e; 
+            color: white; 
+            padding: 20px 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .category-wrapper { 
+            overflow-x: auto; 
+            white-space: nowrap;
+            padding: 10px 5px;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+        .category-btn { 
+            display: inline-block; 
+            padding: 8px 15px;
+            margin: 0 5px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            background: #fff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .category-btn.active { 
+            background: var(--primary-color); 
+            color: white; 
+            border-color: var(--primary-color);
+        }
         .container { padding: 15px; }
-        .card { background: white; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; transition: 0.3s; cursor: pointer; }
+        .card { 
+            background: white; 
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
         .card:active { transform: scale(0.98); }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
         .card-body { padding: 15px; }
-        .source-tag { font-size: 0.7rem; color: #fff; background: #e67e22; padding: 2px 6px; border-radius: 4px; margin-bottom: 5px; display: inline-block; }
-        .card-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 8px; color: #333; }
-        .card-desc { font-size: 0.9rem; color: #666; line-height: 1.5; }
-        #status { text-align: center; padding: 10px; color: #888; font-size: 0.8rem; }
+        .source-tag { 
+            font-size: 0.7rem; 
+            color: var(--primary-color); 
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .card-title { 
+            font-size: 1.1rem; 
+            margin: 0 0 8px 0;
+            line-height: 1.4;
+        }
+        .card-desc { 
+            font-size: 0.9rem; 
+            color: #666;
+            line-height: 1.5;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
+    <header>
+        <h1 style="margin:0; font-size: 1.5rem;">GPNR</h1>
+        <p style="margin:5px 0 0 0; font-size: 0.8rem; opacity: 0.8;">Global Pi News Room</p>
+    </header>
 
-<header><h2>GPNR Global News</h2></header>
-<div class="category-wrapper" id="category-list"></div>
+    <div class="category-wrapper">
+        <div class="category-btn active">전체</div>
+        <div class="category-btn">Pi Network</div>
+        <div class="category-btn">Global News</div>
+        <div class="category-btn">GCV Trend</div>
+    </div>
 
-<div class="container">
-    <div id="status">데이터 업데이트 중...</div>
-    <div id="news-list"></div>
-</div>
+    <div class="container" id="news-list">
+        <div class="card">
+            <div class="card-body">
+                <span class="source-tag">Pi News</span>
+                <h3 class="card-title">GPNR 서비스가 성공적으로 연결되었습니다</h3>
+                <p class="card-desc">이제 Pi 브라우저에서 GPNR의 실시간 소식을 만나보실 수 있습니다.</p>
+            </div>
+        </div>
 
-<script>
-    const categories = ["전체", "공식 뉴스", "YouTube", "GPNR 공지"];
+        <div class="card">
+            <div class="card-body">
+                <span class="source-tag">Ecosystem</span>
+                <h3 class="card-title">글로벌 파이 생태계 업데이트</h3>
+                <p class="card-desc">전 세계 파이 노드 및 커뮤니티의 주요 변화를 확인하세요.</p>
+            </div>
+        </div>
+    </div>
 
-    function initCategories() {
-        const wrapper = document.getElementById('category-list');
-        categories.forEach((cat, idx) => {
-            const btn = document.createElement('button');
-            btn.className = `category-btn ${idx === 0 ? 'active' : ''}`;
-            btn.innerText = cat;
-            btn.onclick = () => {
-                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                loadNews(cat);
-            };
-            wrapper.appendChild(btn);
-        });
-    }
-
-    async function loadNews(category = "전체") {
-        const list = document.getElementById('news-list');
-        list.innerHTML = "<p style='text-align:center;'>데이터 로딩 중...</p>";
-        
-        const data = [
-            { title: "[공지] 17번 카탈로그 업데이트 완료", category: "GPNR 공지", source: "관리자", desc: "글로벌 뉴스룸(GPNR)의 17번 항목이 최신 GCV 분석 데이터로 업데이트 되었습니다.", img: "https://picsum.photos/500/301", url: "#" },
-            { title: "파이 네트워크 GCV 314,159$ 컨센서스 소식", category: "GPNR 공지", source: "GPNR", desc: "글로벌 커뮤니티의 가격 합의 운동 최신 리포트입니다.", img: "https://picsum.photos/500/302", url: "#" },
-            { title: "[CNN] Crypto Market & Pi Impact", category: "공식 뉴스", source: "CNN", desc: "글로벌 금융 시장의 파이 영향력 분석.", img: "https://picsum.photos/500/303", url: "#" }
-        ];
-
-        const filtered = category === "전체" ? data : data.filter(d => d.category === category);
-        
-        list.innerHTML = "";
-        filtered.forEach(item => {
-            list.innerHTML += `
-                <div class="card" onclick="location.href='${item.url}'">
-                    <img src="${item.img}">
-                    <div class="card-body">
-                        <span class="source-tag">${item.source}</span>
-                        <div class="card-title">${item.title}</div>
-                        <div class="card-desc">${item.desc}</div>
-                    </div>
-                </div>`;
-        });
-        document.getElementById('status').innerText = `최종 업데이트: ${new Date().toLocaleString()}`;
-    }
-
-    initCategories();
-    loadNews();
-</script>
+    <script>
+        // Pi SDK 초기화
+        try {
+            Pi.init({ version: "2.0", sandbox: false });
+            console.log("Pi SDK Initialized");
+        } catch (err) {
+            console.error("Pi SDK Load Failed", err);
+        }
+    </script>
 </body>
 </html>
-
