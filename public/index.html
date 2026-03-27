@@ -9,58 +9,33 @@
     <style>
         :root { --primary-color: #6c5ce7; --bg-color: #f0f2f5; }
         body { font-family: 'Pretendard', sans-serif; margin: 0; background: var(--bg-color); }
-        header { background: #1a237e; color: white; padding: 15px; text-align: center; sticky: top; }
-        
-        /* 17개 카테고리 가로 스크롤바 */
-        .category-wrapper { 
-            overflow-x: auto; white-space: nowrap; background: white; 
-            padding: 10px; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 100;
-        }
-        .category-btn { 
-            display: inline-block; padding: 8px 15px; margin-right: 5px; 
-            border-radius: 20px; border: 1px solid var(--primary-color); 
-            background: white; color: var(--primary-color); cursor: pointer; font-size: 0.9rem;
-        }
+        header { background: #1a237e; color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 1000; }
+        .category-wrapper { overflow-x: auto; white-space: nowrap; background: white; padding: 10px; border-bottom: 1px solid #ddd; position: sticky; top: 60px; z-index: 100; }
+        .category-btn { display: inline-block; padding: 8px 15px; margin-right: 5px; border-radius: 20px; border: 1px solid var(--primary-color); background: white; color: var(--primary-color); cursor: pointer; font-size: 0.9rem; }
         .category-btn.active { background: var(--primary-color); color: white; }
-
         .container { padding: 15px; }
-        .card { background: white; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; transition: 0.3s; }
+        .card { background: white; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; transition: 0.3s; cursor: pointer; }
         .card:active { transform: scale(0.98); }
         .card img { width: 100%; height: 200px; object-fit: cover; }
         .card-body { padding: 15px; }
         .source-tag { font-size: 0.7rem; color: #fff; background: #e67e22; padding: 2px 6px; border-radius: 4px; margin-bottom: 5px; display: inline-block; }
         .card-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 8px; color: #333; }
-        .card-desc { font-size: 0.9rem; color: #666; line-height: 1.5; height: 3em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-        
+        .card-desc { font-size: 0.9rem; color: #666; line-height: 1.5; }
         #status { text-align: center; padding: 10px; color: #888; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-<header>
-    <h2>GPNR Global News</h2>
-</header>
-
-<div class="category-wrapper" id="category-list">
-    </div>
+<header><h2>GPNR Global News</h2></header>
+<div class="category-wrapper" id="category-list"></div>
 
 <div class="container">
-    <div id="status">데이터 동기화 준비 중...</div>
-    <div id="news-list">
-        </div>
+    <div id="status">데이터 업데이트 중...</div>
+    <div id="news-list"></div>
 </div>
 
 <script>
-    // 17개 카테고리 정의
-    const categories = [
-        "전체", "공식 뉴스(CNN/KBS)", "YouTube(Pi Network)", "YouTube(국내)", 
-        "YouTube(해외)", "X (Twitter)", "Facebook", "Instagram", "메인넷 업데이트", 
-        "기술/노드", "생태계 결제", "커뮤니티 소식", "거래소/시세", "보안/KYC", 
-        "글로벌 경제", "암호화폐 트렌드", "GPNR 공지"
-    ];
-
-    // 뉴스 소셜/채널 키워드 매핑
-    const newsChannels = ["Pi Network", "PI NEWS UPDATES", "PI News World", "호알라", "우승택의 생테크 연구소", "CRYPTO NEWS NOW"];
+    const categories = ["전체", "공식 뉴스", "YouTube", "GPNR 공지"];
 
     function initCategories() {
         const wrapper = document.getElementById('category-list');
@@ -79,60 +54,34 @@
 
     async function loadNews(category = "전체") {
         const list = document.getElementById('news-list');
-        const status = document.getElementById('status');
-        list.innerHTML = "<p style='text-align:center;'>뉴스를 긁어오는 중...</p>";
-        status.innerText = `${category} 채널 검색 중...`;
+        list.innerHTML = "<p style='text-align:center;'>데이터 로딩 중...</p>";
+        
+        const data = [
+            { title: "[공지] 17번 카탈로그 업데이트 완료", category: "GPNR 공지", source: "관리자", desc: "글로벌 뉴스룸(GPNR)의 17번 항목이 최신 GCV 분석 데이터로 업데이트 되었습니다.", img: "https://picsum.photos/500/301", url: "#" },
+            { title: "파이 네트워크 GCV 314,159$ 컨센서스 소식", category: "GPNR 공지", source: "GPNR", desc: "글로벌 커뮤니티의 가격 합의 운동 최신 리포트입니다.", img: "https://picsum.photos/500/302", url: "#" },
+            { title: "[CNN] Crypto Market & Pi Impact", category: "공식 뉴스", source: "CNN", desc: "글로벌 금융 시장의 파이 영향력 분석.", img: "https://picsum.photos/500/303", url: "#" }
+        ];
 
-        try {
-            // 실제 배포 시에는 뉴스 수집 API(RSS 등)를 연결해야 합니다.
-            // 여기서는 요청하신 채널 정보를 바탕으로 로직을 시뮬레이션합니다.
-            const newsData = await fetchMockNews(category);
-            
-            list.innerHTML = "";
-            newsData.forEach(item => {
-                const card = `
-                    <div class="card" onclick="window.open('${item.url}')">
-                        <img src="${item.img}" alt="thumbnail">
-                        <div class="card-body">
-                            <span class="source-tag">${item.source}</span>
-                            <div class="card-title">${item.title}</div>
-                            <div class="card-desc">${item.desc}</div>
-                        </div>
+        const filtered = category === "전체" ? data : data.filter(d => d.category === category);
+        
+        list.innerHTML = "";
+        filtered.forEach(item => {
+            list.innerHTML += `
+                <div class="card" onclick="location.href='${item.url}'">
+                    <img src="${item.img}">
+                    <div class="card-body">
+                        <span class="source-tag">${item.source}</span>
+                        <div class="card-title">${item.title}</div>
+                        <div class="card-desc">${item.desc}</div>
                     </div>
-                `;
-                list.innerHTML += card;
-            });
-            status.innerText = `업데이트 완료: ${new Date().toLocaleTimeString()}`;
-        } catch (e) {
-            status.innerText = "데이터를 불러오는 데 실패했습니다.";
-        }
-    }
-
-    // 실제 뉴스 데이터를 시뮬레이션하는 함수 (API 연결 전 단계)
-    function fetchMockNews(category) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const data = [
-                    { title: "[CNN] Crypto Market & Pi Impact", source: "CNN", desc: "글로벌 금융 시장에서 파이 네트워크의 잠재적 영향력을 분석합니다.", img: "https://picsum.photos/500/301", url: "#" },
-                    { title: "파워 인터뷰: 우승택 소장", source: "생테크 연구소", desc: "Pi Network 생태계가 가져올 새로운 경제 패러다임.", img: "https://picsum.photos/500/302", url: "#" },
-                    { title: "호알라의 파이 핵심 브리핑", source: "YouTube 호알라", desc: "오늘 꼭 알아야 할 파이 네트워크 핵심 소식만 모았습니다.", img: "https://picsum.photos/500/303", url: "#" },
-                    { title: "Mainnet Checklist Update", source: "Pi Network 공식", desc: "오픈 메인넷을 향한 8단계 인증 절차 가이드.", img: "https://picsum.photos/500/304", url: "#" }
-                ];
-                resolve(data);
-            }, 500);
+                </div>`;
         });
+        document.getElementById('status').innerText = `최종 업데이트: ${new Date().toLocaleString()}`;
     }
 
-    // Pi SDK 초기화
-    try {
-        Pi.init({ version: "2.0", sandbox: true });
-    } catch(e) {}
-
-    window.onload = () => {
-        initCategories();
-        loadNews();
-    };
+    initCategories();
+    loadNews();
 </script>
-
 </body>
 </html>
+
