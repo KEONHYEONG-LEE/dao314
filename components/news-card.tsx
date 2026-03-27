@@ -2,7 +2,8 @@
 "use client";
 
 import React from "react";
-import { Youtube, Calendar, ArrowUpRight, Share2 } from "lucide-react";
+// Youtube 대신 YouTube로 이름을 변경하여 가져옵니다 (Lucide 라이브러리 버전에 따라 다를 수 있음)
+import { Youtube as YouTubeIcon, Calendar, ArrowUpRight, Share2 } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -39,7 +40,8 @@ export default function NewsCard({
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-500/20 to-purple-500/20">
-              <Youtube className="h-10 w-10 text-white/20" />
+              {/* 여기도 YouTubeIcon으로 변경했습니다 */}
+              <YouTubeIcon className="h-10 w-10 text-white/20" />
             </div>
           )}
           <div className="absolute top-2 left-2 rounded-full bg-black/50 px-3 py-1 text-xs font-medium text-white backdrop-blur-md">
