@@ -1,43 +1,52 @@
-"use client";
+import Image from "next/image";
 
-import React from "react";
-import { Calendar, ArrowUpRight, Share2 } from "lucide-react";
+interface NewsCardProps {
+  id: string;
+  category: string;
+  title: string;
+  excerpt: string;
+  author: string;
+  date: string;
+  image: string;
+}
 
-export default function NewsCard({
-  title,
-  description,
-  date,
-  category,
-  url,
-  thumbnail,
-}: any) {
+export default function NewsCard({ 
+  category, 
+  title, 
+  excerpt, 
+  author, 
+  date, 
+  image 
+}: NewsCardProps) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-4 transition-all hover:bg-white/10">
-      <div className="flex flex-col gap-4">
-        <div className="relative aspect-video overflow-hidden rounded-xl bg-gray-800">
-          {thumbnail ? (
-            <img src={thumbnail} alt={title} className="h-full w-full object-cover" />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center bg-gray-700">
-              <span className="text-white/20">Video</span>
-            </div>
-          )}
-          <div className="absolute top-2 left-2 rounded-full bg-black/50 px-3 py-1 text-xs text-white">
+    <div className="flex flex-col md:flex-row gap-4 p-4 border rounded-2xl bg-white shadow-sm active:scale-[0.98] transition-transform">
+      {/* 뉴스 이미지 영역 */}
+      <div className="relative w-full md:w-40 h-40 shrink-0 overflow-hidden rounded-xl">
+        <img
+          src={image}
+          alt={title}
+          className="w-full h-full object-cover"
+        />
+      </div>
+
+      {/* 뉴스 내용 영역 */}
+      <div className="flex flex-col justify-between py-1">
+        <div>
+          <span className="text-xs font-bold uppercase text-purple-600 tracking-wider">
             {category}
-          </div>
+          </span>
+          <h3 className="text-lg font-semibold mt-1 leading-snug line-clamp-2">
+            {title}
+          </h3>
+          <p className="text-sm text-gray-600 mt-2 line-clamp-2">
+            {excerpt}
+          </p>
         </div>
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2 text-xs text-gray-400">
-            <Calendar className="h-3 w-3" />
-            <span>{date}</span>
-          </div>
-          <h3 className="line-clamp-2 text-lg font-bold text-white">{title}</h3>
-          <p className="line-clamp-2 text-sm text-gray-400">{description}</p>
-        </div>
-        <div className="mt-2 flex items-center justify-between">
-          <a href={url} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-indigo-400">
-            자세히 보기 <ArrowUpRight className="h-4 w-4 inline" />
-          </a>
+
+        <div className="flex items-center gap-2 mt-4 text-xs text-gray-400">
+          <span>{author}</span>
+          <span>•</span>
+          <span>{date}</span>
         </div>
       </div>
     </div>
