@@ -1,15 +1,14 @@
-
-import Header from "../components/header";
-import GPNRHeader from "../components/gpnr-header";
-import BreakingNews from "../components/breaking-news";
-import FeaturedNews from "../components/featured-news";
-import CategoryTabs from "../components/category-tabs";
-import LatestNews from "../components/latest-news";
-import TrendingSidebar from "../components/trending-sidebar";
-import CategoryNews from "../components/category-news";
-import NewsFeed from "../components/news-feed";
-import Newsletter from "../components/newsletter";
-import Footer from "../components/footer";
+import { Header } from "../components/header";
+import { GPNRHeader } from "../components/gpnr-header";
+import { BreakingNews } from "../components/breaking-news";
+import { FeaturedNews } from "../components/featured-news";
+import { CategoryTabs } from "../components/category-tabs";
+import { LatestNews } from "../components/latest-news";
+import { TrendingSidebar } from "../components/trending-sidebar";
+import { CategoryNews } from "../components/category-news";
+import { NewsFeed } from "../components/news-feed";
+import { Newsletter } from "../components/newsletter";
+import { Footer } from "../components/footer";
 
 export default function Home() {
   return (
