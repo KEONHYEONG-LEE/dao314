@@ -1,34 +1,26 @@
-import { Header } from "../components/header";
-import { GPNRHeader } from "../components/gpnr-header";
-import { BreakingNews } from "../components/breaking-news";
-import { FeaturedNews } from "../components/featured-news";
-import { CategoryTabs } from "../components/category-tabs";
-import { LatestNews } from "../components/latest-news";
-import { TrendingSidebar } from "../components/trending-sidebar";
-import { CategoryNews } from "../components/category-news";
-import { NewsFeed } from "../components/news-feed";
-import { Newsletter } from "../components/newsletter";
-import { Footer } from "../components/footer";
+"use client";
+
+import { useState } from "react";
+import { CategoryTabs } from "@/components/category-tabs";
+import NewsFeed from "@/components/news-feed";
+// Header나 Footer 등 다른 컴포넌트들도 import 되어 있을 겁니다.
 
 export default function Home() {
+  // 1. 현재 선택된 카테고리를 관리하는 상태 (기본값 'all')
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
   return (
     <main className="min-h-screen bg-background">
-      <GPNRHeader />
-      <Header />
-      <div className="container mx-auto px-4 py-6">
-        <BreakingNews />
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8">
-          <div className="lg:col-span-8">
-            <FeaturedNews />
-            <CategoryTabs />
-            <NewsFeed />
-          </div>
-          <aside className="lg:col-span-4">
-            <TrendingSidebar />
-          </aside>
-        </div>
+      {/* 2. 카테고리 탭: 상태와 상태 변경 함수를 넘겨줍니다. */}
+      <CategoryTabs 
+        selectedCategory={selectedCategory} 
+        onCategoryChange={setSelectedCategory} 
+      />
+
+      {/* 3. 뉴스 피드: 선택된 카테고리에 따라 뉴스가 필터링됩니다. */}
+      <div className="max-w-7xl mx-auto">
+        <NewsFeed selectedCategory={selectedCategory} />
       </div>
-      <Footer />
     </main>
   );
 }
