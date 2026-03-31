@@ -10,17 +10,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Core Team",
     title: {
       en: "Mainnet Launch Roadmap Announced",
-      ko: "硫붿씤??異쒖떆 濡쒕뱶留?諛쒗몴",
-      zh: "訝사퐨??뒯瓮?봇?얍뀶躍?,
+      ko: "메인넷 출시 로드맵 발표",
+      zh: "主网启动路线图公布",
       es: "Anuncio del mapa de ruta del lanzamiento de Mainnet",
-      vi: "C척ng b沼?l沼?tr챙nh ra m梳칣 Mainnet"
+      vi: "Công bố lộ trình ra mắt Mainnet"
     },
     content: {
       en: "We are excited to announce the official roadmap for our mainnet launch. The transition from testnet to mainnet will occur in three phases: Phase 1 includes final security audits and smart contract verification. Phase 2 involves gradual migration of existing testnet users. Phase 3 marks the full public launch with all features enabled. Stay tuned for more detailed updates.",
-      ko: "硫붿씤??異쒖떆瑜??꾪븳 怨듭떇 濡쒕뱶留듭쓣 諛쒗몴?섍쾶 ?섏뼱 湲곗겑?덈떎. ?뚯뒪?몃꽬?먯꽌 硫붿씤?룹쑝濡쒖쓽 ?꾪솚? ???④퀎濡?吏꾪뻾?⑸땲?? 1?④퀎??理쒖쥌 蹂댁븞 媛먯궗 諛??ㅻ쭏??而⑦듃?숉듃 寃利앹쓣 ?ы븿?⑸땲?? 2?④퀎??湲곗〈 ?뚯뒪?몃꽬 ?ъ슜?먯쓽 ?먯쭊??留덉씠洹몃젅?댁뀡??吏꾪뻾?⑸땲?? 3?④퀎??紐⑤뱺 湲곕뒫???쒖꽦?붾맂 ?꾩껜 怨듦컻 異쒖떆?낅땲?? ???먯꽭???낅뜲?댄듃瑜?湲곕???二쇱꽭??",
-      zh: "?묇뺄孃덆쳵?닷쑑若ｅ툋訝사퐨??뒯?꾢츟?배러瀛욕쎗?귚퍗役뗨캊營묈댆訝사퐨?꾥퓝歷▼컛?녵툒訝ら샄餘듣퓵烏뚳폏寧т??뜻??끾떖?瀯덂츎?ⓨ?溫▼뭽?븃꺗?덄벧謠뚩칮?귞К雅뚪샄餘득텎?딁렟?됪탩瑥뺟퐨?ⓩ댎?꾦먩?瓦곭㎉?귞К訝됮샄餘득젃恙쀧???됧뒣?썲맦?①쉪若뚦뀲?у??묈툋?귟?瀯㎫뺌?녔낏?닺?瀯녺쉪?닸뼭??,
-      es: "Nos complace anunciar el mapa de ruta oficial para el lanzamiento de nuestra mainnet. La transici처n de testnet a mainnet ocurrir찼 en tres fases: La Fase 1 incluye auditor챠as de seguridad finales y verificaci처n de contratos inteligentes. La Fase 2 implica la migraci처n gradual de usuarios existentes de testnet. La Fase 3 marca el lanzamiento p첬blico completo con todas las funciones habilitadas. Est챕n atentos para m찼s actualizaciones detalladas.",
-      vi: "Ch첬ng t척i vui m沼쳌g th척ng b찼o l沼?tr챙nh ch챠nh th沼쯢 cho vi沼놻 ra m梳칣 mainnet. Qu찼 tr챙nh chuy沼긪 휃沼뷼 t沼?testnet sang mainnet s梳?di沼꿳 ra trong ba giai 휃o梳죒: Giai 휃o梳죒 1 bao g沼뱈 ki沼긩 to찼n b梳즣 m梳춗 cu沼멼 c첫ng v횪 x찼c minh h沼즤 휃沼뱊g th척ng minh. Giai 휃o梳죒 2 li챗n quan 휃梳퓆 vi沼놻 di chuy沼긪 d梳쬷 d梳쬷 ng튼沼쓎 d첫ng testnet hi沼뇆 t梳죍. Giai 휃o梳죒 3 휃찼nh d梳쪀 s沼?ra m梳칣 c척ng khai 휃梳쭃 휃沼?v沼쌻 t梳쩿 c梳?c찼c t챠nh n훱ng 휃튼沼즓 k챠ch ho梳죜. H찾y theo d천i 휃沼?c梳춑 nh梳춗 chi ti梳퓍 h퉤n."
+      ko: "메인넷 출시를 위한 공식 로드맵을 발표하게 되어 기쁩니다. 테스트넷에서 메인넷으로의 전환은 세 단계로 진행됩니다: 1단계는 최종 보안 감사 및 스마트 컨트랙트 검증을 포함합니다. 2단계는 기존 테스트넷 사용자의 점진적 마이그레이션을 진행합니다. 3단계는 모든 기능이 활성화된 전체 공개 출시입니다. 더 자세한 업데이트를 기대해 주세요.",
+      zh: "我们很高兴地宣布主网启动的官方路线图。从测试网到主网的过渡将分三个阶段进行：第一阶段包括最终安全审计和智能合约验证。第二阶段涉及现有测试网用户的逐步迁移。第三阶段标志着所有功能启用的完全公开发布。请继续关注更详细的更新。",
+      es: "Nos complace anunciar el mapa de ruta oficial para el lanzamiento de nuestra mainnet. La transición de testnet a mainnet ocurrirá en tres fases: La Fase 1 incluye auditorías de seguridad finales y verificación de contratos inteligentes. La Fase 2 implica la migración gradual de usuarios existentes de testnet. La Fase 3 marca el lanzamiento público completo con todas las funciones habilitadas. Estén atentos para más actualizaciones detalladas.",
+      vi: "Chúng tôi vui mừng thông báo lộ trình chính thức cho việc ra mắt mainnet. Quá trình chuyển đổi từ testnet sang mainnet sẽ diễn ra trong ba giai đoạn: Giai đoạn 1 bao gồm kiểm toán bảo mật cuối cùng và xác minh hợp đồng thông minh. Giai đoạn 2 liên quan đến việc di chuyển dần dần người dùng testnet hiện tại. Giai đoạn 3 đánh dấu sự ra mắt công khai đầy đủ với tất cả các tính năng được kích hoạt. Hãy theo dõi để cập nhật chi tiết hơn."
     }
   },
   {
@@ -30,17 +30,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Technical Team",
     title: {
       en: "Security Audit Completed Successfully",
-      ko: "蹂댁븞 媛먯궗 ?깃났?곸쑝濡??꾨즺",
-      zh: "若됧뀲若↑??먨뒣若뚧닇",
-      es: "Auditor챠a de seguridad completada con 챕xito",
-      vi: "Ki沼긩 to찼n b梳즣 m梳춗 ho횪n th횪nh th횪nh c척ng"
+      ko: "보안 감사 성공적으로 완료",
+      zh: "安全审计成功完成",
+      es: "Auditoría de seguridad completada con éxito",
+      vi: "Kiểm toán bảo mật hoàn thành thành công"
     },
     content: {
       en: "We are pleased to announce that our comprehensive security audit has been completed by leading blockchain security firm CertiK. All critical and high-severity issues have been addressed, and the audit report is now available for public review. This milestone brings us one step closer to mainnet launch.",
-      ko: "?좊룄?곸씤 釉붾줉泥댁씤 蹂댁븞 ?뚯궗 CertiK???섑빐 醫낇빀 蹂댁븞 媛먯궗媛 ?꾨즺?섏뿀?뚯쓣 諛쒗몴?섍쾶 ?섏뼱 湲곗겑?덈떎. 紐⑤뱺 以묒슂 諛?怨좎쐞???댁뒋媛 ?닿껐?섏뿀?쇰ŉ, 媛먯궗 蹂닿퀬?쒓? ?댁젣 怨듦컻 寃?좊? ?꾪빐 ?쒓났?⑸땲?? ???댁젙?쒕뒗 硫붿씤??異쒖떆????嫄몄쓬 ???ㅺ?媛寃??⑸땲??",
-      zh: "?묇뺄孃덆쳵?닷쑑若ｅ툋竊뚧닊餓х쉪瀯쇔릦若됧뀲若↑?藥꿰뵳窯녶뀍?꾢뙷?쀩벦若됧뀲?у뤈CertiK若뚧닇?귝??됧뀽??뭽遙섆른?띷㏝뿮窯섇럴孃쀥댆鰲ｅ넶竊뚦?溫→뒫?딁렟藥꿨룾堊쎾뀶鴉쀦윥?끹귟퓳訝?뚨쮮閻묇슴?묇뺄獵삡말營묈룕躍껅쎍瓦묇틙訝閭γ?,
-      es: "Nos complace anunciar que nuestra auditor챠a de seguridad integral ha sido completada por la firma l챠der de seguridad blockchain CertiK. Todos los problemas cr챠ticos y de alta severidad han sido abordados, y el informe de auditor챠a est찼 ahora disponible para revisi처n p첬blica. Este hito nos acerca un paso m찼s al lanzamiento de mainnet.",
-      vi: "Ch첬ng t척i vui m沼쳌g th척ng b찼o r梳켷g cu沼셛 ki沼긩 to찼n b梳즣 m梳춗 to횪n di沼뇆 c沼쬪 ch첬ng t척i 휃찾 휃튼沼즓 ho횪n th횪nh b沼웙 c척ng ty b梳즣 m梳춗 blockchain h횪ng 휃梳쬾 CertiK. T梳쩿 c梳?c찼c v梳쩸 휃沼?nghi챗m tr沼뛫g v횪 cao 휃찾 휃튼沼즓 gi梳즜 quy梳퓍, v횪 b찼o c찼o ki沼긩 to찼n hi沼뇆 휃찾 c처 s梳탇 휃沼?c척ng ch첬ng xem x챕t. C沼셳 m沼멵 n횪y 휃튼a ch첬ng t척i 휃梳퓆 g梳쬷 h퉤n m沼셳 b튼沼쌵 v沼쌻 vi沼놻 ra m梳칣 mainnet."
+      ko: "선도적인 블록체인 보안 회사 CertiK에 의해 종합 보안 감사가 완료되었음을 발표하게 되어 기쁩니다. 모든 중요 및 고위험 이슈가 해결되었으며, 감사 보고서가 이제 공개 검토를 위해 제공됩니다. 이 이정표는 메인넷 출시에 한 걸음 더 다가가게 합니다.",
+      zh: "我们很高兴地宣布，我们的综合安全审计已由领先的区块链安全公司CertiK完成。所有关键和高严重性问题已得到解决，审计报告现已可供公众查阅。这一里程碑使我们离主网发布更近了一步。",
+      es: "Nos complace anunciar que nuestra auditoría de seguridad integral ha sido completada por la firma líder de seguridad blockchain CertiK. Todos los problemas críticos y de alta severidad han sido abordados, y el informe de auditoría está ahora disponible para revisión pública. Este hito nos acerca un paso más al lanzamiento de mainnet.",
+      vi: "Chúng tôi vui mừng thông báo rằng cuộc kiểm toán bảo mật toàn diện của chúng tôi đã được hoàn thành bởi công ty bảo mật blockchain hàng đầu CertiK. Tất cả các vấn đề nghiêm trọng và cao đã được giải quyết, và báo cáo kiểm toán hiện đã có sẵn để công chúng xem xét. Cột mốc này đưa chúng tôi đến gần hơn một bước với việc ra mắt mainnet."
     }
   },
   {
@@ -50,17 +50,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Core Team",
     title: {
       en: "Testnet Phase 3 Complete - Final Testing Begins",
-      ko: "?뚯뒪?몃꽬 3?④퀎 ?꾨즺 - 理쒖쥌 ?뚯뒪???쒖옉",
-      zh: "役뗨캊營묊К訝됮샄餘드츑??- ?瀯덃탩瑥뺝?冶?,
+      ko: "테스트넷 3단계 완료 - 최종 테스트 시작",
+      zh: "测试网第三阶段完成 - 最终测试开始",
       es: "Fase 3 de Testnet Completa - Comienza la Prueba Final",
-      vi: "Giai 휃o梳죒 3 Testnet Ho횪n th횪nh - B梳칣 휃梳쬾 Th沼?nghi沼뇅 Cu沼멼 c첫ng"
+      vi: "Giai đoạn 3 Testnet Hoàn thành - Bắt đầu Thử nghiệm Cuối cùng"
     },
     content: {
       en: "Testnet Phase 3 has been successfully completed with over 50,000 active participants. We are now entering the final testing phase before mainnet launch. Community members who participated in testing will receive special rewards upon mainnet launch. Thank you for your continued support.",
-      ko: "?뚯뒪?몃꽬 3?④퀎媛 50,000紐??댁긽???쒕컻??李멸??먯? ?④퍡 ?깃났?곸쑝濡??꾨즺?섏뿀?듬땲?? ?댁젣 硫붿씤??異쒖떆 ??理쒖쥌 ?뚯뒪???④퀎??吏꾩엯?⑸땲?? ?뚯뒪?몄뿉 李몄뿬??而ㅻ??덊떚 硫ㅻ쾭?ㅼ? 硫붿씤??異쒖떆 ???밸퀎 蹂댁긽??諛쏄쾶 ?⑸땲?? 吏?띿쟻??吏?먯뿉 媛먯궗?쒕┰?덈떎.",
-      zh: "役뗨캊營묊К訝됮샄餘드럴?먨뒣若뚧닇竊뚧뉵瓮껃뢿訝롨낁텈瓦?0,000雅뷩귝닊餓х렟?ⓩ??②퓵?δ말營묈맦?ⓨ뎺?꾣?瀯덃탩瑥뺡샄餘듐귛뢿訝롦탩瑥뺟쉪鹽얍뙷?먨몮弱녶쑉訝사퐨??뒯?띈렩孃쀧돶?ュ쪝?긱귝꽏瘟€궓?꾣똻瀯?뵱?곥?,
-      es: "La Fase 3 de Testnet se ha completado con 챕xito con m찼s de 50,000 participantes activos. Ahora estamos entrando en la fase de prueba final antes del lanzamiento de mainnet. Los miembros de la comunidad que participaron en las pruebas recibir찼n recompensas especiales en el lanzamiento de mainnet. Gracias por su apoyo continuo.",
-      vi: "Giai 휃o梳죒 3 Testnet 휃찾 ho횪n th횪nh th횪nh c척ng v沼쌻 h퉤n 50,000 ng튼沼쓎 tham gia t챠ch c沼켧. Ch첬ng t척i hi沼뇆 휃ang b튼沼쌵 v횪o giai 휃o梳죒 th沼?nghi沼뇅 cu沼멼 c첫ng tr튼沼쌵 khi ra m梳칣 mainnet. C찼c th횪nh vi챗n c沼셬g 휃沼뱊g tham gia th沼?nghi沼뇅 s梳?nh梳춏 휃튼沼즓 ph梳쬷 th튼沼웢g 휃梳톍 bi沼뇍 khi mainnet ra m梳칣. C梳즡 퉤n s沼?h沼?tr沼?li챗n t沼쩭 c沼쬪 b梳죒."
+      ko: "테스트넷 3단계가 50,000명 이상의 활발한 참가자와 함께 성공적으로 완료되었습니다. 이제 메인넷 출시 전 최종 테스트 단계에 진입합니다. 테스트에 참여한 커뮤니티 멤버들은 메인넷 출시 시 특별 보상을 받게 됩니다. 지속적인 지원에 감사드립니다.",
+      zh: "测试网第三阶段已成功完成，活跃参与者超过50,000人。我们现在正在进入主网启动前的最终测试阶段。参与测试的社区成员将在主网启动时获得特别奖励。感谢您的持续支持。",
+      es: "La Fase 3 de Testnet se ha completado con éxito con más de 50,000 participantes activos. Ahora estamos entrando en la fase de prueba final antes del lanzamiento de mainnet. Los miembros de la comunidad que participaron en las pruebas recibirán recompensas especiales en el lanzamiento de mainnet. Gracias por su apoyo continuo.",
+      vi: "Giai đoạn 3 Testnet đã hoàn thành thành công với hơn 50,000 người tham gia tích cực. Chúng tôi hiện đang bước vào giai đoạn thử nghiệm cuối cùng trước khi ra mắt mainnet. Các thành viên cộng đồng tham gia thử nghiệm sẽ nhận được phần thưởng đặc biệt khi mainnet ra mắt. Cảm ơn sự hỗ trợ liên tục của bạn."
     }
   },
 
@@ -72,17 +72,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Marketing Team",
     title: {
       en: "Season 2 Airdrop Campaign Launching Soon",
-      ko: "?쒖쫵 2 ?먯뼱?쒕엻 罹좏럹??怨??쒖옉",
-      zh: "寧т틠耶ｇ㈉?뺞뉵?ⓨ뜵弱녶맦??,
-      es: "Campa챰a de Airdrop Temporada 2 Pr처ximamente",
-      vi: "Chi梳퓆 d沼땉h Airdrop M첫a 2 S梳칛 Ra m梳칣"
+      ko: "시즌 2 에어드랍 캠페인 곧 시작",
+      zh: "第二季空投活动即将启动",
+      es: "Campaña de Airdrop Temporada 2 Próximamente",
+      vi: "Chiến dịch Airdrop Mùa 2 Sắp Ra mắt"
     },
     content: {
       en: "Get ready for our Season 2 Airdrop Campaign! Building on the success of Season 1, we are introducing new ways to earn GPNR tokens. Eligible activities include staking, governance participation, and community engagement. Early participants will receive bonus multipliers. Stay tuned for the official launch date.",
-      ko: "?쒖쫵 2 ?먯뼱?쒕엻 罹좏럹?몄쓣 以鍮꾪븯?몄슂! ?쒖쫵 1???깃났??諛뷀깢?쇰줈 GPNR ?좏겙???띾뱷?????덈뒗 ?덈줈??諛⑸쾿???뚭컻?⑸땲?? ?곴꺽 ?쒕룞?먮뒗 ?ㅽ뀒?댄궧, 嫄곕쾭?뚯뒪 李몄뿬, 而ㅻ??덊떚 李몄뿬媛 ?ы븿?⑸땲?? 珥덇린 李멸??먮뒗 蹂대꼫??諛곗닔瑜?諛쏄쾶 ?⑸땲?? 怨듭떇 異쒖떆 ?좎쭨瑜?湲곕???二쇱꽭??",
-      zh: "?녶쨭也썼퓥?ζ닊餓х쉪寧т틠耶ｇ㈉?뺞뉵?⑨펯?①К訝耶ｆ닇?잏쉪?븀?訝딉펽?묇뺄?ⓨ눣雅녻탾?뺾PNR餓ｅ툈?꾣뼭?밧폀?귞Е?덃씉餓띄쉪域삣뒯?끾떖兀ⓩ듉?곫꼇?녶뢿訝롥뭽鹽얍뙷?귚툗?귝뿩?잌뢿訝롨끻컛?룟풓也뽩뒻?졿닇?귝빃瑥룡쐿孃끻츟?밧룕躍껅뿥?잆?,
-      es: "징Prep찼rate para nuestra Campa챰a de Airdrop Temporada 2! Bas찼ndonos en el 챕xito de la Temporada 1, estamos introduciendo nuevas formas de ganar tokens GPNR. Las actividades elegibles incluyen staking, participaci처n en gobernanza y compromiso comunitario. Los participantes tempranos recibir찼n multiplicadores de bonificaci처n. Est챕n atentos a la fecha de lanzamiento oficial.",
-      vi: "H찾y s梳탇 s횪ng cho Chi梳퓆 d沼땉h Airdrop M첫a 2! D沼켥 tr챗n th횪nh c척ng c沼쬪 M첫a 1, ch첬ng t척i 휃ang gi沼쌻 thi沼뇎 c찼c c찼ch m沼쌻 휃沼?ki梳퓅 token GPNR. C찼c ho梳죜 휃沼셬g 휃沼?휃i沼걏 ki沼뇆 bao g沼뱈 staking, tham gia qu梳즢 tr沼?v횪 t튼퉤ng t찼c c沼셬g 휃沼뱊g. Nh沼칗g ng튼沼쓎 tham gia s沼쌿 s梳?nh梳춏 휃튼沼즓 h沼?s沼?th튼沼웢g. H찾y theo d천i ng횪y ra m梳칣 ch챠nh th沼쯢."
+      ko: "시즌 2 에어드랍 캠페인을 준비하세요! 시즌 1의 성공을 바탕으로 GPNR 토큰을 획득할 수 있는 새로운 방법을 소개합니다. 적격 활동에는 스테이킹, 거버넌스 참여, 커뮤니티 참여가 포함됩니다. 초기 참가자는 보너스 배수를 받게 됩니다. 공식 출시 날짜를 기대해 주세요.",
+      zh: "准备好迎接我们的第二季空投活动！在第一季成功的基础上，我们推出了赚取GPNR代币的新方式。符合条件的活动包括质押、治理参与和社区参与。早期参与者将获得奖励加成。敬请期待官方发布日期。",
+      es: "¡Prepárate para nuestra Campaña de Airdrop Temporada 2! Basándonos en el éxito de la Temporada 1, estamos introduciendo nuevas formas de ganar tokens GPNR. Las actividades elegibles incluyen staking, participación en gobernanza y compromiso comunitario. Los participantes tempranos recibirán multiplicadores de bonificación. Estén atentos a la fecha de lanzamiento oficial.",
+      vi: "Hãy sẵn sàng cho Chiến dịch Airdrop Mùa 2! Dựa trên thành công của Mùa 1, chúng tôi đang giới thiệu các cách mới để kiếm token GPNR. Các hoạt động đủ điều kiện bao gồm staking, tham gia quản trị và tương tác cộng đồng. Những người tham gia sớm sẽ nhận được hệ số thưởng. Hãy theo dõi ngày ra mắt chính thức."
     }
   },
   {
@@ -92,17 +92,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Marketing Team",
     title: {
       en: "Season 1 Airdrop Distribution Complete",
-      ko: "?쒖쫵 1 ?먯뼱?쒕엻 諛고룷 ?꾨즺",
-      zh: "寧т?耶ｇ㈉?뺝늽?띶츑??,
-      es: "Distribuci처n de Airdrop Temporada 1 Completa",
-      vi: "Ho횪n th횪nh Ph창n ph沼멼 Airdrop M첫a 1"
+      ko: "시즌 1 에어드랍 배포 완료",
+      zh: "第一季空投分配完成",
+      es: "Distribución de Airdrop Temporada 1 Completa",
+      vi: "Hoàn thành Phân phối Airdrop Mùa 1"
     },
     content: {
       en: "We are happy to announce that Season 1 Airdrop has been successfully distributed to all eligible participants. Over 100,000 wallets received GPNR tokens based on their activity and engagement. If you haven't claimed your tokens yet, please visit your dashboard. Unclaimed tokens will be available for 30 days.",
-      ko: "?쒖쫵 1 ?먯뼱?쒕엻??紐⑤뱺 ?곴꺽 李멸??먯뿉寃??깃났?곸쑝濡?諛고룷?섏뿀?뚯쓣 諛쒗몴?섍쾶 ?섏뼱 湲곗겑?덈떎. 100,000媛??댁긽??吏媛묒씠 ?쒕룞怨?李몄뿬???곕씪 GPNR ?좏겙??諛쏆븯?듬땲?? ?꾩쭅 ?좏겙??泥?뎄?섏? ?딆븯?ㅻ㈃ ??쒕낫?쒕? 諛⑸Ц??二쇱꽭?? 泥?뎄?섏? ?딆? ?좏겙? 30?쇨컙 ?댁슜 媛?ν빀?덈떎.",
-      zh: "?묇뺄孃덆쳵?닷쑑若ｅ툋竊뚨К訝耶ｇ㈉?뺝럴?먨뒣?녽뀓瀯숁??됬Е?덃씉餓띄쉪?귚툗?끹귟텈瓦?00,000訝ら뮦?끾졊??끀域삣뒯?뚦뢿訝롥벧?뜹댆雅낶PNR餓ｅ툈?귛쫩?쒏궓瓦섉깹?됮쥍?뽨빰躍곻펽瑥룩???궓?꾡빽烏ⓩ씮?귝쑋窯녶룚?꾡빰躍곩컛??0鸚⒴냵??뵪??,
-      es: "Nos complace anunciar que el Airdrop de la Temporada 1 se ha distribuido exitosamente a todos los participantes elegibles. M찼s de 100,000 billeteras recibieron tokens GPNR basados en su actividad y compromiso. Si a첬n no ha reclamado sus tokens, visite su panel de control. Los tokens no reclamados estar찼n disponibles durante 30 d챠as.",
-      vi: "Ch첬ng t척i vui m沼쳌g th척ng b찼o r梳켷g Airdrop M첫a 1 휃찾 휃튼沼즓 ph창n ph沼멼 th횪nh c척ng cho t梳쩿 c梳?nh沼칗g ng튼沼쓎 tham gia 휃沼?휃i沼걏 ki沼뇆. H퉤n 100,000 v챠 휃찾 nh梳춏 휃튼沼즓 token GPNR d沼켥 tr챗n ho梳죜 휃沼셬g v횪 s沼?tham gia c沼쬪 h沼? N梳퓎 b梳죒 ch튼a nh梳춏 token, vui l챵ng truy c梳춑 b梳즢g 휃i沼걏 khi沼긪 c沼쬪 b梳죒. C찼c token ch튼a 휃튼沼즓 nh梳춏 s梳?c처 s梳탇 trong 30 ng횪y."
+      ko: "시즌 1 에어드랍이 모든 적격 참가자에게 성공적으로 배포되었음을 발표하게 되어 기쁩니다. 100,000개 이상의 지갑이 활동과 참여에 따라 GPNR 토큰을 받았습니다. 아직 토큰을 청구하지 않았다면 대시보드를 방문해 주세요. 청구되지 않은 토큰은 30일간 이용 가능합니다.",
+      zh: "我们很高兴地宣布，第一季空投已成功分配给所有符合条件的参与者。超过100,000个钱包根据其活动和参与度收到了GPNR代币。如果您还没有领取代币，请访问您的仪表板。未领取的代币将在30天内可用。",
+      es: "Nos complace anunciar que el Airdrop de la Temporada 1 se ha distribuido exitosamente a todos los participantes elegibles. Más de 100,000 billeteras recibieron tokens GPNR basados en su actividad y compromiso. Si aún no ha reclamado sus tokens, visite su panel de control. Los tokens no reclamados estarán disponibles durante 30 días.",
+      vi: "Chúng tôi vui mừng thông báo rằng Airdrop Mùa 1 đã được phân phối thành công cho tất cả những người tham gia đủ điều kiện. Hơn 100,000 ví đã nhận được token GPNR dựa trên hoạt động và sự tham gia của họ. Nếu bạn chưa nhận token, vui lòng truy cập bảng điều khiển của bạn. Các token chưa được nhận sẽ có sẵn trong 30 ngày."
     }
   },
   {
@@ -112,17 +112,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Core Team",
     title: {
       en: "Airdrop Eligibility Criteria Updated",
-      ko: "?먯뼱?쒕엻 ?먭꺽 湲곗? ?낅뜲?댄듃",
-      zh: "令뷸뒘壅꾣졏?뉐뇛?닸뼭",
+      ko: "에어드랍 자격 기준 업데이트",
+      zh: "空投资格标准更新",
       es: "Criterios de Elegibilidad de Airdrop Actualizados",
-      vi: "C梳춑 nh梳춗 Ti챗u ch챠 휂沼?휃i沼걏 ki沼뇆 Airdrop"
+      vi: "Cập nhật Tiêu chí Đủ điều kiện Airdrop"
     },
     content: {
       en: "Based on community feedback, we have updated our airdrop eligibility criteria to be more inclusive. The new criteria include: minimum 30 days of wallet activity, at least one successful transaction, and community participation such as social media engagement or forum posts. Check your eligibility status in your dashboard.",
-      ko: "而ㅻ??덊떚 ?쇰뱶諛깆쓣 諛뷀깢?쇰줈 ?먯뼱?쒕엻 ?먭꺽 湲곗??????ш큵?곸쑝濡??낅뜲?댄듃?덉뒿?덈떎. ?덈줈??湲곗??먮뒗 理쒖냼 30?쇱쓽 吏媛??쒕룞, 理쒖냼 ??嫄댁쓽 ?깃났?곸씤 嫄곕옒, 洹몃━怨??뚯뀥 誘몃뵒??李몄뿬 ?먮뒗 ?щ읆 寃뚯떆臾쇨낵 媛숈? 而ㅻ??덊떚 李몄뿬媛 ?ы븿?⑸땲?? ??쒕낫?쒖뿉???먭꺽 ?곹깭瑜??뺤씤?섏꽭??",
-      zh: "?방뜮鹽얍뙷?띺쫰竊뚧닊餓у럴?닸뼭令뷸뒘壅꾣졏?뉐뇛竊뚥슴?뜻쎍?룟똿若방㎯귝뼭?뉐뇛?끾떖竊싪눛弱?0鸚⑴쉪?긷똿域삣뒯?곮눛弱묇?寧붹닇?잋벡?볩펽餓ε룋鹽얌벡揶믢퐪?귚툗?뽬??쎾툟耶먪춬鹽얍뙷?귚툗?귛쑉?①쉪餓よ〃?요릎汝?ζ궓?꾥탡?쇘듁?곥?,
-      es: "Bas찼ndonos en los comentarios de la comunidad, hemos actualizado nuestros criterios de elegibilidad de airdrop para ser m찼s inclusivos. Los nuevos criterios incluyen: m챠nimo 30 d챠as de actividad de billetera, al menos una transacci처n exitosa, y participaci처n comunitaria como compromiso en redes sociales o publicaciones en foros. Verifique su estado de elegibilidad en su panel de control.",
-      vi: "D沼켥 tr챗n ph梳즢 h沼밿 c沼쬪 c沼셬g 휃沼뱊g, ch첬ng t척i 휃찾 c梳춑 nh梳춗 ti챗u ch챠 휃沼?휃i沼걏 ki沼뇆 airdrop 휃沼?bao g沼뱈 nhi沼걏 ng튼沼쓎 h퉤n. C찼c ti챗u ch챠 m沼쌻 bao g沼뱈: t沼멼 thi沼긳 30 ng횪y ho梳죜 휃沼셬g v챠, 챠t nh梳쩿 m沼셳 giao d沼땉h th횪nh c척ng v횪 tham gia c沼셬g 휃沼뱊g nh튼 t튼퉤ng t찼c tr챗n m梳죒g x찾 h沼셢 ho梳톍 휃훱ng b횪i tr챗n di沼꿳 휃횪n. Ki沼긩 tra tr梳죒g th찼i 휃沼?휃i沼걏 ki沼뇆 c沼쬪 b梳죒 trong b梳즢g 휃i沼걏 khi沼긪."
+      ko: "커뮤니티 피드백을 바탕으로 에어드랍 자격 기준을 더 포괄적으로 업데이트했습니다. 새로운 기준에는 최소 30일의 지갑 활동, 최소 한 건의 성공적인 거래, 그리고 소셜 미디어 참여 또는 포럼 게시물과 같은 커뮤니티 참여가 포함됩니다. 대시보드에서 자격 상태를 확인하세요.",
+      zh: "根据社区反馈，我们已更新空投资格标准，使其更具包容性。新标准包括：至少30天的钱包活动、至少一笔成功交易，以及社交媒体参与或论坛帖子等社区参与。在您的仪表板中检查您的资格状态。",
+      es: "Basándonos en los comentarios de la comunidad, hemos actualizado nuestros criterios de elegibilidad de airdrop para ser más inclusivos. Los nuevos criterios incluyen: mínimo 30 días de actividad de billetera, al menos una transacción exitosa, y participación comunitaria como compromiso en redes sociales o publicaciones en foros. Verifique su estado de elegibilidad en su panel de control.",
+      vi: "Dựa trên phản hồi của cộng đồng, chúng tôi đã cập nhật tiêu chí đủ điều kiện airdrop để bao gồm nhiều người hơn. Các tiêu chí mới bao gồm: tối thiểu 30 ngày hoạt động ví, ít nhất một giao dịch thành công và tham gia cộng đồng như tương tác trên mạng xã hội hoặc đăng bài trên diễn đàn. Kiểm tra trạng thái đủ điều kiện của bạn trong bảng điều khiển."
     }
   },
 
@@ -134,17 +134,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Business Team",
     title: {
       en: "Strategic Partnership with Leading DeFi Protocol",
-      ko: "?좊룄??DeFi ?꾨줈?좎퐳怨??꾨왂???뚰듃?덉떗 泥닿껐",
-      zh: "訝롩쥍?뉲eFi?뤺?渦얏닇?섊븼?덁퐳",
-      es: "Asociaci처n Estrat챕gica con Protocolo DeFi L챠der",
-      vi: "H沼즤 t찼c Chi梳퓆 l튼沼즓 v沼쌻 Giao th沼쯢 DeFi H횪ng 휃梳쬾"
+      ko: "선도적 DeFi 프로토콜과 전략적 파트너십 체결",
+      zh: "与领先DeFi协议达成战略合作",
+      es: "Asociación Estratégica con Protocolo DeFi Líder",
+      vi: "Hợp tác Chiến lược với Giao thức DeFi Hàng đầu"
     },
     content: {
       en: "We are thrilled to announce our strategic partnership with Aave, one of the leading DeFi protocols in the industry. This partnership will enable GPNR token holders to access advanced lending and borrowing features. Integration work has already begun, and we expect to launch these features within Q2 2025.",
-      ko: "?낃퀎 ?좊룄?곸씤 DeFi ?꾨줈?좎퐳 以??섎굹??Aave????꾨왂???뚰듃?덉떗??諛쒗몴?섍쾶 ?섏뼱 湲곗겑?덈떎. ???뚰듃?덉떗???듯빐 GPNR ?좏겙 蹂댁쑀?먮뱾? 怨좉툒 ?異?諛?李⑥엯 湲곕뒫???묎렐?????덇쾶 ?⑸땲?? ?듯빀 ?묒뾽? ?대? ?쒖옉?섏뿀?쇰ŉ, 2025??2遺꾧린 ?댁뿉 ?대윭??湲곕뒫??異쒖떆???덉젙?낅땲??",
-      zh: "?묇뺄孃덆쳵?닷쑑若ｅ툋訝롨죱訝싮쥍?덄쉪DeFi?뤺?阿뗤?Aave渦얏닇?섊븼?덁퐳?귝?轝▼릦鵝쒎컛鵝풤PNR餓ｅ툈?곫쐣?낁꺗鸚잒???쳵瀛㎩잒뉠?잒꺗?귡썓?먨램鵝쒎럴瀯뤷?冶뗰펽?묇뺄窯꾥?弱녶쑉2025亮당К雅뚦?佯?냵?ⓨ눣瓦쇾틳?잒꺗??,
-      es: "Estamos encantados de anunciar nuestra asociaci처n estrat챕gica con Aave, uno de los protocolos DeFi l챠deres en la industria. Esta asociaci처n permitir찼 a los poseedores de tokens GPNR acceder a funciones avanzadas de pr챕stamos. El trabajo de integraci처n ya ha comenzado, y esperamos lanzar estas funciones dentro del segundo trimestre de 2025.",
-      vi: "Ch첬ng t척i vui m沼쳌g th척ng b찼o quan h沼?휃沼멼 t찼c chi梳퓆 l튼沼즓 v沼쌻 Aave, m沼셳 trong nh沼칗g giao th沼쯢 DeFi h횪ng 휃梳쬾 trong ng횪nh. Quan h沼?휃沼멼 t찼c n횪y s梳?cho ph챕p ng튼沼쓎 n梳칖 gi沼?token GPNR truy c梳춑 c찼c t챠nh n훱ng cho vay v횪 vay n창ng cao. C척ng vi沼놻 t챠ch h沼즤 휃찾 b梳칣 휃梳쬾 v횪 ch첬ng t척i d沼?ki梳퓆 s梳?ra m梳칣 c찼c t챠nh n훱ng n횪y trong Q2 2025."
+      ko: "업계 선도적인 DeFi 프로토콜 중 하나인 Aave와의 전략적 파트너십을 발표하게 되어 기쁩니다. 이 파트너십을 통해 GPNR 토큰 보유자들은 고급 대출 및 차입 기능에 접근할 수 있게 됩니다. 통합 작업은 이미 시작되었으며, 2025년 2분기 내에 이러한 기능을 출시할 예정입니다.",
+      zh: "我们很高兴地宣布与行业领先的DeFi协议之一Aave达成战略合作。此次合作将使GPNR代币持有者能够访问高级借贷功能。集成工作已经开始，我们预计将在2025年第二季度内推出这些功能。",
+      es: "Estamos encantados de anunciar nuestra asociación estratégica con Aave, uno de los protocolos DeFi líderes en la industria. Esta asociación permitirá a los poseedores de tokens GPNR acceder a funciones avanzadas de préstamos. El trabajo de integración ya ha comenzado, y esperamos lanzar estas funciones dentro del segundo trimestre de 2025.",
+      vi: "Chúng tôi vui mừng thông báo quan hệ đối tác chiến lược với Aave, một trong những giao thức DeFi hàng đầu trong ngành. Quan hệ đối tác này sẽ cho phép người nắm giữ token GPNR truy cập các tính năng cho vay và vay nâng cao. Công việc tích hợp đã bắt đầu và chúng tôi dự kiến sẽ ra mắt các tính năng này trong Q2 2025."
     }
   },
   {
@@ -154,17 +154,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Business Team",
     title: {
       en: "Exchange Listing Partnership Announced",
-      ko: "嫄곕옒???곸옣 ?뚰듃?덉떗 諛쒗몴",
-      zh: "雅ㅶ삌?訝듿툊?덁퐳?у몜",
-      es: "Anuncio de Asociaci처n de Listado en Exchange",
-      vi: "Th척ng b찼o H沼즤 t찼c Ni챗m y梳퓍 S횪n Giao d沼땉h"
+      ko: "거래소 상장 파트너십 발표",
+      zh: "交易所上市合作公告",
+      es: "Anuncio de Asociación de Listado en Exchange",
+      vi: "Thông báo Hợp tác Niêm yết Sàn Giao dịch"
     },
     content: {
       en: "We are excited to share that GPNR has secured listing partnerships with three major cryptocurrency exchanges. The listings will occur in phases, starting with the mainnet launch. Detailed information about trading pairs and launch dates will be shared closer to the listing dates. This marks a significant milestone in our journey.",
-      ko: "GPNR????媛쒖쓽 二쇱슂 ?뷀샇?뷀룓 嫄곕옒?뚯? ?곸옣 ?뚰듃?덉떗???뺣낫?덉쓬??怨듭쑀?섍쾶 ?섏뼱 湲곗겑?덈떎. ?곸옣? 硫붿씤??異쒖떆遺???④퀎?곸쑝濡?吏꾪뻾?⑸땲?? 嫄곕옒 ??諛?異쒖떆 ?좎쭨??????먯꽭???뺣낫???곸옣 ?좎쭨??媛源뚯썙吏硫?怨듭쑀?⑸땲?? ?대뒗 ?곕━???ъ젙?먯꽌 以묒슂???댁젙?쒖엯?덈떎.",
-      zh: "?묇뺄孃덆쳵?닷쑑?녵벴GPNR藥꿜툗訝됧?訝삭쫨?졾칳兀㎩툈雅ㅶ삌?簾?츣雅녵툓躍귛릦鵝쒎뀽楹삠귚툓躍귛컛?녽샄餘듣퓵烏뚳펽餓롣말營묈룕躍껃?冶뗣귚벡?볟??뚦룕躍껅뿥?잏쉪瑥?퍏岳→겘弱녶쑉訝듿툊?ζ쐿訝닺퓩?뜹늽雅ャ귟퓳?뉐퓱??묇뺄?끿쮮訝?쉪訝訝ら뇥誤곲뇤葉뗧쥜??,
-      es: "Nos emociona compartir que GPNR ha asegurado asociaciones de listado con tres exchanges de criptomonedas importantes. Los listados ocurrir찼n en fases, comenzando con el lanzamiento de mainnet. La informaci처n detallada sobre pares de trading y fechas de lanzamiento se compartir찼 m찼s cerca de las fechas de listado. Esto marca un hito significativo en nuestro viaje.",
-      vi: "Ch첬ng t척i vui m沼쳌g chia s梳?r梳켷g GPNR 휃찾 휃梳즡 b梳즣 quan h沼?휃沼멼 t찼c ni챗m y梳퓍 v沼쌻 ba s횪n giao d沼땉h ti沼걆 휃i沼뇆 t沼?l沼썀. Vi沼놻 ni챗m y梳퓍 s梳?di沼꿳 ra theo t沼쳌g giai 휃o梳죒, b梳칣 휃梳쬾 v沼쌻 vi沼놻 ra m梳칣 mainnet. Th척ng tin chi ti梳퓍 v沼?c찼c c梳톚 giao d沼땉h v횪 ng횪y ra m梳칣 s梳?휃튼沼즓 chia s梳?g梳쬷 ng횪y ni챗m y梳퓍 h퉤n. 휂창y l횪 m沼셳 c沼셳 m沼멵 quan tr沼뛫g trong h횪nh tr챙nh c沼쬪 ch첬ng t척i."
+      ko: "GPNR이 세 개의 주요 암호화폐 거래소와 상장 파트너십을 확보했음을 공유하게 되어 기쁩니다. 상장은 메인넷 출시부터 단계적으로 진행됩니다. 거래 쌍 및 출시 날짜에 대한 자세한 정보는 상장 날짜에 가까워지면 공유됩니다. 이는 우리의 여정에서 중요한 이정표입니다.",
+      zh: "我们很高兴地分享GPNR已与三家主要加密货币交易所确定了上市合作关系。上市将分阶段进行，从主网发布开始。交易对和发布日期的详细信息将在上市日期临近时分享。这标志着我们旅程中的一个重要里程碑。",
+      es: "Nos emociona compartir que GPNR ha asegurado asociaciones de listado con tres exchanges de criptomonedas importantes. Los listados ocurrirán en fases, comenzando con el lanzamiento de mainnet. La información detallada sobre pares de trading y fechas de lanzamiento se compartirá más cerca de las fechas de listado. Esto marca un hito significativo en nuestro viaje.",
+      vi: "Chúng tôi vui mừng chia sẻ rằng GPNR đã đảm bảo quan hệ đối tác niêm yết với ba sàn giao dịch tiền điện tử lớn. Việc niêm yết sẽ diễn ra theo từng giai đoạn, bắt đầu với việc ra mắt mainnet. Thông tin chi tiết về các cặp giao dịch và ngày ra mắt sẽ được chia sẻ gần ngày niêm yết hơn. Đây là một cột mốc quan trọng trong hành trình của chúng tôi."
     }
   },
   {
@@ -174,17 +174,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Core Team",
     title: {
       en: "Infrastructure Partnership with Chainlink",
-      ko: "Chainlink? ?명봽???뚰듃?덉떗",
-      zh: "訝랢hainlink?꾢읃簾溫얏뼺?덁퐳",
-      es: "Asociaci처n de Infraestructura con Chainlink",
-      vi: "H沼즤 t찼c C퉤 s沼?h梳?t梳쬷g v沼쌻 Chainlink"
+      ko: "Chainlink와 인프라 파트너십",
+      zh: "与Chainlink的基础设施合作",
+      es: "Asociación de Infraestructura con Chainlink",
+      vi: "Hợp tác Cơ sở hạ tầng với Chainlink"
     },
     content: {
       en: "GPNR has partnered with Chainlink to integrate their oracle solutions into our ecosystem. This partnership will provide our users with reliable, tamper-proof price feeds and enable cross-chain functionality. The integration will be completed before mainnet launch, ensuring robust and secure operations from day one.",
-      ko: "GPNR? Chainlink? ?뚰듃?덉떗??留븐뼱 洹몃뱾???ㅻ씪???붾（?섏쓣 ?곕━ ?앺깭怨꾩뿉 ?듯빀?⑸땲?? ???뚰듃?덉떗? ?ъ슜?먯뿉寃??좊ː?????덇퀬 蹂議?諛⑹???媛寃??쇰뱶瑜??쒓났?섍퀬 ?щ줈?ㅼ껜??湲곕뒫??媛?ν븯寃??⑸땲?? ?듯빀? 硫붿씤??異쒖떆 ?꾩뿉 ?꾨즺?섏뼱 泥ル궇遺??媛뺣젰?섍퀬 ?덉쟾???댁쁺??蹂댁옣?⑸땲??",
-      zh: "GPNR訝랢hainlink兩븀쳦雅녶릦鵝쒎뀽楹삼펽弱녵퍟餓х쉪窯꾥??븃㎗?녔뼶旅덆썓?먨댆?묇뺄?꾤뵟?곭내瀯잋릎?귝?轝▼릦鵝쒎컛訝뷸닊餓х쉪?ⓩ댎?먧풘??씈?곲삻影→뵻?꾡뻔?쇗빊??펽亮뜹츩?계랬?얍뒣?썬귡썓?먨컛?ⓧ말營묈맦?ⓨ뎺若뚧닇竊뚨‘岳앬퍗寧т?鸚⑵돈弱김꺗瓦쏂죱葉녑겈?뚦츎?①쉪瓦먫맓??,
-      es: "GPNR se ha asociado con Chainlink para integrar sus soluciones de or찼culos en nuestro ecosistema. Esta asociaci처n proporcionar찼 a nuestros usuarios feeds de precios confiables y a prueba de manipulaciones, y habilitar찼 la funcionalidad cross-chain. La integraci처n se completar찼 antes del lanzamiento de mainnet, asegurando operaciones robustas y seguras desde el primer d챠a.",
-      vi: "GPNR 휃찾 h沼즤 t찼c v沼쌻 Chainlink 휃沼?t챠ch h沼즤 c찼c gi梳즜 ph찼p oracle c沼쬪 h沼?v횪o h沼?sinh th찼i c沼쬪 ch첬ng t척i. Quan h沼?휃沼멼 t찼c n횪y s梳?cung c梳쩺 cho ng튼沼쓎 d첫ng c沼쬪 ch첬ng t척i ngu沼뱊 c梳쩺 d沼?li沼뇎 gi찼 휃찼ng tin c梳춞, ch沼몁g gi梳?m梳죓 v횪 cho ph챕p ch沼쯢 n훱ng cross-chain. Vi沼놻 t챠ch h沼즤 s梳?ho횪n th횪nh tr튼沼쌵 khi ra m梳칣 mainnet, 휃梳즡 b梳즣 ho梳죜 휃沼셬g m梳죒h m梳?v횪 an to횪n ngay t沼?ng횪y 휃梳쬾 ti챗n."
+      ko: "GPNR은 Chainlink와 파트너십을 맺어 그들의 오라클 솔루션을 우리 생태계에 통합합니다. 이 파트너십은 사용자에게 신뢰할 수 있고 변조 방지된 가격 피드를 제공하고 크로스체인 기능을 가능하게 합니다. 통합은 메인넷 출시 전에 완료되어 첫날부터 강력하고 안전한 운영을 보장합니다.",
+      zh: "GPNR与Chainlink建立了合作关系，将他们的预言机解决方案集成到我们的生态系统中。此次合作将为我们的用户提供可靠、防篡改的价格数据，并实现跨链功能。集成将在主网启动前完成，确保从第一天起就能进行稳健和安全的运营。",
+      es: "GPNR se ha asociado con Chainlink para integrar sus soluciones de oráculos en nuestro ecosistema. Esta asociación proporcionará a nuestros usuarios feeds de precios confiables y a prueba de manipulaciones, y habilitará la funcionalidad cross-chain. La integración se completará antes del lanzamiento de mainnet, asegurando operaciones robustas y seguras desde el primer día.",
+      vi: "GPNR đã hợp tác với Chainlink để tích hợp các giải pháp oracle của họ vào hệ sinh thái của chúng tôi. Quan hệ đối tác này sẽ cung cấp cho người dùng của chúng tôi nguồn cấp dữ liệu giá đáng tin cậy, chống giả mạo và cho phép chức năng cross-chain. Việc tích hợp sẽ hoàn thành trước khi ra mắt mainnet, đảm bảo hoạt động mạnh mẽ và an toàn ngay từ ngày đầu tiên."
     }
   },
 
@@ -196,17 +196,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Development Team",
     title: {
       en: "Developer SDK and API Documentation Released",
-      ko: "媛쒕컻??SDK 諛?API 臾몄꽌 異쒖떆",
-      zh: "凉?묋꿙DK?똀PI?뉑。?묈툋",
-      es: "SDK para Desarrolladores y Documentaci처n API Publicados",
-      vi: "SDK Nh횪 ph찼t tri沼긪 v횪 T횪i li沼뇎 API 휂튼沼즓 Ph찼t h횪nh"
+      ko: "개발자 SDK 및 API 문서 출시",
+      zh: "开发者SDK和API文档发布",
+      es: "SDK para Desarrolladores y Documentación API Publicados",
+      vi: "SDK Nhà phát triển và Tài liệu API Được Phát hành"
     },
     content: {
       en: "We are excited to release our comprehensive Developer SDK and API documentation. The SDK supports JavaScript, Python, and Rust, making it easy for developers to build on GPNR. Documentation includes quickstart guides, code examples, and best practices. Join our developer community on Discord for support.",
-      ko: "醫낇빀?곸씤 媛쒕컻??SDK 諛?API 臾몄꽌瑜?異쒖떆?섍쾶 ?섏뼱 湲곗겑?덈떎. SDK??JavaScript, Python, Rust瑜?吏?먰븯??媛쒕컻?먮뱾??GPNR?먯꽌 ?쎄쾶 鍮뚮뱶?????덇쾶 ?⑸땲?? 臾몄꽌?먮뒗 鍮좊Ⅸ ?쒖옉 媛?대뱶, 肄붾뱶 ?덉젣, 紐⑤쾾 ?щ?媛 ?ы븿?섏뼱 ?덉뒿?덈떎. 吏?먯쓣 諛쏆쑝?ㅻ㈃ Discord??媛쒕컻??而ㅻ??덊떚??李몄뿬?섏꽭??",
-      zh: "?묇뺄孃덆쳵?닷룕躍껅닊餓у뀲?®쉪凉?묋꿙DK?똀PI?뉑。?괪DK??똻JavaScript?갥ython?똓ust竊뚥슴凉?묋낁꺗鸚잒슥?얍쑉GPNR訝딀엫兩뷩귝뻼旅ｅ똿?у엮?잌뀯?ⓩ뙁?쀣곦빰?곭ㅊ堊뗥뭽?鵝녑츩瓮듐귛뒥?ζ닊餓촂iscord訝딁쉪凉?묋끿ㅎ?븃렩?뽪뵱?곥?,
-      es: "Nos complace publicar nuestro completo SDK para desarrolladores y documentaci처n API. El SDK soporta JavaScript, Python y Rust, facilitando a los desarrolladores construir sobre GPNR. La documentaci처n incluye gu챠as de inicio r찼pido, ejemplos de c처digo y mejores pr찼cticas. 횣nete a nuestra comunidad de desarrolladores en Discord para obtener soporte.",
-      vi: "Ch첬ng t척i vui m沼쳌g ph찼t h횪nh SDK nh횪 ph찼t tri沼긪 to횪n di沼뇆 v횪 t횪i li沼뇎 API. SDK h沼?tr沼?JavaScript, Python v횪 Rust, gi첬p c찼c nh횪 ph찼t tri沼긪 d沼?d횪ng x창y d沼켷g tr챗n GPNR. T횪i li沼뇎 bao g沼뱈 h튼沼썀g d梳쳌 b梳칣 휃梳쬾 nhanh, v챠 d沼?m찾 v횪 c찼c ph튼퉤ng ph찼p t沼몋 nh梳쩿. Tham gia c沼셬g 휃沼뱊g nh횪 ph찼t tri沼긪 c沼쬪 ch첬ng t척i tr챗n Discord 휃沼?휃튼沼즓 h沼?tr沼?"
+      ko: "종합적인 개발자 SDK 및 API 문서를 출시하게 되어 기쁩니다. SDK는 JavaScript, Python, Rust를 지원하여 개발자들이 GPNR에서 쉽게 빌드할 수 있게 합니다. 문서에는 빠른 시작 가이드, 코드 예제, 모범 사례가 포함되어 있습니다. 지원을 받으려면 Discord의 개발자 커뮤니티에 참여하세요.",
+      zh: "我们很高兴发布我们全面的开发者SDK和API文档。SDK支持JavaScript、Python和Rust，使开发者能够轻松在GPNR上构建。文档包括快速入门指南、代码示例和最佳实践。加入我们Discord上的开发者社区获取支持。",
+      es: "Nos complace publicar nuestro completo SDK para desarrolladores y documentación API. El SDK soporta JavaScript, Python y Rust, facilitando a los desarrolladores construir sobre GPNR. La documentación incluye guías de inicio rápido, ejemplos de código y mejores prácticas. Únete a nuestra comunidad de desarrolladores en Discord para obtener soporte.",
+      vi: "Chúng tôi vui mừng phát hành SDK nhà phát triển toàn diện và tài liệu API. SDK hỗ trợ JavaScript, Python và Rust, giúp các nhà phát triển dễ dàng xây dựng trên GPNR. Tài liệu bao gồm hướng dẫn bắt đầu nhanh, ví dụ mã và các phương pháp tốt nhất. Tham gia cộng đồng nhà phát triển của chúng tôi trên Discord để được hỗ trợ."
     }
   },
   {
@@ -216,17 +216,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Core Team",
     title: {
       en: "Ecosystem Fund Launch - $50M for Builders",
-      ko: "?앺깭怨????異쒖떆 - 鍮뚮뜑瑜??꾪븳 5泥쒕쭔 ?щ윭",
-      zh: "?잍곭내瀯잌읃?묈맦??- 5000訝뉒풆?껅뵱?곩뻠溫얕?,
+      ko: "생태계 펀드 출시 - 빌더를 위한 5천만 달러",
+      zh: "生态系统基金启动 - 5000万美元支持建设者",
       es: "Lanzamiento del Fondo del Ecosistema - $50M para Constructores",
-      vi: "Ra m梳칣 Qu沼?H沼?sinh th찼i - $50M cho Nh횪 x창y d沼켷g"
+      vi: "Ra mắt Quỹ Hệ sinh thái - $50M cho Nhà xây dựng"
     },
     content: {
       en: "We are launching a $50 million ecosystem fund to support developers and projects building on GPNR. The fund will provide grants, investments, and resources to accelerate ecosystem growth. Applications are now open for projects in DeFi, NFTs, gaming, and infrastructure. Visit our grants portal to apply.",
-      ko: "GPNR?먯꽌 鍮뚮뱶?섎뒗 媛쒕컻?먯? ?꾨줈?앺듃瑜?吏?먰븯湲??꾪빐 5泥쒕쭔 ?щ윭 洹쒕え???앺깭怨???쒕? 異쒖떆?⑸땲?? ????쒕뒗 ?앺깭怨??깆옣??媛?랁솕?섍린 ?꾪빐 蹂댁“湲? ?ъ옄 諛?由ъ냼?ㅻ? ?쒓났?⑸땲?? DeFi, NFT, 寃뚯엫, ?명봽??遺꾩빞???꾨줈?앺듃??????좎껌???꾩옱 ?대젮 ?덉뒿?덈떎. ?좎껌?섎젮硫?洹몃옖???ы꽭??諛⑸Ц?섏꽭??",
-      zh: "?묇뺄閭ｅ쑉??뒯訝訝?000訝뉒풆?껆쉪?잍곭내瀯잌읃?묕펽餓ζ뵱?곩쑉GPNR訝딀엫兩븀쉪凉?묋끻뭽窈밭쎅?귟??븅뇫弱녷룓堊쏂탡?⒲곫뒘壅꾢뭽壅꾣틦竊뚥빳?좈잏뵟?곭내瀯잌쥭?욍귞렟藥꿨??퐻eFi?갢FT?곫만?뤷뭽?븀?溫얏뼺窯녶윜窈밭쎅?꾤뵵瑥룔귟?溫욥뿮?묇뺄?꾥탡?⑶뿨?룩퓵烏뚨뵵瑥룔?,
-      es: "Estamos lanzando un fondo de ecosistema de $50 millones para apoyar a desarrolladores y proyectos que construyen sobre GPNR. El fondo proporcionar찼 subvenciones, inversiones y recursos para acelerar el crecimiento del ecosistema. Las solicitudes est찼n abiertas para proyectos en DeFi, NFTs, gaming e infraestructura. Visita nuestro portal de grants para aplicar.",
-      vi: "Ch첬ng t척i 휃ang ra m梳칣 qu沼?h沼?sinh th찼i 50 tri沼뇎 휃척 la 휃沼?h沼?tr沼?c찼c nh횪 ph찼t tri沼긪 v횪 d沼?찼n x창y d沼켷g tr챗n GPNR. Qu沼?s梳?cung c梳쩺 c찼c kho梳즢 t횪i tr沼? 휃梳쬾 t튼 v횪 t횪i nguy챗n 휃沼?휃梳쯻 nhanh t훱ng tr튼沼웢g h沼?sinh th찼i. C찼c 沼쯰g d沼쩸g hi沼뇆 휃ang m沼?cho c찼c d沼?찼n trong DeFi, NFT, gaming v횪 c퉤 s沼?h梳?t梳쬷g. Truy c梳춑 c沼븂g t횪i tr沼?c沼쬪 ch첬ng t척i 휃沼?휃훱ng k첵."
+      ko: "GPNR에서 빌드하는 개발자와 프로젝트를 지원하기 위해 5천만 달러 규모의 생태계 펀드를 출시합니다. 이 펀드는 생태계 성장을 가속화하기 위해 보조금, 투자 및 리소스를 제공합니다. DeFi, NFT, 게임, 인프라 분야의 프로젝트에 대한 신청이 현재 열려 있습니다. 신청하려면 그랜트 포털을 방문하세요.",
+      zh: "我们正在启动一个5000万美元的生态系统基金，以支持在GPNR上构建的开发者和项目。该基金将提供资助、投资和资源，以加速生态系统增长。现已开放DeFi、NFT、游戏和基础设施领域项目的申请。请访问我们的资助门户进行申请。",
+      es: "Estamos lanzando un fondo de ecosistema de $50 millones para apoyar a desarrolladores y proyectos que construyen sobre GPNR. El fondo proporcionará subvenciones, inversiones y recursos para acelerar el crecimiento del ecosistema. Las solicitudes están abiertas para proyectos en DeFi, NFTs, gaming e infraestructura. Visita nuestro portal de grants para aplicar.",
+      vi: "Chúng tôi đang ra mắt quỹ hệ sinh thái 50 triệu đô la để hỗ trợ các nhà phát triển và dự án xây dựng trên GPNR. Quỹ sẽ cung cấp các khoản tài trợ, đầu tư và tài nguyên để đẩy nhanh tăng trưởng hệ sinh thái. Các ứng dụng hiện đang mở cho các dự án trong DeFi, NFT, gaming và cơ sở hạ tầng. Truy cập cổng tài trợ của chúng tôi để đăng ký."
     }
   },
   {
@@ -236,17 +236,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Development Team",
     title: {
       en: "First Ecosystem dApps Now Live on Testnet",
-      ko: "泥?踰덉㎏ ?앺깭怨?dApp ?뚯뒪?몃꽬?먯꽌 ?쇱씠釉?,
-      zh: "腰뽪돶?잍곭내瀯웓App?겼럴?ⓩ탩瑥뺟퐨訝딁봇",
+      ko: "첫 번째 생태계 dApp 테스트넷에서 라이브",
+      zh: "首批生态系统dApp现已在测试网上线",
       es: "Primeras dApps del Ecosistema Ahora en Vivo en Testnet",
-      vi: "C찼c dApp H沼?sinh th찼i 휂梳쬾 ti챗n 휂찾 Ho梳죜 휃沼셬g tr챗n Testnet"
+      vi: "Các dApp Hệ sinh thái Đầu tiên Đã Hoạt động trên Testnet"
     },
     content: {
       en: "We are proud to announce that the first batch of ecosystem dApps is now live on testnet. These include a DEX, NFT marketplace, and lending protocol. Community members are encouraged to test these applications and provide feedback. Bug bounties are available for critical issues discovered during testing.",
-      ko: "泥?踰덉㎏ ?앺깭怨?dApp 諛곗튂媛 ?뚯뒪?몃꽬?먯꽌 ?쇱씠釉뚮릺?덉쓬??諛쒗몴?섍쾶 ?섏뼱 ?먮옉?ㅻ읇?듬땲?? ?ш린?먮뒗 DEX, NFT 留덉폆?뚮젅?댁뒪, ?異??꾨줈?좎퐳???ы븿?⑸땲?? 而ㅻ??덊떚 硫ㅻ쾭?ㅼ? ?대윭???좏뵆由ъ??댁뀡???뚯뒪?명븯怨??쇰뱶諛깆쓣 ?쒓났?섎룄濡?沅뚯옣?⑸땲?? ?뚯뒪??以?諛쒓껄??以묒슂???댁뒋?????踰꾧렇 諛붿슫?곌? ?쒓났?⑸땲??",
-      zh: "?묇뺄孃덅눎穩ゅ쑑若ｅ툋竊뚪쫿?밭뵟?곭내瀯웓App?겼럴?ⓩ탩瑥뺟퐨訝딁봇?귛끀訝?똿?촂EX?갢FT躍귛쑛?뚦잒뉠?뤺??귡폆?긺ㅎ?뷸닇?섉탩瑥뺠퓳雅쎾틪?①쮮佯뤷뭉?먧풘?띺쫰?귝탩瑥뺞쐿?닷룕?곁쉪?녜뵰??쥦??렩孃쀦폀域욆탲?묆?,
-      es: "Estamos orgullosos de anunciar que el primer lote de dApps del ecosistema est찼 ahora en vivo en testnet. Estos incluyen un DEX, marketplace de NFT y protocolo de pr챕stamos. Se anima a los miembros de la comunidad a probar estas aplicaciones y proporcionar comentarios. Hay recompensas por bugs disponibles para problemas cr챠ticos descubiertos durante las pruebas.",
-      vi: "Ch첬ng t척i t沼?h횪o th척ng b찼o r梳켷g 휃沼즨 dApp h沼?sinh th찼i 휃梳쬾 ti챗n hi沼뇆 휃찾 ho梳죜 휃沼셬g tr챗n testnet. Bao g沼뱈 DEX, s횪n giao d沼땉h NFT v횪 giao th沼쯢 cho vay. C찼c th횪nh vi챗n c沼셬g 휃沼뱊g 휃튼沼즓 khuy梳퓆 kh챠ch th沼?nghi沼뇅 c찼c 沼쯰g d沼쩸g n횪y v횪 cung c梳쩺 ph梳즢 h沼밿. Ti沼걆 th튼沼웢g bug bounty c처 s梳탇 cho c찼c v梳쩸 휃沼?nghi챗m tr沼뛫g 휃튼沼즓 ph찼t hi沼뇆 trong qu찼 tr챙nh th沼?nghi沼뇅."
+      ko: "첫 번째 생태계 dApp 배치가 테스트넷에서 라이브되었음을 발표하게 되어 자랑스럽습니다. 여기에는 DEX, NFT 마켓플레이스, 대출 프로토콜이 포함됩니다. 커뮤니티 멤버들은 이러한 애플리케이션을 테스트하고 피드백을 제공하도록 권장됩니다. 테스트 중 발견된 중요한 이슈에 대해 버그 바운티가 제공됩니다.",
+      zh: "我们很自豪地宣布，首批生态系统dApp现已在测试网上线。其中包括DEX、NFT市场和借贷协议。鼓励社区成员测试这些应用程序并提供反馈。测试期间发现的关键问题可获得漏洞赏金。",
+      es: "Estamos orgullosos de anunciar que el primer lote de dApps del ecosistema está ahora en vivo en testnet. Estos incluyen un DEX, marketplace de NFT y protocolo de préstamos. Se anima a los miembros de la comunidad a probar estas aplicaciones y proporcionar comentarios. Hay recompensas por bugs disponibles para problemas críticos descubiertos durante las pruebas.",
+      vi: "Chúng tôi tự hào thông báo rằng đợt dApp hệ sinh thái đầu tiên hiện đã hoạt động trên testnet. Bao gồm DEX, sàn giao dịch NFT và giao thức cho vay. Các thành viên cộng đồng được khuyến khích thử nghiệm các ứng dụng này và cung cấp phản hồi. Tiền thưởng bug bounty có sẵn cho các vấn đề nghiêm trọng được phát hiện trong quá trình thử nghiệm."
     }
   },
 
@@ -258,17 +258,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Governance Team",
     title: {
       en: "Governance Framework and Voting System Launch",
-      ko: "嫄곕쾭?뚯뒪 ?꾨젅?꾩썙??諛??ы몴 ?쒖뒪??異쒖떆",
-      zh: "亦사릤旅녷왃?뚧뒘曄①내瀯잌맦??,
-      es: "Lanzamiento del Marco de Gobernanza y Sistema de Votaci처n",
-      vi: "Ra m梳칣 Khung Qu梳즢 tr沼?v횪 H沼?th沼몁g B沼?phi梳퓎"
+      ko: "거버넌스 프레임워크 및 투표 시스템 출시",
+      zh: "治理框架和投票系统启动",
+      es: "Lanzamiento del Marco de Gobernanza y Sistema de Votación",
+      vi: "Ra mắt Khung Quản trị và Hệ thống Bỏ phiếu"
     },
     content: {
       en: "The GPNR governance framework is now live! Token holders can participate in protocol decisions through our new voting system. The framework includes proposal submission, discussion periods, and on-chain voting. Staked tokens determine voting power. First governance proposals will be accepted starting next week.",
-      ko: "GPNR 嫄곕쾭?뚯뒪 ?꾨젅?꾩썙?ш? ?댁젣 ?쇱씠釉뚯엯?덈떎! ?좏겙 蹂댁쑀?먮뒗 ?덈줈???ы몴 ?쒖뒪?쒖쓣 ?듯빐 ?꾨줈?좎퐳 寃곗젙??李몄뿬?????덉뒿?덈떎. ?꾨젅?꾩썙?ъ뿉???쒖븞 ?쒖텧, ?좊줎 湲곌컙, ?⑥껜???ы몴媛 ?ы븿?⑸땲?? ?ㅽ뀒?댄궧???좏겙???ы몴沅뚯쓣 寃곗젙?⑸땲?? 泥?踰덉㎏ 嫄곕쾭?뚯뒪 ?쒖븞? ?ㅼ쓬 二쇰????섎씫?⑸땲??",
-      zh: "GPNR亦사릤旅녷왃?겼럴訝딁봇竊곦빰躍곫똻?됭끻룾餓ι싪퓝?묇뺄?꾣뼭?뺟ⅷ楹사퍨?귚툗?뤺??녕춺?귟?旅녷왃?끾떖?먩죭?먧벡?곮?溫뷸쐿?뚪벦訝딀뒘曄ⓦ귟뇽?쇘쉪餓ｅ툈?녑츣?뺟ⅷ?껁귞К訝?방꼇?녷룓旅덂컛餓롣툔?ⓨ?冶뗦렏?쀣?,
-      es: "징El marco de gobernanza de GPNR ya est찼 en vivo! Los poseedores de tokens pueden participar en las decisiones del protocolo a trav챕s de nuestro nuevo sistema de votaci처n. El marco incluye env챠o de propuestas, per챠odos de discusi처n y votaci처n on-chain. Los tokens en staking determinan el poder de voto. Las primeras propuestas de gobernanza se aceptar찼n a partir de la pr처xima semana.",
-      vi: "Khung qu梳즢 tr沼?GPNR hi沼뇆 휃찾 ho梳죜 휃沼셬g! Ng튼沼쓎 n梳칖 gi沼?token c처 th沼?tham gia v횪o c찼c quy梳퓍 휃沼땙h giao th沼쯢 th척ng qua h沼?th沼몁g b沼?phi梳퓎 m沼쌻 c沼쬪 ch첬ng t척i. Khung bao g沼뱈 g沼춊 휃沼?xu梳쩿, th沼쓎 gian th梳즣 lu梳춏 v횪 b沼?phi梳퓎 on-chain. Token 휃찾 stake x찼c 휃沼땙h quy沼걆 b沼?phi梳퓎. C찼c 휃沼?xu梳쩿 qu梳즢 tr沼?휃梳쬾 ti챗n s梳?휃튼沼즓 ch梳쩺 nh梳춏 t沼?tu梳쬷 t沼쌻."
+      ko: "GPNR 거버넌스 프레임워크가 이제 라이브입니다! 토큰 보유자는 새로운 투표 시스템을 통해 프로토콜 결정에 참여할 수 있습니다. 프레임워크에는 제안 제출, 토론 기간, 온체인 투표가 포함됩니다. 스테이킹된 토큰이 투표권을 결정합니다. 첫 번째 거버넌스 제안은 다음 주부터 수락됩니다.",
+      zh: "GPNR治理框架现已上线！代币持有者可以通过我们的新投票系统参与协议决策。该框架包括提案提交、讨论期和链上投票。质押的代币决定投票权。第一批治理提案将从下周开始接受。",
+      es: "¡El marco de gobernanza de GPNR ya está en vivo! Los poseedores de tokens pueden participar en las decisiones del protocolo a través de nuestro nuevo sistema de votación. El marco incluye envío de propuestas, períodos de discusión y votación on-chain. Los tokens en staking determinan el poder de voto. Las primeras propuestas de gobernanza se aceptarán a partir de la próxima semana.",
+      vi: "Khung quản trị GPNR hiện đã hoạt động! Người nắm giữ token có thể tham gia vào các quyết định giao thức thông qua hệ thống bỏ phiếu mới của chúng tôi. Khung bao gồm gửi đề xuất, thời gian thảo luận và bỏ phiếu on-chain. Token đã stake xác định quyền bỏ phiếu. Các đề xuất quản trị đầu tiên sẽ được chấp nhận từ tuần tới."
     }
   },
   {
@@ -278,17 +278,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Governance Team",
     title: {
       en: "Community Council Elections Announced",
-      ko: "而ㅻ??덊떚 ?꾩썝???좉굅 諛쒗몴",
-      zh: "鹽얍뙷冶붷몮鴉싮됦맘?у몜",
+      ko: "커뮤니티 위원회 선거 발표",
+      zh: "社区委员会选举公告",
       es: "Anuncio de Elecciones del Consejo Comunitario",
-      vi: "Th척ng b찼o B梳쬾 c沼?H沼셢 휃沼뱊g C沼셬g 휃沼뱊g"
+      vi: "Thông báo Bầu cử Hội đồng Cộng đồng"
     },
     content: {
       en: "We are announcing the first Community Council elections! The council will consist of 7 elected members who will represent community interests in governance decisions. Nominations are open until April 15th, with voting to follow. Council members will serve 6-month terms and receive governance incentives.",
-      ko: "泥?踰덉㎏ 而ㅻ??덊떚 ?꾩썝???좉굅瑜?諛쒗몴?⑸땲?? ?꾩썝?뚮뒗 嫄곕쾭?뚯뒪 寃곗젙?먯꽌 而ㅻ??덊떚 ?댁씡????쒗븯??7紐낆쓽 ?좎텧???꾩썝?쇰줈 援ъ꽦?⑸땲?? ?꾨낫 吏紐낆? 4??15?쇨퉴吏 ?대젮 ?덉쑝硫? ?댄썑 ?ы몴媛 吏꾪뻾?⑸땲?? ?꾩썝???꾩썝? 6媛쒖썡 ?꾧린瑜??섑뻾?섎ŉ 嫄곕쾭?뚯뒪 ?몄꽱?곕툕瑜?諛쏆뒿?덈떎.",
-      zh: "?묇뺄若ｅ툋腰뽪А鹽얍뙷冶붷몮鴉싮됦맘竊곩쭟?섆폏弱녺뵳7?띶퐪?됪닇?섊퍍?먲펽餓뽨뺄弱녶쑉亦사릤?녕춺訝?빰烏①ㅎ?뷴닶?듽귝룓?띶??얕눛4??5?ο펽?뤷릮瓦쏂죱?뺟ⅷ?귛쭟?섆폏?먨몮餓삥쐿6訝ゆ쐢竊뚦뭉?룟풓亦사릤嚥?긱?,
-      es: "징Estamos anunciando las primeras elecciones del Consejo Comunitario! El consejo estar찼 formado por 7 miembros elegidos que representar찼n los intereses de la comunidad en las decisiones de gobernanza. Las nominaciones est찼n abiertas hasta el 15 de abril, con votaci처n a seguir. Los miembros del consejo servir찼n t챕rminos de 6 meses y recibir찼n incentivos de gobernanza.",
-      vi: "Ch첬ng t척i th척ng b찼o cu沼셛 b梳쬾 c沼?H沼셢 휃沼뱊g C沼셬g 휃沼뱊g 휃梳쬾 ti챗n! H沼셢 휃沼뱊g s梳?bao g沼뱈 7 th횪nh vi챗n 휃튼沼즓 b梳쬾 ch沼뛫 s梳?휃梳죍 di沼뇆 cho l沼즜 챠ch c沼셬g 휃沼뱊g trong c찼c quy梳퓍 휃沼땙h qu梳즢 tr沼? 휂沼?c沼?m沼?휃梳퓆 ng횪y 15 th찼ng 4, sau 휃처 l횪 b沼?phi梳퓎. C찼c th횪nh vi챗n h沼셢 휃沼뱊g s梳?ph沼쩭 v沼?nhi沼뇅 k沼?6 th찼ng v횪 nh梳춏 c찼c 튼u 휃찾i qu梳즢 tr沼?"
+      ko: "첫 번째 커뮤니티 위원회 선거를 발표합니다! 위원회는 거버넌스 결정에서 커뮤니티 이익을 대표하는 7명의 선출된 위원으로 구성됩니다. 후보 지명은 4월 15일까지 열려 있으며, 이후 투표가 진행됩니다. 위원회 위원은 6개월 임기를 수행하며 거버넌스 인센티브를 받습니다.",
+      zh: "我们宣布首次社区委员会选举！委员会将由7名当选成员组成，他们将在治理决策中代表社区利益。提名开放至4月15日，随后进行投票。委员会成员任期6个月，并获得治理激励。",
+      es: "¡Estamos anunciando las primeras elecciones del Consejo Comunitario! El consejo estará formado por 7 miembros elegidos que representarán los intereses de la comunidad en las decisiones de gobernanza. Las nominaciones están abiertas hasta el 15 de abril, con votación a seguir. Los miembros del consejo servirán términos de 6 meses y recibirán incentivos de gobernanza.",
+      vi: "Chúng tôi thông báo cuộc bầu cử Hội đồng Cộng đồng đầu tiên! Hội đồng sẽ bao gồm 7 thành viên được bầu chọn sẽ đại diện cho lợi ích cộng đồng trong các quyết định quản trị. Đề cử mở đến ngày 15 tháng 4, sau đó là bỏ phiếu. Các thành viên hội đồng sẽ phục vụ nhiệm kỳ 6 tháng và nhận các ưu đãi quản trị."
     }
   },
   {
@@ -298,17 +298,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Core Team",
     title: {
       en: "Treasury Management Proposal Approved",
-      ko: "?щТ 愿由??쒖븞 ?뱀씤??,
-      zh: "兀℡뒦嶸←릤?먩죭?룡돶",
-      es: "Propuesta de Gesti처n de Tesorer챠a Aprobada",
-      vi: "휂沼?xu梳쩿 Qu梳즢 l첵 Ng창n qu沼?휂튼沼즓 Ph챗 duy沼뇍"
+      ko: "재무 관리 제안 승인됨",
+      zh: "财务管理提案获批",
+      es: "Propuesta de Gestión de Tesorería Aprobada",
+      vi: "Đề xuất Quản lý Ngân quỹ Được Phê duyệt"
     },
     content: {
       en: "The community has voted to approve the Treasury Management Proposal with 78% support. The proposal establishes guidelines for treasury fund allocation, including 40% for ecosystem development, 30% for marketing, 20% for reserves, and 10% for community initiatives. Implementation begins immediately.",
-      ko: "而ㅻ??덊떚媛 78%??吏吏濡??щТ 愿由??쒖븞???뱀씤?덉뒿?덈떎. ???쒖븞? ?앺깭怨?媛쒕컻 40%, 留덉???30%, 以鍮꾧툑 20%, 而ㅻ??덊떚 ?대땲?뷀떚釉?10%瑜??ы븿?섎뒗 ?щТ ?먭툑 諛곕텇 吏移⑥쓣 ?섎┰?⑸땲?? 援ы쁽? 利됱떆 ?쒖옉?⑸땲??",
-      zh: "鹽얍뙷餓?8%?꾣뵱?곭럤?뺟ⅷ?싪퓝雅녻뇨?←??녷룓旅덀귟??먩죭兩븀쳦雅녻뇨?↑탡?묈늽?띷뙁?쀯펽?끾떖40%?ⓧ틢?잍곭내瀯잌룕掠뺧펽30%?ⓧ틢?ι?竊?0%?ⓧ틢?ⓨ쨭竊?0%?ⓧ틢鹽얍뙷溫▼닋?귛츩?썹쳦?녑?冶뗣?,
-      es: "La comunidad ha votado para aprobar la Propuesta de Gesti처n de Tesorer챠a con un 78% de apoyo. La propuesta establece directrices para la asignaci처n de fondos de tesorer챠a, incluyendo 40% para desarrollo del ecosistema, 30% para marketing, 20% para reservas y 10% para iniciativas comunitarias. La implementaci처n comienza inmediatamente.",
-      vi: "C沼셬g 휃沼뱊g 휃찾 b沼?phi梳퓎 th척ng qua 휂沼?xu梳쩿 Qu梳즢 l첵 Ng창n qu沼?v沼쌻 78% 沼쬷g h沼? 휂沼?xu梳쩿 thi梳퓍 l梳춑 c찼c h튼沼썀g d梳쳌 ph창n b沼?qu沼?ng창n qu沼? bao g沼뱈 40% cho ph찼t tri沼긪 h沼?sinh th찼i, 30% cho marketing, 20% cho d沼?tr沼?v횪 10% cho c찼c s찼ng ki梳퓆 c沼셬g 휃沼뱊g. Vi沼놻 th沼켧 hi沼뇆 b梳칣 휃梳쬾 ngay l梳춑 t沼쯢."
+      ko: "커뮤니티가 78%의 지지로 재무 관리 제안을 승인했습니다. 이 제안은 생태계 개발 40%, 마케팅 30%, 준비금 20%, 커뮤니티 이니셔티브 10%를 포함하는 재무 자금 배분 지침을 수립합니다. 구현은 즉시 시작됩니다.",
+      zh: "社区以78%的支持率投票通过了财务管理提案。该提案建立了财务资金分配指南，包括40%用于生态系统发展，30%用于营销，20%用于储备，10%用于社区计划。实施立即开始。",
+      es: "La comunidad ha votado para aprobar la Propuesta de Gestión de Tesorería con un 78% de apoyo. La propuesta establece directrices para la asignación de fondos de tesorería, incluyendo 40% para desarrollo del ecosistema, 30% para marketing, 20% para reservas y 10% para iniciativas comunitarias. La implementación comienza inmediatamente.",
+      vi: "Cộng đồng đã bỏ phiếu thông qua Đề xuất Quản lý Ngân quỹ với 78% ủng hộ. Đề xuất thiết lập các hướng dẫn phân bổ quỹ ngân quỹ, bao gồm 40% cho phát triển hệ sinh thái, 30% cho marketing, 20% cho dự trữ và 10% cho các sáng kiến cộng đồng. Việc thực hiện bắt đầu ngay lập tức."
     }
   },
 
@@ -320,17 +320,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Community Team",
     title: {
       en: "Global Community Ambassador Program Launch",
-      ko: "湲濡쒕쾶 而ㅻ??덊떚 ?곕같?쒕뜑 ?꾨줈洹몃옩 異쒖떆",
-      zh: "?①릡鹽얍뙷鸚㏛슴溫▼닋??뒯",
+      ko: "글로벌 커뮤니티 앰배서더 프로그램 출시",
+      zh: "全球社区大使计划启动",
       es: "Lanzamiento del Programa Global de Embajadores Comunitarios",
-      vi: "Ra m梳칣 Ch튼퉤ng tr챙nh 휂梳죍 s沼?C沼셬g 휃沼뱊g To횪n c梳쬾"
+      vi: "Ra mắt Chương trình Đại sứ Cộng đồng Toàn cầu"
     },
     content: {
       en: "We are launching our Global Community Ambassador Program! Ambassadors will represent GPNR in their regions, organize local meetups, and help grow our community. Selected ambassadors will receive monthly rewards, exclusive merchandise, and early access to new features. Applications are now open.",
-      ko: "湲濡쒕쾶 而ㅻ??덊떚 ?곕같?쒕뜑 ?꾨줈洹몃옩??異쒖떆?⑸땲?? ?곕같?쒕뜑???먯떊??吏??뿉??GPNR????쒗븯怨? 吏??諛뗭뾽??議곗쭅?섎ŉ, 而ㅻ??덊떚 ?깆옣???뺤뒿?덈떎. ?좎젙???곕같?쒕뜑???붽컙 蹂댁긽, ?낆젏 ?곹뭹, ?덈줈??湲곕뒫?????議곌린 ?≪꽭?ㅻ? 諛쏄쾶 ?⑸땲?? ?좎껌???꾩옱 ?대젮 ?덉뒿?덈떎.",
-      zh: "?묇뺄閭ｅ쑉??뒯?①릡鹽얍뙷鸚㏛슴溫▼닋竊곩ㄷ鵝욕컛?ⓨ끀?겼뙷餓ｈ〃GPNR竊뚨퍍瀯뉐퐪?계걳鴉싷펽亮뜹리?⒴룕掠뺞닊餓х쉪鹽얍뙷?귟˙?됦릎?꾢ㄷ鵝욕컛?룟풓驪뤸쐢也뽩뒻?곭떖若뜹븚?곩뭽?겼뒣?썹쉪?⒵쐿溫욥뿮?껁귞렟藥꿨??양뵵瑥룔?,
-      es: "징Estamos lanzando nuestro Programa Global de Embajadores Comunitarios! Los embajadores representar찼n a GPNR en sus regiones, organizar찼n meetups locales y ayudar찼n a hacer crecer nuestra comunidad. Los embajadores seleccionados recibir찼n recompensas mensuales, merchandising exclusivo y acceso anticipado a nuevas funciones. Las solicitudes ya est찼n abiertas.",
-      vi: "Ch첬ng t척i 휃ang ra m梳칣 Ch튼퉤ng tr챙nh 휂梳죍 s沼?C沼셬g 휃沼뱊g To횪n c梳쬾! C찼c 휃梳죍 s沼?s梳?휃梳죍 di沼뇆 cho GPNR trong khu v沼켧 c沼쬪 h沼? t沼?ch沼쯢 c찼c bu沼뷼 g梳톚 m梳톞 휃沼땇 ph튼퉤ng v횪 gi첬p ph찼t tri沼긪 c沼셬g 휃沼뱊g c沼쬪 ch첬ng t척i. C찼c 휃梳죍 s沼?휃튼沼즓 ch沼뛫 s梳?nh梳춏 ph梳쬷 th튼沼웢g h횪ng th찼ng, h횪ng h처a 휃沼셛 quy沼걆 v횪 quy沼걆 truy c梳춑 s沼쌿 v횪o c찼c t챠nh n훱ng m沼쌻. 휂퉤n 휃훱ng k첵 hi沼뇆 휃ang m沼?"
+      ko: "글로벌 커뮤니티 앰배서더 프로그램을 출시합니다! 앰배서더는 자신의 지역에서 GPNR을 대표하고, 지역 밋업을 조직하며, 커뮤니티 성장을 돕습니다. 선정된 앰배서더는 월간 보상, 독점 상품, 새로운 기능에 대한 조기 액세스를 받게 됩니다. 신청이 현재 열려 있습니다.",
+      zh: "我们正在启动全球社区大使计划！大使将在其地区代表GPNR，组织当地聚会，并帮助发展我们的社区。被选中的大使将获得每月奖励、独家商品和新功能的早期访问权。现已开放申请。",
+      es: "¡Estamos lanzando nuestro Programa Global de Embajadores Comunitarios! Los embajadores representarán a GPNR en sus regiones, organizarán meetups locales y ayudarán a hacer crecer nuestra comunidad. Los embajadores seleccionados recibirán recompensas mensuales, merchandising exclusivo y acceso anticipado a nuevas funciones. Las solicitudes ya están abiertas.",
+      vi: "Chúng tôi đang ra mắt Chương trình Đại sứ Cộng đồng Toàn cầu! Các đại sứ sẽ đại diện cho GPNR trong khu vực của họ, tổ chức các buổi gặp mặt địa phương và giúp phát triển cộng đồng của chúng tôi. Các đại sứ được chọn sẽ nhận phần thưởng hàng tháng, hàng hóa độc quyền và quyền truy cập sớm vào các tính năng mới. Đơn đăng ký hiện đang mở."
     }
   },
   {
@@ -340,17 +340,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Community Team",
     title: {
       en: "Community Milestone: 500,000 Members!",
-      ko: "而ㅻ??덊떚 ?댁젙?? 50留??뚯썝 ?ъ꽦!",
-      zh: "鹽얍뙷?뚨쮮閻묕폏50訝뉏폏?섓펯",
-      es: "Hito Comunitario: 징500,000 Miembros!",
-      vi: "C沼셳 m沼멵 C沼셬g 휃沼뱊g: 500,000 Th횪nh vi챗n!"
+      ko: "커뮤니티 이정표: 50만 회원 달성!",
+      zh: "社区里程碑：50万会员！",
+      es: "Hito Comunitario: ¡500,000 Miembros!",
+      vi: "Cột mốc Cộng đồng: 500,000 Thành viên!"
     },
     content: {
       en: "We are thrilled to announce that our community has reached 500,000 members across all platforms! This incredible milestone reflects the dedication and enthusiasm of our community. To celebrate, we are hosting a special AMA with the founding team and giving away exclusive NFTs to active community members.",
-      ko: "紐⑤뱺 ?뚮옯?쇱뿉??而ㅻ??덊떚媛 50留??뚯썝???꾨떖?덉쓬??諛쒗몴?섍쾶 ?섏뼱 湲곗겑?덈떎! ????쇱슫 ?댁젙?쒕뒗 而ㅻ??덊떚???뚯떊怨??댁젙??諛섏쁺?⑸땲?? 異뺥븯?섍린 ?꾪빐 李쎈┰ ?怨??밸퀎 AMA瑜?媛쒖턀?섍퀬 ?쒕컻??而ㅻ??덊떚 硫ㅻ쾭?ㅼ뿉寃??낆젏 NFT瑜?利앹젙?⑸땲??",
-      zh: "?묇뺄孃덆쳵?닷쑑若ｅ툋竊뚧닊餓х쉪鹽얍뙷?ⓩ??됧뭄?겻툓藥꿱씨??00,000?띷닇?섓펯瓦쇾?餓ㅴ볶?얌빳營?에?꾦뇤葉뗧쥜?띷삝雅녷닊餓хㅎ?븀쉪也됬뙫?뚨꺆?끹귚맏雅녶틙曄앾펽?묇뺄弱녵툗?쎾쭓??삜訝얕죱?밧닽AMA竊뚦뭉?묉뉵瓮껆쉪鹽얍뙷?먨몮壅좈곭떖若턓FT??,
-      es: "징Estamos encantados de anunciar que nuestra comunidad ha alcanzado los 500,000 miembros en todas las plataformas! Este incre챠ble hito refleja la dedicaci처n y entusiasmo de nuestra comunidad. Para celebrar, estamos organizando un AMA especial con el equipo fundador y regalando NFTs exclusivos a los miembros activos de la comunidad.",
-      vi: "Ch첬ng t척i vui m沼쳌g th척ng b찼o r梳켷g c沼셬g 휃沼뱊g c沼쬪 ch첬ng t척i 휃찾 휃梳죜 500,000 th횪nh vi챗n tr챗n t梳쩿 c梳?c찼c n沼걆 t梳즢g! C沼셳 m沼멵 휃찼ng kinh ng梳죅 n횪y ph梳즢 찼nh s沼?c沼몁g hi梳퓆 v횪 nhi沼뇍 t챙nh c沼쬪 c沼셬g 휃沼뱊g ch첬ng t척i. 휂沼?훱n m沼쳌g, ch첬ng t척i 휃ang t沼?ch沼쯢 m沼셳 AMA 휃梳톍 bi沼뇍 v沼쌻 휃沼셢 ng크 s찼ng l梳춑 v횪 t梳톘g NFT 휃沼셛 quy沼걆 cho c찼c th횪nh vi챗n c沼셬g 휃沼뱊g t챠ch c沼켧."
+      ko: "모든 플랫폼에서 커뮤니티가 50만 회원에 도달했음을 발표하게 되어 기쁩니다! 이 놀라운 이정표는 커뮤니티의 헌신과 열정을 반영합니다. 축하하기 위해 창립 팀과 특별 AMA를 개최하고 활발한 커뮤니티 멤버들에게 독점 NFT를 증정합니다.",
+      zh: "我们很高兴地宣布，我们的社区在所有平台上已达到500,000名成员！这一令人难以置信的里程碑反映了我们社区的奉献和热情。为了庆祝，我们将与创始团队举行特别AMA，并向活跃的社区成员赠送独家NFT。",
+      es: "¡Estamos encantados de anunciar que nuestra comunidad ha alcanzado los 500,000 miembros en todas las plataformas! Este increíble hito refleja la dedicación y entusiasmo de nuestra comunidad. Para celebrar, estamos organizando un AMA especial con el equipo fundador y regalando NFTs exclusivos a los miembros activos de la comunidad.",
+      vi: "Chúng tôi vui mừng thông báo rằng cộng đồng của chúng tôi đã đạt 500,000 thành viên trên tất cả các nền tảng! Cột mốc đáng kinh ngạc này phản ánh sự cống hiến và nhiệt tình của cộng đồng chúng tôi. Để ăn mừng, chúng tôi đang tổ chức một AMA đặc biệt với đội ngũ sáng lập và tặng NFT độc quyền cho các thành viên cộng đồng tích cực."
     }
   },
   {
@@ -360,17 +360,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Events Team",
     title: {
       en: "GPNR Global Hackathon Announcement",
-      ko: "GPNR 湲濡쒕쾶 ?댁빱??諛쒗몴",
-      zh: "GPNR?①릡容묈?要ф땳?얍뀶??,
+      ko: "GPNR 글로벌 해커톤 발표",
+      zh: "GPNR全球黑客马拉松公告",
       es: "Anuncio del Hackathon Global de GPNR",
-      vi: "Th척ng b찼o Hackathon To횪n c梳쬾 GPNR"
+      vi: "Thông báo Hackathon Toàn cầu GPNR"
     },
     content: {
       en: "Join us for the first GPNR Global Hackathon! Compete for $100,000 in prizes while building innovative applications on GPNR. The hackathon runs from April 1-30, 2025. Categories include DeFi, NFTs, Social, and Infrastructure. Register now to secure your spot and access to exclusive workshops.",
-      ko: "泥?踰덉㎏ GPNR 湲濡쒕쾶 ?댁빱?ㅼ뿉 李몄뿬?섏꽭?? GPNR?먯꽌 ?곸떊?곸씤 ?좏뵆由ъ??댁뀡??援ъ텞?섎㈃??10留??щ윭???곴툑???볤퀬 寃쎌웳?섏꽭?? ?댁빱?ㅼ? 2025??4??1?쇰???30?쇨퉴吏 吏꾪뻾?⑸땲?? 移댄뀒怨좊━?먮뒗 DeFi, NFT, ?뚯뀥, ?명봽?쇨? ?ы븿?⑸땲?? 吏湲??깅줉?섏뿬 ?먮━瑜??뺣낫?섍퀬 ?낆젏 ?뚰겕?띿뿉 ?≪꽭?ㅽ븯?몄슂.",
-      zh: "?졾뀯?묇뺄?꾦쫿掠둋PNR?①릡容묈?要ф땳?억펯?쭳PNR訝딀엫兩뷴닗?겼틪?①쮮佯륅펽塋욂틝10訝뉒풆?껆쉪也뽭뇫?귡퍚若?ß?됪씭弱녵틢2025亮????θ눛30?δ맘烏뚣귞굳?ュ똿?촂eFi?갢FT?곭ㅎ雅ㅵ뭽?븀?溫얏뼺?귞쳦?녔낏?뚥빳簾?퓷?①쉪?띺쥫亮띈렩孃쀧떖若띄젘溫ⓧ폏?꾥???쓢??,
-      es: "징횣nete al primer Hackathon Global de GPNR! Compite por $100,000 en premios mientras construyes aplicaciones innovadoras en GPNR. El hackathon se lleva a cabo del 1 al 30 de abril de 2025. Las categor챠as incluyen DeFi, NFTs, Social e Infraestructura. Reg챠strate ahora para asegurar tu lugar y acceso a talleres exclusivos.",
-      vi: "Tham gia Hackathon To횪n c梳쬾 GPNR 휃梳쬾 ti챗n! C梳죒h tranh gi횪nh 100,000 휃척 la ti沼걆 th튼沼웢g trong khi x창y d沼켷g c찼c 沼쯰g d沼쩸g s찼ng t梳죓 tr챗n GPNR. Hackathon di沼꿳 ra t沼?ng횪y 1-30 th찼ng 4 n훱m 2025. C찼c h梳죒g m沼쩭 bao g沼뱈 DeFi, NFT, X찾 h沼셢 v횪 C퉤 s沼?h梳?t梳쬷g. 휂훱ng k첵 ngay 휃沼?휃梳즡 b梳즣 ch沼?c沼쬪 b梳죒 v횪 truy c梳춑 v횪o c찼c h沼셢 th梳즣 휃沼셛 quy沼걆."
+      ko: "첫 번째 GPNR 글로벌 해커톤에 참여하세요! GPNR에서 혁신적인 애플리케이션을 구축하면서 10만 달러의 상금을 놓고 경쟁하세요. 해커톤은 2025년 4월 1일부터 30일까지 진행됩니다. 카테고리에는 DeFi, NFT, 소셜, 인프라가 포함됩니다. 지금 등록하여 자리를 확보하고 독점 워크숍에 액세스하세요.",
+      zh: "加入我们的首届GPNR全球黑客马拉松！在GPNR上构建创新应用程序，竞争10万美元的奖金。黑客马拉松将于2025年4月1日至30日举行。类别包括DeFi、NFT、社交和基础设施。立即注册以确保您的名额并获得独家研讨会的访问权。",
+      es: "¡Únete al primer Hackathon Global de GPNR! Compite por $100,000 en premios mientras construyes aplicaciones innovadoras en GPNR. El hackathon se lleva a cabo del 1 al 30 de abril de 2025. Las categorías incluyen DeFi, NFTs, Social e Infraestructura. Regístrate ahora para asegurar tu lugar y acceso a talleres exclusivos.",
+      vi: "Tham gia Hackathon Toàn cầu GPNR đầu tiên! Cạnh tranh giành 100,000 đô la tiền thưởng trong khi xây dựng các ứng dụng sáng tạo trên GPNR. Hackathon diễn ra từ ngày 1-30 tháng 4 năm 2025. Các hạng mục bao gồm DeFi, NFT, Xã hội và Cơ sở hạ tầng. Đăng ký ngay để đảm bảo chỗ của bạn và truy cập vào các hội thảo độc quyền."
     }
   },
 
@@ -382,17 +382,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Technical Team",
     title: {
       en: "Protocol Upgrade v2.0 Specifications Released",
-      ko: "?꾨줈?좎퐳 ?낃렇?덉씠??v2.0 ?ъ뼇 諛쒗몴",
-      zh: "?뤺??뉒벨v2.0鰲꾣졏?묈툋",
-      es: "Especificaciones de Actualizaci처n de Protocolo v2.0 Publicadas",
-      vi: "Ph찼t h횪nh Th척ng s沼?N창ng c梳쩺 Giao th沼쯢 v2.0"
+      ko: "프로토콜 업그레이드 v2.0 사양 발표",
+      zh: "协议升级v2.0规格发布",
+      es: "Especificaciones de Actualización de Protocolo v2.0 Publicadas",
+      vi: "Phát hành Thông số Nâng cấp Giao thức v2.0"
     },
     content: {
       en: "We are releasing the full specifications for Protocol v2.0, which will be implemented at mainnet launch. Key improvements include 10x throughput increase, reduced gas fees by 50%, enhanced smart contract capabilities, and improved cross-chain interoperability. Technical documentation is available on our developer portal.",
-      ko: "硫붿씤??異쒖떆 ??援ы쁽???꾨줈?좎퐳 v2.0???꾩껜 ?ъ뼇??諛쒗몴?⑸땲?? 二쇱슂 媛쒖꽑 ?ы빆?먮뒗 10諛?泥섎━??利앷?, 50% 媛??鍮꾩슜 ?덇컧, ?μ긽???ㅻ쭏??而⑦듃?숉듃 湲곕뒫, 媛쒖꽑???щ줈?ㅼ껜???곹샇?댁슜?깆씠 ?ы븿?⑸땲?? 湲곗닠 臾몄꽌??媛쒕컻???ы꽭?먯꽌 ?뺤씤?????덉뒿?덈떎.",
-      zh: "?묇뺄閭ｅ쑉?묈툋弱녶쑉訝사퐨??뒯?뜹츩?썹쉪?뤺?v2.0?꾢츑?닺쭊?쇈귚말誤곫뵻瓦쎾똿?у맄?먬뇧?먬쳵10?띲갍as兀밭뵪?띴퐥50%?곩쥭凉븀쉪?븃꺗?덄벧?잒꺗?뚧뵻瓦쏁쉪瓮③벦雅믤뱧鵝쒏㎯귝???뻼旅ｅ룾?ⓩ닊餓х쉪凉?묋낂뿨?룝툓?룟룚??,
-      es: "Estamos publicando las especificaciones completas del Protocolo v2.0, que se implementar찼 en el lanzamiento de mainnet. Las mejoras clave incluyen un aumento de 10x en el rendimiento, reducci처n de tarifas de gas en un 50%, capacidades mejoradas de contratos inteligentes y mejor interoperabilidad cross-chain. La documentaci처n t챕cnica est찼 disponible en nuestro portal de desarrolladores.",
-      vi: "Ch첬ng t척i 휃ang ph찼t h횪nh c찼c th척ng s沼?k沼?thu梳춗 휃梳쭃 휃沼?cho Giao th沼쯢 v2.0, s梳?휃튼沼즓 tri沼긪 khai khi ra m梳칣 mainnet. C찼c c梳즜 ti梳퓆 ch챠nh bao g沼뱈 t훱ng th척ng l튼沼즢g 10 l梳쬷, gi梳즡 ph챠 gas 50%, n창ng cao kh梳?n훱ng h沼즤 휃沼뱊g th척ng minh v횪 c梳즜 thi沼뇆 kh梳?n훱ng t튼퉤ng t찼c cross-chain. T횪i li沼뇎 k沼?thu梳춗 c처 s梳탇 tr챗n c沼븂g nh횪 ph찼t tri沼긪 c沼쬪 ch첬ng t척i."
+      ko: "메인넷 출시 시 구현될 프로토콜 v2.0의 전체 사양을 발표합니다. 주요 개선 사항에는 10배 처리량 증가, 50% 가스 비용 절감, 향상된 스마트 컨트랙트 기능, 개선된 크로스체인 상호운용성이 포함됩니다. 기술 문서는 개발자 포털에서 확인할 수 있습니다.",
+      zh: "我们正在发布将在主网启动时实施的协议v2.0的完整规格。主要改进包括吞吐量提高10倍、Gas费用降低50%、增强的智能合约功能和改进的跨链互操作性。技术文档可在我们的开发者门户上获取。",
+      es: "Estamos publicando las especificaciones completas del Protocolo v2.0, que se implementará en el lanzamiento de mainnet. Las mejoras clave incluyen un aumento de 10x en el rendimiento, reducción de tarifas de gas en un 50%, capacidades mejoradas de contratos inteligentes y mejor interoperabilidad cross-chain. La documentación técnica está disponible en nuestro portal de desarrolladores.",
+      vi: "Chúng tôi đang phát hành các thông số kỹ thuật đầy đủ cho Giao thức v2.0, sẽ được triển khai khi ra mắt mainnet. Các cải tiến chính bao gồm tăng thông lượng 10 lần, giảm phí gas 50%, nâng cao khả năng hợp đồng thông minh và cải thiện khả năng tương tác cross-chain. Tài liệu kỹ thuật có sẵn trên cổng nhà phát triển của chúng tôi."
     }
   },
   {
@@ -402,17 +402,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Technical Team",
     title: {
       en: "New Consensus Mechanism: Proof of Contribution",
-      ko: "?덈줈???⑹쓽 硫붿빱?덉쬁: 湲곗뿬 利앸챸",
-      zh: "?겼뀻瑥녷쑛?띰폏兀←뙫瑥곫삇",
-      es: "Nuevo Mecanismo de Consenso: Prueba de Contribuci처n",
-      vi: "C퉤 ch梳?휂沼뱊g thu梳춏 M沼쌻: B梳켷g ch沼쯰g 휂처ng g처p"
+      ko: "새로운 합의 메커니즘: 기여 증명",
+      zh: "新共识机制：贡献证明",
+      es: "Nuevo Mecanismo de Consenso: Prueba de Contribución",
+      vi: "Cơ chế Đồng thuận Mới: Bằng chứng Đóng góp"
     },
     content: {
       en: "We are introducing our innovative Proof of Contribution (PoC) consensus mechanism. Unlike traditional PoS, PoC rewards users based on their overall contribution to the network, including development, community building, and governance participation. This creates a more inclusive and sustainable ecosystem.",
-      ko: "?곸떊?곸씤 湲곗뿬 利앸챸(PoC) ?⑹쓽 硫붿빱?덉쬁???뚭컻?⑸땲?? 湲곗〈 PoS? ?щ━ PoC??媛쒕컻, 而ㅻ??덊떚 援ъ텞, 嫄곕쾭?뚯뒪 李몄뿬瑜??ы븿???ㅽ듃?뚰겕??????꾨컲?곸씤 湲곗뿬?꾩뿉 ?곕씪 ?ъ슜?먯뿉寃?蹂댁긽?⑸땲?? ?대뒗 ???ъ슜?곸씠怨?吏??媛?ν븳 ?앺깭怨꾨? 留뚮벊?덈떎.",
-      zh: "?묇뺄閭ｅ쑉?ⓨ눣?쎿뼭?꾥뇟??칮?롳펷PoC竊됧뀻瑥녷쑛?뜰귚툗鴉좂퍨?껺oS訝띶릪竊똏oC?방뜮?ⓩ댎野밭퐨瀯쒐쉪?답퐪兀←뙫?ε쪝?긺뵪?뤄펽?끾떖凉?묆곭ㅎ?뷴뻠溫얍뭽亦사릤?귚툗?귟퓳?쏃졽틙訝訝ゆ쎍?룟똿若방㎩뭽??똻瀯?㎫쉪?잍곭내瀯잆?,
-      es: "Estamos introduciendo nuestro innovador mecanismo de consenso Prueba de Contribuci처n (PoC). A diferencia del PoS tradicional, PoC recompensa a los usuarios bas찼ndose en su contribuci처n general a la red, incluyendo desarrollo, construcci처n de comunidad y participaci처n en gobernanza. Esto crea un ecosistema m찼s inclusivo y sostenible.",
-      vi: "Ch첬ng t척i 휃ang gi沼쌻 thi沼뇎 c퉤 ch梳?휃沼뱊g thu梳춏 B梳켷g ch沼쯰g 휂처ng g처p (PoC) s찼ng t梳죓 c沼쬪 ch첬ng t척i. Kh척ng gi沼몁g nh튼 PoS truy沼걆 th沼몁g, PoC th튼沼웢g cho ng튼沼쓎 d첫ng d沼켥 tr챗n 휃처ng g처p t沼븂g th沼?c沼쬪 h沼?cho m梳죒g, bao g沼뱈 ph찼t tri沼긪, x창y d沼켷g c沼셬g 휃沼뱊g v횪 tham gia qu梳즢 tr沼? 휂i沼걏 n횪y t梳죓 ra m沼셳 h沼?sinh th찼i bao g沼뱈 h퉤n v횪 b沼걆 v沼칗g h퉤n."
+      ko: "혁신적인 기여 증명(PoC) 합의 메커니즘을 소개합니다. 기존 PoS와 달리 PoC는 개발, 커뮤니티 구축, 거버넌스 참여를 포함한 네트워크에 대한 전반적인 기여도에 따라 사용자에게 보상합니다. 이는 더 포용적이고 지속 가능한 생태계를 만듭니다.",
+      zh: "我们正在推出创新的贡献证明（PoC）共识机制。与传统的PoS不同，PoC根据用户对网络的整体贡献来奖励用户，包括开发、社区建设和治理参与。这创造了一个更具包容性和可持续性的生态系统。",
+      es: "Estamos introduciendo nuestro innovador mecanismo de consenso Prueba de Contribución (PoC). A diferencia del PoS tradicional, PoC recompensa a los usuarios basándose en su contribución general a la red, incluyendo desarrollo, construcción de comunidad y participación en gobernanza. Esto crea un ecosistema más inclusivo y sostenible.",
+      vi: "Chúng tôi đang giới thiệu cơ chế đồng thuận Bằng chứng Đóng góp (PoC) sáng tạo của chúng tôi. Không giống như PoS truyền thống, PoC thưởng cho người dùng dựa trên đóng góp tổng thể của họ cho mạng, bao gồm phát triển, xây dựng cộng đồng và tham gia quản trị. Điều này tạo ra một hệ sinh thái bao gồm hơn và bền vững hơn."
     }
   },
   {
@@ -422,17 +422,17 @@ export const NEWS_DATA: NewsItem[] = [
     author: "GPNR Development Team",
     title: {
       en: "Zero-Knowledge Proof Integration Complete",
-      ko: "?곸???利앸챸 ?듯빀 ?꾨즺",
-      zh: "?띄윥瑥녻칮?롩썓?먨츑??,
-      es: "Integraci처n de Prueba de Conocimiento Cero Completada",
-      vi: "Ho횪n th횪nh T챠ch h沼즤 B梳켷g ch沼쯰g Zero-Knowledge"
+      ko: "영지식 증명 통합 완료",
+      zh: "零知识证明集成完成",
+      es: "Integración de Prueba de Conocimiento Cero Completada",
+      vi: "Hoàn thành Tích hợp Bằng chứng Zero-Knowledge"
     },
     content: {
       en: "We have successfully integrated zero-knowledge proof technology into our protocol. This enhancement enables private transactions, scalable rollups, and enhanced security features. Users can now choose to make their transactions private while still benefiting from the security of the main chain.",
-      ko: "?곸???利앸챸 湲곗닠???꾨줈?좎퐳???깃났?곸쑝濡??듯빀?덉뒿?덈떎. ??媛쒖꽑? ?꾨씪?대퉿 ?몃옖??뀡, ?뺤옣 媛?ν븳 濡ㅼ뾽, ?μ긽??蹂댁븞 湲곕뒫??媛?ν븯寃??⑸땲?? ?ъ슜?먮뒗 ?댁젣 硫붿씤 泥댁씤??蹂댁븞 ?쒗깮??諛쏆쑝硫댁꽌 ?몃옖??뀡???꾨씪?대퉿?섍쾶 留뚮뱾 ???덉뒿?덈떎.",
-      zh: "?묇뺄藥꿩닇?잌컛?띄윥瑥녻칮?롦???썓?먨댆?묇뺄?꾢뜌溫?릎?귝?罌욃성?잒꺗??똻燁곩칳雅ㅶ삌?곩룾?⒴콝?꼛ollup?뚦쥭凉븀쉪若됧뀲?잒꺗?귞뵪?루렟?ⓨ룾餓ι됪떓鵝욕끀雅ㅶ삌燁곩칳?뽳펽?뚧뿶餓띸꽫雅ュ룛訝삯벦?꾢츎?ⓩ㎯?,
-      es: "Hemos integrado exitosamente la tecnolog챠a de prueba de conocimiento cero en nuestro protocolo. Esta mejora permite transacciones privadas, rollups escalables y caracter챠sticas de seguridad mejoradas. Los usuarios ahora pueden elegir hacer sus transacciones privadas mientras se benefician de la seguridad de la cadena principal.",
-      vi: "Ch첬ng t척i 휃찾 t챠ch h沼즤 th횪nh c척ng c척ng ngh沼?b梳켷g ch沼쯰g zero-knowledge v횪o giao th沼쯢 c沼쬪 m챙nh. C梳즜 ti梳퓆 n횪y cho ph챕p giao d沼땉h ri챗ng t튼, rollup c처 th沼?m沼?r沼셬g v횪 c찼c t챠nh n훱ng b梳즣 m梳춗 n창ng cao. Ng튼沼쓎 d첫ng gi沼?휃창y c처 th沼?ch沼뛫 l횪m cho giao d沼땉h c沼쬪 h沼?ri챗ng t튼 trong khi v梳쳌 휃튼沼즓 h튼沼웢g l沼즜 t沼?b梳즣 m梳춗 c沼쬪 chu沼뾦 ch챠nh."
+      ko: "영지식 증명 기술을 프로토콜에 성공적으로 통합했습니다. 이 개선은 프라이빗 트랜잭션, 확장 가능한 롤업, 향상된 보안 기능을 가능하게 합니다. 사용자는 이제 메인 체인의 보안 혜택을 받으면서 트랜잭션을 프라이빗하게 만들 수 있습니다.",
+      zh: "我们已成功将零知识证明技术集成到我们的协议中。此增强功能支持私密交易、可扩展的rollup和增强的安全功能。用户现在可以选择使其交易私密化，同时仍然享受主链的安全性。",
+      es: "Hemos integrado exitosamente la tecnología de prueba de conocimiento cero en nuestro protocolo. Esta mejora permite transacciones privadas, rollups escalables y características de seguridad mejoradas. Los usuarios ahora pueden elegir hacer sus transacciones privadas mientras se benefician de la seguridad de la cadena principal.",
+      vi: "Chúng tôi đã tích hợp thành công công nghệ bằng chứng zero-knowledge vào giao thức của mình. Cải tiến này cho phép giao dịch riêng tư, rollup có thể mở rộng và các tính năng bảo mật nâng cao. Người dùng giờ đây có thể chọn làm cho giao dịch của họ riêng tư trong khi vẫn được hưởng lợi từ bảo mật của chuỗi chính."
     }
   }
 ];
