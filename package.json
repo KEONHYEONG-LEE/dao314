@@ -11,20 +11,25 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
     "@vercel/analytics": "1.6.1",
-    "@radix-ui/react-*": "다양한 버전들",
+    "@radix-ui/react-*": "다양한 UI 컴포넌트",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "1.1.1",
+    "date-fns": "4.1.0",
     "lucide-react": "^0.564.0",
     "next": "16.2.0",
+    "next-themes": "^0.4.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-hook-form": "^7.54.1",
     "recharts": "2.15.0",
+    "sonner": "^1.7.1",
     "tailwind-merge": "^3.3.1",
-    "zod": "^3.24.1",
-    // ... 기타 의존성들
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.0",
     "tailwindcss": "^4.2.0",
     "typescript": "5.7.3"
-    // ... 기타 개발 의존성들
   }
 }
