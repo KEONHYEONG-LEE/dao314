@@ -1,12 +1,9 @@
 import "./globals.css";
-import { Inter } from "next/font/google";
-import { ThemeProvider } from "../components/theme-provider";
+import type { Metadata } from "next";
 
-const inter = Inter({ subsets: ["latin"] });
-
-export const metadata = {
-  title: "GPNR - Global Pi Newsroom",
-  description: "Your trusted source for Pi Network news and ecosystem updates.",
+export const metadata: Metadata = {
+  title: "GPNR App",
+  description: "Tailwind CSS가 적용된 앱",
 };
 
 export default function RootLayout({
@@ -15,17 +12,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
-      </body>
+    <html lang="ko">
+      <body>{children}</body>
     </html>
   );
 }
+
