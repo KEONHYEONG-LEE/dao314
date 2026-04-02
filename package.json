@@ -60,15 +60,3 @@
     "tailwindcss-animate": "^1.0.7"
   }
 }
-
-Here’s how to add it to your GitHub project:
-1. Go to your project page on GitHub.
-2. Find the file named `package.json` and click the pencil icon to edit it.
-3. Select all the text inside the file and delete it.
-4. Copy the entire code block above and paste it into the now-empty file.
-5. Click the "Commit changes" button at the bottom.
-
-That's it! This file tells your project all the tools and building blocks it needs to work. Once you've done this, just let me know by saying "Done!" and we can move on to the next step.
-
-Current Version
-Any changes to your app
