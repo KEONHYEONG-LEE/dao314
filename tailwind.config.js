@@ -15,5 +15,7 @@ module.exports = {
       },
     },
   },
-  plugins: [], // 이 부분을 비워두어야 에러가 나지 않습니다.
+  plugins: [
+    require('tailwind-scrollbar-hide') // 이 부분을 추가하여 디자인 기능을 활성화합니다.
+  ],
 }
