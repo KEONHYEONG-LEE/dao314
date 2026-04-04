@@ -1,7 +1,6 @@
 "use client"; 
 
-import { useState, useRef, useEffect } from "react";
-// 아이콘 로딩 에러 방지를 위해 기본 텍스트 화살표로 대체하거나 최적화
+import { useState, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react"; 
 
 const categories = [
@@ -17,20 +16,16 @@ const categories = [
   { id: "career", label: "Career" },
   { id: "entertainment", label: "Entertainment" },
   { id: "games", label: "Games" },
-  { id: "finance", label: "Finance" },
-  { id: "music", label: "Music" },
-  { id: "sports", label: "Sports" },
-  { id: "defi", label: "DeFi" },
-  { id: "dapp", label: "dApp" },
-  { id: "nft", label: "NFT" },
+  { id: "finance", label: "Finance" }
 ]; 
 
-interface CategoryTabsProps {
-  selectedCategory: string;
-  onCategoryChange: (category: string) => void;
-} 
-
-export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTabsProps) {
+export function CategoryTabs({ 
+  selectedCategory, 
+  onCategoryChange 
+}: { 
+  selectedCategory: string; 
+  onCategoryChange: (category: string) => void; 
+}) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true); 
@@ -54,13 +49,12 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
   }; 
 
   return (
-    // Pi Browser 호환성을 위해 sticky와 blur 제거, 단순 배경색 적용
     <div className="z-40 bg-white border-b border-gray-200">
       <div className="mx-auto max-w-7xl px-2 relative">
         {showLeftArrow && (
           <button
             onClick={() => scroll("left")}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded-full shadow-sm"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded-full shadow-md"
           >
             <ChevronLeft className="w-4 h-4 text-black" />
           </button>
@@ -70,13 +64,12 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
           ref={scrollRef}
           onScroll={handleScroll}
           className="flex gap-2 py-3 overflow-x-auto scrollbar-hide"
-          style={{ WebkitOverflowScrolling: 'touch' }} // 모바일 스크롤 부드럽게
         >
           {categories.map((category) => (
             <button
               key={category.id}
               onClick={() => onCategoryChange(category.id)}
-              className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${
+              className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-colors ${
                 selectedCategory === category.id
                   ? "bg-black text-white"
                   : "bg-gray-100 text-gray-700"
@@ -90,7 +83,7 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
         {showRightArrow && (
           <button
             onClick={() => scroll("right")}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded-full shadow-sm"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded-full shadow-md"
           >
             <ChevronRight className="w-4 h-4 text-black" />
           </button>
