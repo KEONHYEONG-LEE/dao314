@@ -1,10 +1,14 @@
-/* 스크롤바 숨기기 (Chrome, Safari, Opera) */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* 스크롤바 숨기기 (IE, Edge, Firefox) */
-.no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+/* 기존에 드린 스크롤바 숨기기 스타일도 함께 넣어두었습니다. */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
