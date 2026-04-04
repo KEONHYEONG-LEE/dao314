@@ -1,7 +1,8 @@
-"use client";
+"use client"; 
 
-import { useState, useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+// 아이콘 로딩 에러 방지를 위해 기본 텍스트 화살표로 대체하거나 최적화
+import { ChevronLeft, ChevronRight } from "lucide-react"; 
 
 const categories = [
   { id: "all", label: "All" },
@@ -22,77 +23,76 @@ const categories = [
   { id: "defi", label: "DeFi" },
   { id: "dapp", label: "dApp" },
   { id: "nft", label: "NFT" },
-];
+]; 
 
 interface CategoryTabsProps {
   selectedCategory: string;
   onCategoryChange: (category: string) => void;
-}
+} 
 
 export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTabsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
-  const [showRightArrow, setShowRightArrow] = useState(true);
+  const [showRightArrow, setShowRightArrow] = useState(true); 
 
   const handleScroll = () => {
     if (scrollRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
       setShowLeftArrow(scrollLeft > 0);
-      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10);
+      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 5);
     }
-  };
+  }; 
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
-      const scrollAmount = 200;
+      const scrollAmount = 150;
       scrollRef.current.scrollBy({
         left: direction === "left" ? -scrollAmount : scrollAmount,
         behavior: "smooth",
       });
     }
-  };
+  }; 
 
   return (
-    <div className="sticky top-16 z-40 bg-background/95 backdrop-blur-md border-b border-border">
-      <div className="mx-auto max-w-7xl px-4 relative">
-        {/* Left Arrow */}
+    // Pi Browser 호환성을 위해 sticky와 blur 제거, 단순 배경색 적용
+    <div className="z-40 bg-white border-b border-gray-200">
+      <div className="mx-auto max-w-7xl px-2 relative">
         {showLeftArrow && (
           <button
             onClick={() => scroll("left")}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-background/90 backdrop-blur-sm border border-border rounded-full shadow-lg hover:bg-secondary transition-colors"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded-full shadow-sm"
           >
-            <ChevronLeft className="w-5 h-5 text-foreground" />
+            <ChevronLeft className="w-4 h-4 text-black" />
           </button>
-        )}
+        )} 
 
-        {/* Category Tabs */}
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex gap-2 py-3 overflow-x-auto scrollbar-hide scroll-smooth"
+          className="flex gap-2 py-3 overflow-x-auto scrollbar-hide"
+          style={{ WebkitOverflowScrolling: 'touch' }} // 모바일 스크롤 부드럽게
         >
           {categories.map((category) => (
             <button
               key={category.id}
               onClick={() => onCategoryChange(category.id)}
-              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+              className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${
                 selectedCategory === category.id
-                  ? "bg-primary text-primary-foreground shadow-md"
-                  : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                  ? "bg-black text-white"
+                  : "bg-gray-100 text-gray-700"
               }`}
             >
               {category.label}
             </button>
           ))}
-        </div>
+        </div> 
 
-        {/* Right Arrow */}
         {showRightArrow && (
           <button
             onClick={() => scroll("right")}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-background/90 backdrop-blur-sm border border-border rounded-full shadow-lg hover:bg-secondary transition-colors"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded-full shadow-sm"
           >
-            <ChevronRight className="w-5 h-5 text-foreground" />
+            <ChevronRight className="w-4 h-4 text-black" />
           </button>
         )}
       </div>
