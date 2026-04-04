@@ -11,7 +11,7 @@ export default function Home() {
   const [selectedSource, setSelectedSource] = useState("all");
 
   return (
-    <main className="min-h-screen bg-slate-50 pb-20">
+    <main className="min-h-screen bg-white pb-20">
       {/* GPNR 상단 헤더 영역 */}
       <header className="bg-[#1a2b4b] text-white px-4 py-3">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
