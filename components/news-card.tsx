@@ -1,52 +1,39 @@
-import Image from "next/image";
+import { Share2, MessageSquare, Heart, EyeOff, Bookmark, ChevronDown } from "lucide-react";
 
-interface NewsCardProps {
-  id: string;
-  category: string;
-  title: string;
-  excerpt: string;
-  author: string;
-  date: string;
-  image: string;
-}
-
-export default function NewsCard({ 
-  category, 
-  title, 
-  excerpt, 
-  author, 
-  date, 
-  image 
-}: NewsCardProps) {
+export default function NewsCard({ category, title, excerpt, date, author, image }: any) {
   return (
-    <div className="flex flex-col md:flex-row gap-4 p-4 border rounded-2xl bg-white shadow-sm active:scale-[0.98] transition-transform">
-      {/* 뉴스 이미지 영역 */}
-      <div className="relative w-full md:w-40 h-40 shrink-0 overflow-hidden rounded-xl">
-        <img
-          src={image}
-          alt={title}
-          className="w-full h-full object-cover"
-        />
-      </div>
-
-      {/* 뉴스 내용 영역 */}
-      <div className="flex flex-col justify-between py-1">
-        <div>
-          <span className="text-xs font-bold uppercase text-purple-600 tracking-wider">
-            {category}
-          </span>
-          <h3 className="text-lg font-semibold mt-1 leading-snug line-clamp-2">
-            {title}
-          </h3>
-          <p className="text-sm text-gray-600 mt-2 line-clamp-2">
-            {excerpt}
-          </p>
+    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden mb-6">
+      <div className="p-4 flex items-center justify-between border-b border-slate-50">
+        <div className="flex items-center gap-2">
+          <Users className="w-4 h-4 text-blue-500" />
+          <span className="text-xs font-bold text-blue-600">Global Community</span>
         </div>
-
-        <div className="flex items-center gap-2 mt-4 text-xs text-gray-400">
-          <span>{author}</span>
-          <span>•</span>
-          <span>{date}</span>
+        <div className="flex gap-3 text-slate-300">
+          <EyeOff className="w-4 h-4" />
+          <Bookmark className="w-4 h-4" />
+          <Heart className="w-4 h-4" />
+        </div>
+      </div>
+      
+      <div className="p-4">
+        <h3 className="text-lg font-bold text-slate-900 leading-tight mb-2">{title}</h3>
+        <p className="text-sm text-slate-500 line-clamp-2 mb-4">{excerpt}</p>
+        <img src={image} alt="news" className="w-full h-48 object-cover rounded-xl mb-4" />
+        
+        <div className="flex items-center justify-between text-[11px] text-slate-400 border-t pt-3">
+          <div className="flex items-center gap-2">
+            <Youtube className="w-4 h-4 text-red-600" />
+            <span>Pi Network Community</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span>{date}</span>
+            <ChevronDown className="w-3 h-3" />
+          </div>
+        </div>
+        
+        <div className="flex gap-4 mt-3 text-slate-500 text-xs font-medium">
+          <div className="flex items-center gap-1"><MessageSquare className="w-4 h-4" /> Comments (0)</div>
+          <div className="flex items-center gap-1"><Share2 className="w-4 h-4" /> Share</div>
         </div>
       </div>
     </div>
