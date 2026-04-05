@@ -14,10 +14,11 @@ export default function NewsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // GitHub Pages에 있는 실제 데이터를 가져옵니다.
+    // 내부 폴더에 저장된 데이터를 직접 가져오도록 수정했습니다.
     const fetchNews = async () => {
       try {
-        const response = await fetch("https://keonhyeong-lee.github.io/data/news.json");
+        const response = await fetch("/data/news.json");
+        if (!response.ok) throw new Error("데이터를 찾을 수 없습니다.");
         const data = await response.json();
         setNews(data);
       } catch (error) {
