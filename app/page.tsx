@@ -1,86 +1,66 @@
-// app/page.tsx
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 
-export default function ChatPage() {
-  const [messages, setMessages] = useState([
-    { id: 1, text: "안녕하세요! 무엇을 도와드릴까요?", isUser: false },
-  ]);
-  const [input, setInput] = useState("");
-  const scrollRef = useRef<HTMLDivElement>(null);
+interface NewsItem {
+  title: string;
+  description: string;
+  source: string;
+  image?: string;
+}
 
-  // 새 메시지가 추가될 때마다 하단으로 스크롤
+export default function NewsPage() {
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-  const sendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-
-    // 사용자 메시지 추가
-    const userMessage = { id: Date.now(), text: input, isUser: true };
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
-
-    // (선택 사항) 여기에 답장 로직을 추가할 수 있습니다.
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now() + 1, text: "메시지를 잘 받았습니다!", isUser: false },
-      ]);
-    }, 1000);
-  };
+    // GitHub Pages에 있는 실제 데이터를 가져옵니다.
+    const fetchNews = async () => {
+      try {
+        const response = await fetch("https://keonhyeong-lee.github.io/data/news.json");
+        const data = await response.json();
+        setNews(data);
+      } catch (error) {
+        console.error("뉴스 로드 실패:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNews();
+  }, []);
 
   return (
-    <div className="flex flex-col h-screen max-w-2xl mx-auto border shadow-lg bg-white">
+    <div className="min-h-screen bg-gray-100">
       {/* 헤더 */}
-      <div className="p-4 border-b bg-blue-600 text-white font-bold">
-        채팅창
-      </div>
+      <header className="bg-blue-900 text-white p-6 text-center shadow-md">
+        <h1 className="text-3xl font-bold">GPNR Global News</h1>
+      </header>
 
-      {/* 메시지 영역 */}
-      <div 
-        ref={scrollRef}
-        className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
-      >
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`flex ${msg.isUser ? "justify-end" : "justify-start"}`}
-          >
-            <div
-              className={`max-w-[70%] rounded-lg px-4 py-2 ${
-                msg.isUser
-                  ? "bg-blue-500 text-white rounded-br-none"
-                  : "bg-white border text-gray-800 rounded-bl-none"
-              }`}
-            >
-              {msg.text}
+      {/* 뉴스 리스트 영역 */}
+      <main className="max-w-4xl mx-auto p-4 space-y-6">
+        {loading ? (
+          <div className="text-center py-10 text-gray-500">뉴스를 불러오는 중입니다...</div>
+        ) : news.length > 0 ? (
+          news.map((item, index) => (
+            <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col md:flex-row border">
+              {item.image && (
+                <div className="md:w-1/3">
+                  <img src={item.image} alt={item.title} className="h-48 w-full object-cover" />
+                </div>
+              )}
+              <div className="p-5 flex-1">
+                <span className="inline-block bg-orange-500 text-white text-xs px-2 py-1 rounded mb-2 font-bold">
+                  {item.source}
+                </span>
+                <h2 className="text-xl font-bold mb-2 text-gray-900">{item.title}</h2>
+                <p className="text-gray-600 text-sm leading-relaxed">{item.description}</p>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-
-      {/* 입력창 영역 */}
-      <form onSubmit={sendMessage} className="p-4 border-t flex gap-2">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="메시지를 입력하세요..."
-          className="flex-1 border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
-        >
-          전송
-        </button>
-      </form>
+          ))
+        ) : (
+          <div className="text-center py-10 text-gray-500">표시할 뉴스가 없습니다.</div>
+        )}
+      </main>
     </div>
   );
 }
