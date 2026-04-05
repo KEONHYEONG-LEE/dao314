@@ -24,9 +24,10 @@ export default function NewsPage() {
       })
       .catch(() => setLoading(false));
 
-    // Pi SDK 초기화 (샌드박스 설정)
+    // Pi SDK 초기화
     if (typeof window !== "undefined" && window.Pi) {
-      window.Pi.init({ version: "1.5", sandbox: true }); 
+      // 실제 파이 브라우저(v0- 주소 포함)에서 결제창을 띄우려면 sandbox: false여야 합니다.
+      window.Pi.init({ version: "1.5", sandbox: false }); 
     }
   }, []);
 
@@ -36,7 +37,7 @@ export default function NewsPage() {
       try {
         // 1. 파이 로그인 인증 시도
         const auth = await window.Pi.authenticate(['payments', 'username'], (payment: any) => {
-          console.log("미완료 결제:", payment);
+          console.log("미완료 결제 발견:", payment);
         });
         
         setUser({ username: auth.user.username, uid: auth.user.uid });
@@ -47,15 +48,22 @@ export default function NewsPage() {
           memo: "GPNR 뉴스 후원",
           metadata: { paymentType: "donation" },
         }, {
-          onReadyForServerApproval: (paymentId: string) => console.log("승인 대기:", paymentId),
-          onReadyForServerCompletion: (paymentId: string, txid: string) => alert("후원 완료!"),
-          onCancel: (paymentId: string) => console.log("취소:", paymentId),
-          onError: (error: Error) => alert("결제 중 에러 발생"),
+          onReadyForServerApproval: (paymentId: string) => {
+            console.log("승인 대기 중 (Server Approval):", paymentId);
+          },
+          onReadyForServerCompletion: (paymentId: string, txid: string) => {
+            alert("후원이 성공적으로 완료되었습니다!");
+          },
+          onCancel: (paymentId: string) => console.log("결제 취소:", paymentId),
+          onError: (error: Error) => alert("결제 에러: " + error.message),
         });
         
-      } catch (err) {
-        alert("파이 로그인이 필요하거나 에러가 발생했습니다.");
+      } catch (err: any) {
+        // 상세 에러 메시지 출력
+        alert("로그인 실패 또는 권한 오류: " + (err.message || "다시 시도해 주세요."));
       }
+    } else {
+      alert("파이 브라우저에서 실행 중인지 확인해 주세요.");
     }
   };
 
@@ -79,12 +87,15 @@ export default function NewsPage() {
       </main>
 
       <footer className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 flex justify-between items-center z-50">
-        <span className="font-medium text-gray-700">
-          {user ? `${user.username}님` : "GPNR 뉴스"}
-        </span>
+        <div className="flex flex-col">
+          <span className="text-xs text-gray-500 font-bold">GPNR Support</span>
+          <span className="font-medium text-gray-700">
+            {user ? `${user.username}님` : "로그인 전"}
+          </span>
+        </div>
         <button 
           onClick={handleSupportClick}
-          className="bg-purple-700 text-white px-8 py-3 rounded-full font-bold shadow-lg"
+          className="bg-purple-700 text-white px-8 py-3 rounded-full font-bold shadow-lg active:bg-purple-800 transition-colors"
         >
           Support 0.001 Pi
         </button>
