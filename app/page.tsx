@@ -26,8 +26,8 @@ export default function NewsPage() {
 
     // Pi SDK 초기화
     if (typeof window !== "undefined" && window.Pi) {
-      // 실제 파이 브라우저(v0- 주소 포함)에서 결제창을 띄우려면 sandbox: false여야 합니다.
-      window.Pi.init({ version: "1.5", sandbox: false }); 
+      // 10단계 통과 전 개발 모드에서는 sandbox: true 설정을 사용합니다.
+      window.Pi.init({ version: "1.5", sandbox: true }); 
     }
   }, []);
 
@@ -42,28 +42,27 @@ export default function NewsPage() {
         
         setUser({ username: auth.user.username, uid: auth.user.uid });
 
-        // 2. 인증 성공 시 결제창 생성
+        // 2. 인증 성공 시 결제창 생성 (테스트넷 결제)
         await window.Pi.createPayment({
           amount: 0.001,
-          memo: "GPNR 뉴스 후원",
+          memo: "GPNR 뉴스 후원 테스트",
           metadata: { paymentType: "donation" },
         }, {
           onReadyForServerApproval: (paymentId: string) => {
-            console.log("승인 대기 중 (Server Approval):", paymentId);
+            console.log("승인 대기 중:", paymentId);
           },
           onReadyForServerCompletion: (paymentId: string, txid: string) => {
-            alert("후원이 성공적으로 완료되었습니다!");
+            alert("후원이 완료되었습니다!");
           },
           onCancel: (paymentId: string) => console.log("결제 취소:", paymentId),
           onError: (error: Error) => alert("결제 에러: " + error.message),
         });
         
       } catch (err: any) {
-        // 상세 에러 메시지 출력
-        alert("로그인 실패 또는 권한 오류: " + (err.message || "다시 시도해 주세요."));
+        alert("오류 발생: " + (err.message || "다시 시도해 주세요."));
       }
     } else {
-      alert("파이 브라우저에서 실행 중인지 확인해 주세요.");
+      alert("파이 브라우저 환경이 아닙니다.");
     }
   };
 
@@ -95,7 +94,7 @@ export default function NewsPage() {
         </div>
         <button 
           onClick={handleSupportClick}
-          className="bg-purple-700 text-white px-8 py-3 rounded-full font-bold shadow-lg active:bg-purple-800 transition-colors"
+          className="bg-purple-700 text-white px-8 py-3 rounded-full font-bold shadow-lg active:bg-purple-800"
         >
           Support 0.001 Pi
         </button>
