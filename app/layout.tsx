@@ -1,9 +1,10 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "GPNR App",
-  description: "Tailwind CSS가 적용된 앱",
+  description: "Global Pi Newsroom App",
 };
 
 export default function RootLayout({
@@ -13,8 +14,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
+      <head>
+        {/* Pi SDK를 불러오는 핵심 스크립트입니다 */}
+        <Script 
+          src="https://sdk.minepi.com/pi-sdk.js" 
+          strategy="beforeInteractive"
+        />
+      </head>
       <body>{children}</body>
     </html>
   );
 }
-
