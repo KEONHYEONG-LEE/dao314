@@ -31,7 +31,7 @@ export const APP_CONFIG = {
   // 4. 서버 및 API 연결 설정 (Vercel 배포 환경 고려)
   api: {
     // 환경 변수가 없을 경우 로컬 주소를 기본값으로 사용
-    baseUrl: process.env.NEXT_PUBLIC_API_URL || "https://dao314.pi",
+    baseUrl: process.env.NEXT_PUBLIC_API_URL || "https://globalpinews4312.pinet.com",
     timeout: 5000, // 5초
     endpoints: {
       news: "/api/news",
@@ -55,7 +55,7 @@ export const APP_CONFIG = {
   // 6. 소셜 및 외부 링크
   links: {
     github: "https://github.com/KEONHYEONG-LEE/dao314",
-    domain: "https://dao314.pi",
+    domain: "https://globalpinews4312.pinet.com",
     supportEmail: "support@e-life365.pi",
   },
 };
