@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { Search, Bell, Youtube, User, Home, Heart, CircleDollarSign, Grid, Languages, MessageSquare, ChevronDown } from 'lucide-react';
 
-// 모든 언어에 verified_error 키를 추가하여 타입 에러를 해결했습니다.
 const translations: Record<string, any> = {
   ko: {
     search: "글로벌 파이 뉴스 검색...",
@@ -57,7 +56,7 @@ const CATEGORIES = [
   { id: 'career', label: { ko: '커리어', en: 'Career', zh: '职业', es: 'Carrera', vi: 'Sự nghiệp' }, icon: '💼' },
   { id: 'entertainment', label: { ko: '엔터', en: 'Entertain', zh: '娱乐', es: 'Entretenimiento', vi: 'Giải trí' }, icon: '🎬' },
   { id: 'games', label: { ko: '게임', en: 'Games', zh: '游戏', es: 'Juegos', vi: 'Trò chơi' }, icon: '🎮' },
-  { id: 'finance', label: { ko: '금융', en: 'Finance', zh: '金融', es: 'Finanzas', vi: 'Tài chính' }, icon: '💰' },
+  { id: 'finance', label: { ko: '금융', en: 'Finance', zh: '금융', es: 'Finanzas', vi: 'Tài chính' }, icon: '💰' },
   { id: 'music', label: { ko: '음악', en: 'Music', zh: '音乐', es: 'Música', vi: 'Âm nhạc' }, icon: '🎵' },
   { id: 'sports', label: { ko: '스포츠', en: 'Sports', zh: '体育', es: 'Deportes', vi: 'Thể thao' }, icon: '🏆' },
   { id: 'defi', label: { ko: '디파이', en: 'DeFi', zh: '去中心화 금융', es: 'DeFi', vi: 'DeFi' }, icon: '🏦' },
@@ -74,7 +73,14 @@ export default function NewsPage() {
   const [showLangMenu, setShowLangMenu] = useState(false);
 
   useEffect(() => {
+    // 1. 저장된 유저 정보 불러오기 (Persistence)
+    const savedUser = localStorage.getItem('gpnr_user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+
     fetchNews();
+
     if (typeof window !== "undefined" && (window as any).Pi) {
       (window as any).Pi.init({ version: "1.5", sandbox: true });
     }
@@ -102,7 +108,12 @@ export default function NewsPage() {
       const auth = await (window as any).Pi.authenticate(['payments', 'username'], (incompletePayment: any) => {
         console.log("Incomplete payment found:", incompletePayment);
       });
-      setUser({ username: auth.user.username, uid: auth.user.uid });
+      
+      const userData = { username: auth.user.username, uid: auth.user.uid };
+      setUser(userData);
+      
+      // 2. 로그인 성공 시 로컬 스토리지에 저장
+      localStorage.setItem('gpnr_user', JSON.stringify(userData));
 
       await (window as any).Pi.createPayment({
         amount: 0.001,
@@ -113,7 +124,6 @@ export default function NewsPage() {
         onReadyForServerCompletion: (id: string, txid: string) => alert("Successfully Supported!"),
         onCancel: (id: string) => console.log("Cancelled"),
         onError: (error: any) => {
-          // translations[lang]이 확실히 존재하고 verified_error를 가짐을 보장하도록 수정
           const currentLangT = translations[lang] || translations['en'];
           if (error.type === 'app_not_verified') {
             alert(currentLangT.verified_error);
@@ -132,7 +142,7 @@ export default function NewsPage() {
   return (
     <div className="flex flex-col min-h-screen bg-[#F8F9FA] text-gray-900 font-sans">
       
-      {/* 1. 상단 헤더 & 언어 선택기 */}
+      {/* 헤더 */}
       <header className="bg-[#0D1B3E] text-white p-4 flex justify-between items-center sticky top-0 z-50">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center font-extrabold text-sm">G</div>
@@ -175,7 +185,7 @@ export default function NewsPage() {
         </div>
       </header>
 
-      {/* 2. 검색 & 카테고리 */}
+      {/* 검색 및 카테고리 (생략 없이 유지) */}
       <div className="bg-white p-4 border-b shadow-sm sticky top-[60px] z-40">
         <div className="relative mb-4">
           <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
@@ -198,7 +208,7 @@ export default function NewsPage() {
         </div>
       </div>
 
-      {/* 3. 뉴스 피드 */}
+      {/* 뉴스 피드 */}
       <main className="p-4 space-y-5 pb-28">
         <div className="flex items-center gap-2 text-orange-500 font-black text-[10px] tracking-widest uppercase">
           <span className="animate-pulse">↗ {currentT.trending}</span>
@@ -235,7 +245,7 @@ export default function NewsPage() {
         )}
       </main>
 
-      {/* 4. 하단 탭 바 */}
+      {/* 하단 탭 바 */}
       <footer className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t flex justify-around py-3 z-50">
         <div className="flex flex-col items-center text-indigo-700 font-bold"><Home size={22} /><span className="text-[9px] mt-1">Home</span></div>
         <div className="flex flex-col items-center text-gray-400"><MessageSquare size={22} /><span className="text-[9px] mt-1">{currentT.ai_assistant}</span></div>
