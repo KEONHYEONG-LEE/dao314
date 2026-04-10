@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Bell, Youtube, User, Home, Heart, CircleDollarSign, Grid, Languages, MessageSquare, ChevronDown } from 'lucide-react';
+import { Search, Bell, Youtube, User, Home, Heart, CircleDollarSign, Grid, Languages, MessageSquare, ChevronDown, X } from 'lucide-react';
 
 const translations: Record<string, any> = {
   ko: {
@@ -13,7 +13,9 @@ const translations: Record<string, any> = {
     ai_assistant: "AI 도우미",
     all: "전체보기",
     login: "로그인",
-    profile: "프로필"
+    profile: "프로필",
+    read_more: "원문 기사 읽기",
+    close: "닫기"
   },
   en: {
     search: "Search Global Pi news...",
@@ -24,22 +26,27 @@ const translations: Record<string, any> = {
     ai_assistant: "AI Assistant",
     all: "See All",
     login: "Login",
-    profile: "Profile"
+    profile: "Profile",
+    read_more: "Read Full Article",
+    close: "Close"
   },
   zh: { 
     search: "搜索全球派新闻...", trending: "趋势", login_msg: "请登录后查看详情", support: "支持 0.001π", 
     verified_error: "在 Pi 浏览器开发者模式下需要域名批准。", 
-    ai_assistant: "AI 助手", all: "查看全部", login: "登录", profile: "个人资料" 
+    ai_assistant: "AI 助手", all: "查看全部", login: "登录", profile: "个人资料",
+    read_more: "阅读全文", close: "关闭"
   },
   es: { 
     search: "Buscar noticias de Pi...", trending: "TENDENCIAS", login_msg: "Inicie sesión para ver detalles.", support: "Apoyo 0.001π", 
     verified_error: "Se requiere la aprobación del dominio en el modo de desarrollador de Pi Browser.", 
-    ai_assistant: "Asistente AI", all: "Ver todo", login: "Acceso", profile: "Perfil" 
+    ai_assistant: "Asistente AI", all: "Ver todo", login: "Acceso", profile: "Perfil",
+    read_more: "Leer artículo completo", close: "Cerrar"
   },
   vi: { 
     search: "Tìm kiếm tin tức Pi...", trending: "XU HƯỚNG", login_msg: "Vui lòng đăng nhập để xem chi tiết.", support: "Ủng hộ 0.001π", 
     verified_error: "Cần phê duyệt miền trong chế độ nhà phát triển Pi Browser.", 
-    ai_assistant: "Trợ lý AI", all: "Xem tất cả", login: "Đăng nhập", profile: "Hồ sơ" 
+    ai_assistant: "Trợ lý AI", all: "Xem tất cả", login: "Đăng nhập", profile: "Hồ sơ",
+    read_more: "Đọc bài viết đầy đủ", close: "Đóng"
   }
 };
 
@@ -49,7 +56,7 @@ const CATEGORIES = [
   { id: 'community', label: { ko: '커뮤니티', en: 'Community', zh: '社区', es: 'Comunidad', vi: 'Cộng đồng' }, icon: '👥' },
   { id: 'commerce', label: { ko: '커머스', en: 'Commerce', zh: '商业', es: 'Comercio', vi: 'Thương mại' }, icon: '🛒' },
   { id: 'social', label: { ko: '소셜', en: 'Social', zh: '社交', es: 'Social', vi: 'Mạng xã hội' }, icon: '💬' },
-  { id: 'education', label: { ko: '교육', en: 'Education', zh: '教育', es: 'Educación', vi: 'Giáo dục' }, icon: '📚' },
+  { id: 'education', label: { ko: '교육', en: 'Education', zh: '교육', es: 'Educación', vi: 'Giáo dục' }, icon: '📚' },
   { id: 'health', label: { ko: '건강', en: 'Health', zh: '건강', es: 'Salud', vi: 'Sức khỏe' }, icon: '🏥' },
   { id: 'travel', label: { ko: '여행', en: 'Travel', zh: '旅游', es: 'Viajar', vi: 'Du lịch' }, icon: '✈️' },
   { id: 'utilities', label: { ko: '유틸리티', en: 'Utilities', zh: '公用事业', es: 'Utilidades', vi: 'Tiện ích' }, icon: '🛠️' },
@@ -71,9 +78,9 @@ export default function NewsPage() {
   const [lang, setLang] = useState<'en'|'ko'|'zh'|'es'|'vi'>('ko');
   const [activeCategory, setActiveCategory] = useState('all');
   const [showLangMenu, setShowLangMenu] = useState(false);
+  const [selectedNews, setSelectedNews] = useState<any | null>(null); // 상세 보기 상태 추가
 
   useEffect(() => {
-    // 1. 저장된 유저 정보 불러오기 (Persistence)
     const savedUser = localStorage.getItem('gpnr_user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
@@ -111,8 +118,6 @@ export default function NewsPage() {
       
       const userData = { username: auth.user.username, uid: auth.user.uid };
       setUser(userData);
-      
-      // 2. 로그인 성공 시 로컬 스토리지에 저장
       localStorage.setItem('gpnr_user', JSON.stringify(userData));
 
       await (window as any).Pi.createPayment({
@@ -185,7 +190,7 @@ export default function NewsPage() {
         </div>
       </header>
 
-      {/* 검색 및 카테고리 (생략 없이 유지) */}
+      {/* 검색 및 카테고리 */}
       <div className="bg-white p-4 border-b shadow-sm sticky top-[60px] z-40">
         <div className="relative mb-4">
           <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
@@ -220,10 +225,10 @@ export default function NewsPage() {
           news.map((item, idx) => (
             <div 
               key={idx} 
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer"
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer active:scale-[0.98] transition-transform"
               onClick={() => {
                 if(!user) alert(currentT.login_msg);
-                else window.open(item.url, '_blank');
+                else setSelectedNews(item); // 상세 모달 열기
               }}
             >
               <div className="h-44 bg-gray-200 relative">
@@ -244,6 +249,55 @@ export default function NewsPage() {
           ))
         )}
       </main>
+
+      {/* 상세 뉴스 모달 */}
+      {selectedNews && (
+        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl shadow-2xl relative animate-in fade-in slide-in-from-bottom-10 duration-300">
+            <div className="sticky top-0 bg-white/90 backdrop-blur-md p-4 flex justify-between items-center border-b z-10">
+              <span className="text-xs font-bold text-indigo-600 uppercase tracking-widest">{selectedNews.category}</span>
+              <button 
+                onClick={() => setSelectedNews(null)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X size={24} className="text-gray-500" />
+              </button>
+            </div>
+            
+            <div className="p-6">
+              <img 
+                src={selectedNews.image} 
+                className="w-full h-64 object-cover rounded-2xl mb-6 shadow-md" 
+                alt="detail" 
+              />
+              <h2 className="text-2xl font-extrabold mb-4 leading-tight">{selectedNews.title}</h2>
+              <div className="flex items-center gap-3 text-sm text-gray-400 mb-8 border-b pb-4">
+                <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold uppercase">
+                  {selectedNews.author[0]}
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-700">{selectedNews.author}</p>
+                  <p className="text-xs">{selectedNews.date}</p>
+                </div>
+              </div>
+              
+              <div className="text-gray-700 leading-relaxed space-y-4 text-lg mb-10">
+                <p>{selectedNews.description}</p>
+                <p className="text-base text-gray-500 italic">
+                  * 이 뉴스는 파이 네트워크 생태계의 최신 동향을 바탕으로 제공됩니다.
+                </p>
+              </div>
+
+              <button 
+                onClick={() => window.open(selectedNews.url, '_blank')}
+                className="w-full bg-[#0D1B3E] text-white py-4 rounded-2xl font-bold hover:bg-indigo-900 transition-all shadow-lg mb-4"
+              >
+                {currentT.read_more}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 하단 탭 바 */}
       <footer className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t flex justify-around py-3 z-50">
