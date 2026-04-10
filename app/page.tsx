@@ -63,9 +63,11 @@ export default function NewsPage() {
 
   useEffect(() => {
     fetchNews();
-    if (typeof window !== "undefined" && window.Pi) {
-      window.Pi.init({ version: "1.5", sandbox: true });
-    }
+// window를 any 타입으로 형변환하여 Pi 속성에 접근합니다.
+if (typeof window !== "undefined" && (window as any).Pi) {
+  (window as any).Pi.init({ version: "1.5", sandbox: true });
+}
+
   }, [activeCategory, lang]);
 
   const fetchNews = async () => {
