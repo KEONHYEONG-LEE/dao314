@@ -38,18 +38,18 @@ const CATEGORIES = [
   { id: 'community', label: { ko: '커뮤니티', en: 'Community', zh: '社区', es: 'Comunidad', vi: 'Cộng đồng' }, icon: '👥' },
   { id: 'commerce', label: { ko: '커머스', en: 'Commerce', zh: '商业', es: 'Comercio', vi: 'Thương mại' }, icon: '🛒' },
   { id: 'social', label: { ko: '소셜', en: 'Social', zh: '社交', es: 'Social', vi: 'Mạng xã hội' }, icon: '💬' },
-  { id: 'education', label: { ko: '교육', en: 'Education', zh: '教育', es: 'Educación', vi: 'Giáo dục' }, icon: '📚' },
-  { id: 'health', label: { ko: '건강', en: 'Health', zh: '健康', es: 'Salud', vi: 'Sức khỏe' }, icon: '🏥' },
+  { id: 'education', label: { ko: '교육', en: 'Education', zh: '교육', es: 'Educación', vi: 'Giáo dục' }, icon: '📚' },
+  { id: 'health', label: { ko: '건강', en: 'Health', zh: '건강', es: 'Salud', vi: 'Sức khỏe' }, icon: '🏥' },
   { id: 'travel', label: { ko: '여행', en: 'Travel', zh: '旅游', es: 'Viajar', vi: 'Du lịch' }, icon: '✈️' },
   { id: 'utilities', label: { ko: '유틸리티', en: 'Utilities', zh: '公用事业', es: 'Utilidades', vi: 'Tiện ích' }, icon: '🛠️' },
   { id: 'career', label: { ko: '커리어', en: 'Career', zh: '职业', es: 'Carrera', vi: 'Sự nghiệp' }, icon: '💼' },
   { id: 'entertainment', label: { ko: '엔터', en: 'Entertain', zh: '娱乐', es: 'Entretenimiento', vi: 'Giải trí' }, icon: '🎬' },
   { id: 'games', label: { ko: '게임', en: 'Games', zh: '游戏', es: 'Juegos', vi: 'Trò chơi' }, icon: '🎮' },
-  { id: 'finance', label: { ko: '금융', en: 'Finance', zh: '金融', es: 'Finanzas', vi: 'Tài chính' }, icon: '💰' },
+  { id: 'finance', label: { ko: '금융', en: 'Finance', zh: '금융', es: 'Finanzas', vi: 'Tài chính' }, icon: '💰' },
   { id: 'music', label: { ko: '음악', en: 'Music', zh: '音乐', es: 'Música', vi: 'Âm nhạc' }, icon: '🎵' },
   { id: 'sports', label: { ko: '스포츠', en: 'Sports', zh: '体育', es: 'Deportes', vi: 'Thể thao' }, icon: '🏆' },
-  { id: 'defi', label: { ko: '디파이', en: 'DeFi', zh: '去中心化金融', es: 'DeFi', vi: 'DeFi' }, icon: '🏦' },
-  { id: 'dapp', label: { ko: '디앱', en: 'dApp', zh: '去中心化应用', es: 'dApp', vi: 'dApp' }, icon: '📱' },
+  { id: 'defi', label: { ko: '디파이', en: 'DeFi', zh: '去中心화 금융', es: 'DeFi', vi: 'DeFi' }, icon: '🏦' },
+  { id: 'dapp', label: { ko: '디앱', en: 'dApp', zh: '去中心화 应用', es: 'dApp', vi: 'dApp' }, icon: '📱' },
   { id: 'nft', label: { ko: 'NFT', en: 'NFT', zh: 'NFT', es: 'NFT', vi: 'NFT' }, icon: '🖼️' },
 ];
 
@@ -59,15 +59,14 @@ export default function NewsPage() {
   const [user, setUser] = useState<{username: string, uid: string} | null>(null);
   const [lang, setLang] = useState<'en'|'ko'|'zh'|'es'|'vi'>('ko');
   const [activeCategory, setActiveCategory] = useState('all');
-  const [showLangMenu, setShowLangMenu] = useState(false); // 언어 메뉴 상태
+  const [showLangMenu, setShowLangMenu] = useState(false);
 
   useEffect(() => {
     fetchNews();
-// window를 any 타입으로 형변환하여 Pi 속성에 접근합니다.
-if (typeof window !== "undefined" && (window as any).Pi) {
-  (window as any).Pi.init({ version: "1.5", sandbox: true });
-}
-
+    // window.Pi 대신 (window as any).Pi를 사용하여 타입 에러 해결
+    if (typeof window !== "undefined" && (window as any).Pi) {
+      (window as any).Pi.init({ version: "1.5", sandbox: true });
+    }
   }, [activeCategory, lang]);
 
   const fetchNews = async () => {
@@ -84,17 +83,18 @@ if (typeof window !== "undefined" && (window as any).Pi) {
   };
 
   const handleSupportClick = async () => {
-    if (typeof window === "undefined" || !window.Pi) {
+    if (typeof window === "undefined" || !(window as any).Pi) {
       alert("Please open in Pi Browser.");
       return;
     }
     try {
-      const auth = await window.Pi.authenticate(['payments', 'username'], (incompletePayment: any) => {
+      // 모든 Pi 호출 부분에 (window as any) 적용
+      const auth = await (window as any).Pi.authenticate(['payments', 'username'], (incompletePayment: any) => {
         console.log("Incomplete payment found:", incompletePayment);
       });
       setUser({ username: auth.user.username, uid: auth.user.uid });
 
-      await window.Pi.createPayment({
+      await (window as any).Pi.createPayment({
         amount: 0.001,
         memo: "Support GPNR",
         metadata: { type: "support_gpnr" },
@@ -131,7 +131,6 @@ if (typeof window !== "undefined" && (window as any).Pi) {
         </div>
 
         <div className="flex gap-3 items-center">
-          {/* 언어 선택 드롭다운 */}
           <div className="relative">
             <button 
               onClick={() => setShowLangMenu(!showLangMenu)}
@@ -206,7 +205,7 @@ if (typeof window !== "undefined" && (window as any).Pi) {
               }}
             >
               <div className="h-44 bg-gray-200 relative">
-                <img src={item.image || `https://picsum.photos/seed/${idx}/400/200`} className="w-full h-full object-cover" />
+                <img src={item.image || `https://picsum.photos/seed/${idx}/400/200`} className="w-full h-full object-cover" alt="news" />
                 <div className="absolute top-3 left-3 bg-indigo-600 text-white text-[9px] px-2 py-0.5 rounded font-bold">{item.category}</div>
               </div>
               <div className="p-4">
