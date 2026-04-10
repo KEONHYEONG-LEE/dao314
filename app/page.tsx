@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { Search, Bell, Youtube, User, Home, Heart, CircleDollarSign, Grid, Languages, MessageSquare, ChevronDown } from 'lucide-react';
 
-// 4번 요구사항: 5개 언어 번역 데이터
-const translations = {
+// 모든 언어에 verified_error 키를 추가하여 타입 에러를 해결했습니다.
+const translations: Record<string, any> = {
   ko: {
     search: "글로벌 파이 뉴스 검색...",
     trending: "인기 소식",
@@ -27,9 +27,21 @@ const translations = {
     login: "Login",
     profile: "Profile"
   },
-  zh: { search: "搜索全球派新闻...", trending: "趋势", login_msg: "请登录后查看详情", support: "支持 0.001π", ai_assistant: "AI 助手", all: "查看全部", login: "登录", profile: "个人资料" },
-  es: { search: "Buscar noticias de Pi...", trending: "TENDENCIAS", login_msg: "Inicie sesión para ver detalles.", support: "Apoyo 0.001π", ai_assistant: "Asistente AI", all: "Ver todo", login: "Acceso", profile: "Perfil" },
-  vi: { search: "Tìm kiếm tin tức Pi...", trending: "XU HƯỚNG", login_msg: "Vui lòng đăng nhập để xem chi tiết.", support: "Ủng hộ 0.001π", ai_assistant: "Trợ lý AI", all: "Xem tất cả", login: "Đăng nhập", profile: "Hồ sơ" }
+  zh: { 
+    search: "搜索全球派新闻...", trending: "趋势", login_msg: "请登录后查看详情", support: "支持 0.001π", 
+    verified_error: "在 Pi 浏览器开发者模式下需要域名批准。", 
+    ai_assistant: "AI 助手", all: "查看全部", login: "登录", profile: "个人资料" 
+  },
+  es: { 
+    search: "Buscar noticias de Pi...", trending: "TENDENCIAS", login_msg: "Inicie sesión para ver detalles.", support: "Apoyo 0.001π", 
+    verified_error: "Se requiere la aprobación del dominio en el modo de desarrollador de Pi Browser.", 
+    ai_assistant: "Asistente AI", all: "Ver todo", login: "Acceso", profile: "Perfil" 
+  },
+  vi: { 
+    search: "Tìm kiếm tin tức Pi...", trending: "XU HƯỚNG", login_msg: "Vui lòng đăng nhập để xem chi tiết.", support: "Ủng hộ 0.001π", 
+    verified_error: "Cần phê duyệt miền trong chế độ nhà phát triển Pi Browser.", 
+    ai_assistant: "Trợ lý AI", all: "Xem tất cả", login: "Đăng nhập", profile: "Hồ sơ" 
+  }
 };
 
 const CATEGORIES = [
@@ -38,14 +50,14 @@ const CATEGORIES = [
   { id: 'community', label: { ko: '커뮤니티', en: 'Community', zh: '社区', es: 'Comunidad', vi: 'Cộng đồng' }, icon: '👥' },
   { id: 'commerce', label: { ko: '커머스', en: 'Commerce', zh: '商业', es: 'Comercio', vi: 'Thương mại' }, icon: '🛒' },
   { id: 'social', label: { ko: '소셜', en: 'Social', zh: '社交', es: 'Social', vi: 'Mạng xã hội' }, icon: '💬' },
-  { id: 'education', label: { ko: '교육', en: 'Education', zh: '교육', es: 'Educación', vi: 'Giáo dục' }, icon: '📚' },
+  { id: 'education', label: { ko: '교육', en: 'Education', zh: '教育', es: 'Educación', vi: 'Giáo dục' }, icon: '📚' },
   { id: 'health', label: { ko: '건강', en: 'Health', zh: '건강', es: 'Salud', vi: 'Sức khỏe' }, icon: '🏥' },
   { id: 'travel', label: { ko: '여행', en: 'Travel', zh: '旅游', es: 'Viajar', vi: 'Du lịch' }, icon: '✈️' },
   { id: 'utilities', label: { ko: '유틸리티', en: 'Utilities', zh: '公用事业', es: 'Utilidades', vi: 'Tiện ích' }, icon: '🛠️' },
   { id: 'career', label: { ko: '커리어', en: 'Career', zh: '职业', es: 'Carrera', vi: 'Sự nghiệp' }, icon: '💼' },
   { id: 'entertainment', label: { ko: '엔터', en: 'Entertain', zh: '娱乐', es: 'Entretenimiento', vi: 'Giải trí' }, icon: '🎬' },
   { id: 'games', label: { ko: '게임', en: 'Games', zh: '游戏', es: 'Juegos', vi: 'Trò chơi' }, icon: '🎮' },
-  { id: 'finance', label: { ko: '금융', en: 'Finance', zh: '금융', es: 'Finanzas', vi: 'Tài chính' }, icon: '💰' },
+  { id: 'finance', label: { ko: '금융', en: 'Finance', zh: '金融', es: 'Finanzas', vi: 'Tài chính' }, icon: '💰' },
   { id: 'music', label: { ko: '음악', en: 'Music', zh: '音乐', es: 'Música', vi: 'Âm nhạc' }, icon: '🎵' },
   { id: 'sports', label: { ko: '스포츠', en: 'Sports', zh: '体育', es: 'Deportes', vi: 'Thể thao' }, icon: '🏆' },
   { id: 'defi', label: { ko: '디파이', en: 'DeFi', zh: '去中心화 금융', es: 'DeFi', vi: 'DeFi' }, icon: '🏦' },
@@ -63,7 +75,6 @@ export default function NewsPage() {
 
   useEffect(() => {
     fetchNews();
-    // window.Pi 대신 (window as any).Pi를 사용하여 타입 에러 해결
     if (typeof window !== "undefined" && (window as any).Pi) {
       (window as any).Pi.init({ version: "1.5", sandbox: true });
     }
@@ -88,7 +99,6 @@ export default function NewsPage() {
       return;
     }
     try {
-      // 모든 Pi 호출 부분에 (window as any) 적용
       const auth = await (window as any).Pi.authenticate(['payments', 'username'], (incompletePayment: any) => {
         console.log("Incomplete payment found:", incompletePayment);
       });
@@ -103,8 +113,10 @@ export default function NewsPage() {
         onReadyForServerCompletion: (id: string, txid: string) => alert("Successfully Supported!"),
         onCancel: (id: string) => console.log("Cancelled"),
         onError: (error: any) => {
+          // translations[lang]이 확실히 존재하고 verified_error를 가짐을 보장하도록 수정
+          const currentLangT = translations[lang] || translations['en'];
           if (error.type === 'app_not_verified') {
-            alert(translations[lang].verified_error);
+            alert(currentLangT.verified_error);
           } else {
             alert("Error: " + error.message);
           }
@@ -115,7 +127,7 @@ export default function NewsPage() {
     }
   };
 
-  const currentT = translations[lang];
+  const currentT = translations[lang] || translations['en'];
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F8F9FA] text-gray-900 font-sans">
