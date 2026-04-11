@@ -106,7 +106,10 @@ export default function NewsPage() {
             <article key={item.id} className="flex items-center gap-4 p-4 active:bg-gray-50 cursor-pointer" onClick={() => { setSelectedNews(item); setShowSummary(false); }}>
               <div className="flex-1 min-w-0">
                 <div className="flex gap-2 mb-1 items-center flex-wrap">
-                  <span className="text-[9px] font-black text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded uppercase">{item.category}</span>
+                  {/* 카테고리 표시: ALL이 아닐 때만 개별 카테고리명 노출 */}
+                  <span className="text-[9px] font-black text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded uppercase">
+                    {item.category}
+                  </span>
                   <span className="text-[9px] text-gray-400 flex items-center gap-1"><Calendar size={10}/>{item.date}</span>
                   <span className="text-[9px] text-gray-400 flex items-center gap-1"><Eye size={10}/>{item.views?.toLocaleString()}</span>
                 </div>
@@ -138,12 +141,12 @@ export default function NewsPage() {
             <img src={selectedNews.image} className="w-full h-56 object-cover rounded-[2rem] mb-8 shadow-xl" alt="cover" />
             <h2 className="text-2xl font-black mb-8 leading-tight text-gray-900">{selectedNews.title}</h2> 
 
-            {/* 본문 */}
+            {/* [1번 수정] 상세 기사 본문을 AI 요약보다 위에 배치 */}
             <div className="text-gray-700 leading-relaxed mb-10 text-[17px] font-medium whitespace-pre-wrap border-l-4 border-indigo-100 pl-4">
-              {selectedNews.content}
+              {selectedNews.content || "기사 내용을 불러오는 중입니다..."}
             </div> 
 
-            {/* AI 요약 버튼 섹션 (기사별 매칭 해결) */}
+            {/* AI 요약 섹션 */}
             <div className="mb-10 p-1 bg-indigo-50 rounded-[2rem]">
               <button 
                 onClick={() => setShowSummary(true)}
@@ -153,7 +156,6 @@ export default function NewsPage() {
               </button>
               {showSummary && (
                 <div className="p-6 text-sm text-indigo-900 font-bold animate-in fade-in slide-in-from-top-2 bg-white/50 m-2 rounded-2xl border border-indigo-100">
-                  {/* 고정 텍스트가 아닌 selectedNews.aiSummary를 출력하여 매칭 문제 해결 */}
                   [GPNR AI 요약]<br/>
                   {selectedNews.aiSummary || "요약 내용을 생성 중입니다."}
                 </div>
