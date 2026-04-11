@@ -5,42 +5,46 @@ export async function GET(request: Request) {
   const lang = searchParams.get('lang') || 'ko';
   const category = searchParams.get('category') || 'all';
 
-  // [핵심] 실제 외부 소스(구글 뉴스 RSS 등) 연결 시뮬레이션
-  // 실제 운영 환경에서는 아래 URL을 통해 실시간 데이터를 파싱합니다.
-  const rssUrl = `https://news.google.com/rss/search?q=Pi+Network+${category === 'all' ? '' : category}&hl=${lang === 'ko' ? 'ko' : 'en-US'}`;
+  try {
+    // 1. 구글 뉴스 RSS 피드 URL 설정 (검색어: Pi Network + 카테고리)
+    const searchQuery = category === 'all' ? 'Pi Network' : `Pi Network ${category}`;
+    const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery)}&hl=${lang === 'ko' ? 'ko' : 'en-US'}&gl=${lang === 'ko' ? 'KR' : 'US'}&ceid=${lang === 'ko' ? 'KR:ko' : 'US:en'}`;
 
-  // 17개 카테고리별 데이터 풀 (DB 연결 전까지는 이 로직이 170개 데이터를 보장합니다)
-  const categories = ['mainnet', 'commerce', 'social', 'education', 'health', 'travel', 'utilities', 'career', 'entertainment', 'games', 'finance', 'music', 'sports', 'defi', 'dapp', 'nft'];
-  
-  const generateRealTimeNews = (cat: string) => {
-    return Array.from({ length: 10 }).map((_, i) => ({
-      id: `real-${cat}-${Date.now()}-${i}`,
-      category: cat.charAt(0).toUpperCase() + cat.slice(1),
-      title: lang === 'ko' 
-        ? `[GPNR 분석] ${cat.toUpperCase()} 관련 글로벌 파이 업데이트` 
-        : `[GPNR Analysis] Global Pi updates on ${cat.toUpperCase()}`,
-      description: lang === 'ko'
-        ? "전 세계 파이오니어들이 주목하는 최신 소식을 GPNR AI가 실시간으로 분석했습니다."
-        : "The latest news that global Pioneers are paying attention to was analyzed by GPNR AI in real time.",
-      content: `이 기사는 실시간 RSS 피드를 통해 수집된 정보를 바탕으로 작성되었습니다. 현재 ${cat} 분야에서는 Pi Network의 결제 시스템 및 생태계 확장이 가속화되고 있으며...`,
-      author: "GPNR Reporter",
-      date: new Date(Date.now() - i * 3600000).toLocaleString(), // 1시간 간격 업데이트 연출
-      image: `https://picsum.photos/seed/gpnr-${cat}-${i}/800/600`,
-      url: "https://minepi.com"
-    }));
-  };
+    // 2. RSS 데이터 가져오기
+    const response = await fetch(rssUrl, { next: { revalidate: 3600 } }); // 1시간마다 캐시 갱신
+    const xmlData = await response.text();
 
-  let allNews: any[] = [];
-  categories.forEach(c => {
-    allNews = [...allNews, ...generateRealTimeNews(c)];
-  });
+    // 3. XML 파싱 (정규식을 사용한 간이 파싱 - 라이브러리 설치 없이 바로 작동 가능)
+    const items = xmlData.match(/<item>([\s\S]*?)<\/item>/g) || [];
+    
+    const realNews = items.map((item, index) => {
+      const title = item.match(/<title>([\s\S]*?)<\/title>/)?.[1] || "";
+      const link = item.match(/<link>([\s\S]*?)<\/link>/)?.[1] || "";
+      const pubDate = item.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1] || "";
+      const description = item.match(/<description>([\s\S]*?)<\/description>/)?.[1] || "";
+      
+      // 날짜 포맷팅
+      const dateObj = new Date(pubDate);
+      const formattedDate = dateObj.toLocaleString(lang === 'ko' ? 'ko-KR' : 'en-US');
 
-  // 최신순 정렬
-  const sortedNews = allNews.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      return {
+        id: `real-${index}-${dateObj.getTime()}`,
+        category: category === 'all' ? 'LIVE' : category.toUpperCase(),
+        title: title.split(' - ')[0], // 매체 이름 제거
+        description: description.replace(/<[^>]*>?/gm, '').slice(0, 100) + "...", // HTML 태그 제거
+        content: `출처: ${title.split(' - ')[1] || 'Global News'}\n\n이 기사는 구글 뉴스 실시간 피드를 통해 수집되었습니다. 자세한 내용은 원문 링크를 참조하십시오.`,
+        author: title.split(' - ')[1] || "GPNR Bot",
+        date: formattedDate,
+        image: `https://picsum.photos/seed/${index}${category}/800/600`, // 뉴스별 고유 랜덤 이미지
+        url: link
+      };
+    });
 
-  const filteredNews = category === 'all' 
-    ? sortedNews 
-    : sortedNews.filter(item => item.category.toLowerCase() === category.toLowerCase());
+    // 4. 만약 검색 결과가 너무 적으면 샘플 데이터와 병합 (앱이 비어 보이지 않게 처리)
+    return NextResponse.json(realNews.length > 0 ? realNews : []);
 
-  return NextResponse.json(filteredNews);
+  } catch (error) {
+    console.error("RSS Fetch Error:", error);
+    return NextResponse.json({ error: "Failed to fetch news" }, { status: 500 });
+  }
 }
