@@ -1,41 +1,28 @@
 import { NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function POST(request: Request) {
   try {
     const { content, lang } = await request.json();
+    const apiKey = process.env.GOOGLE_API_KEY;
 
-    // 토큰이 정상적으로 로드되었는지 확인
-    const apiKey = process.env.ANTHROPIC_AUTH_TOKEN;
-    
     if (!apiKey) {
-      return NextResponse.json({ summary: "API 키가 설정되지 않았습니다." }, { status: 500 });
+      return NextResponse.json({ summary: "Gemini API 키가 설정되지 않았습니다." }, { status: 500 });
     }
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-3-haiku-20240307',
-        max_tokens: 1024,
-        messages: [{
-          role: 'user',
-          content: `다음 기사 내용을 ${lang === 'ko' ? '한국어' : '영어'}로 3문장 요약해줘: ${content}`
-        }]
-      })
-    });
+    // Gemini 설정
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // 무료이면서 아주 빠른 모델
 
-    const data = await response.json();
-    
-    if (data.content && data.content[0]) {
-      return NextResponse.json({ summary: data.content[0].text });
-    } else {
-      throw new Error("Invalid AI Response");
-    }
+    const prompt = `다음 뉴스 기사를 ${lang === 'ko' ? '한국어' : '영어'}로 3문장 이내의 핵심 포인트만 요약해줘:\n\n${content}`;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+
+    return NextResponse.json({ summary: text });
   } catch (error) {
-    return NextResponse.json({ summary: "요약 생성 중 오류가 발생했습니다. 다시 시도해 주세요." });
+    console.error("Gemini Error:", error);
+    return NextResponse.json({ summary: "AI 요약 중 오류가 발생했습니다. (무료 한도 초과 등)" });
   }
 }
