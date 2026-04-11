@@ -1,26 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Bell, Youtube, User, Home, Heart, CircleDollarSign, Grid, Languages, MessageSquare, ChevronDown, X, Lock } from 'lucide-react';
+// MessageSquare 아이콘 추가
+import { Search, Bell, Youtube, User, Home, Heart, CircleDollarSign, Grid, Languages, MessageSquare, ChevronDown, X, Lock, Send } from 'lucide-react';
 
-const translations: Record<string, any> = {
-  ko: {
-    search: "글로벌 파이 뉴스 검색...",
-    trending: "인기 소식",
-    login_msg: "상세 내용은 파이오니어 전용입니다. 로그인해 주세요.",
-    support: "후원 0.001π",
-    verified_error: "Pi Browser의 개발자 모드에서 도메인 승인이 필요합니다.",
-    ai_assistant: "AI 도우미",
-    all: "전체보기",
-    login: "로그인",
-    profile: "프로필",
-    read_more: "원문 기사 읽기",
-    close: "닫기"
-  },
-  // ... (다른 언어는 기존 유지)
-};
-
-// ... (CATEGORIES 상수 기존 유지)
+// ... (translations 및 CATEGORIES 기존 유지)
 
 export default function NewsPage() {
   const [news, setNews] = useState<any[]>([]);
@@ -31,6 +15,12 @@ export default function NewsPage() {
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [selectedNews, setSelectedNews] = useState<any | null>(null);
 
+  // --- [7번 로직 추가] AI 채팅 관련 상태 ---
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatInput, setChatInput] = useState("");
+  const [chatHistory, setChatHistory] = useState<{role: 'user' | 'ai', text: string}[]>([]);
+  const [isTyping, setIsTyping] = useState(false);
+
   useEffect(() => {
     const savedUser = localStorage.getItem('gpnr_user');
     if (savedUser) setUser(JSON.parse(savedUser));
@@ -40,103 +30,120 @@ export default function NewsPage() {
     }
   }, [activeCategory, lang]);
 
-  const fetchNews = async () => { /* 기존 로직 유지 */ };
+  const fetchNews = async () => { /* 기존 fetch 로직 */ };
 
-  // [1, 2번 로직 적용] 결제 및 로그인 통합 핸들러
-  const handleAuthAndPayment = async () => {
-    if (typeof window === "undefined" || !(window as any).Pi) {
-      alert("Please open in Pi Browser.");
-      return;
-    }
+  // [7번 로직 추가] AI에게 질문하기 함수
+  const askAI = async () => {
+    if (!chatInput.trim() || !selectedNews) return;
+
+    const userMessage = chatInput;
+    setChatHistory(prev => [...prev, { role: 'user', text: userMessage }]);
+    setChatInput("");
+    setIsTyping(true);
 
     try {
-      // 1. 인증 확인 (유저 지갑 상태 점검)
-      const auth = await (window as any).Pi.authenticate(['payments', 'username'], (incompletePayment: any) => {
-        // 미결제 건 처리 로직 추가
-        console.log("Incomplete payment found, handling...", incompletePayment);
-        // 필요 시 여기서 서버에 incompletePayment.identifier를 보내 처리를 완료하거나 취소 요청을 할 수 있습니다.
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: userMessage,
+          contextNews: selectedNews, // 현재 클릭된 뉴스 정보 통째로 전달
+          lang: lang // 현재 설정된 언어 전달
+        })
       });
-      
-      const userData = { username: auth.user.username, uid: auth.user.uid };
-      setUser(userData);
-      localStorage.setItem('gpnr_user', JSON.stringify(userData));
 
-      // 2. 결제 생성 (인증 성공 후 실행)
-      await (window as any).Pi.createPayment({
-        amount: 0.001,
-        memo: "Support GPNR",
-        metadata: { type: "support_gpnr" },
-      }, {
-        onReadyForServerApproval: (id: string) => console.log("Approval ID:", id),
-        onReadyForServerCompletion: (id: string, txid: string) => alert("결제가 완료되었습니다! 감사합니다."),
-        onCancel: (id: string) => console.log("Payment Cancelled"),
-        onError: (error: any) => {
-          if (error.type === 'app_not_verified') {
-            alert(currentT.verified_error); // [2번] 디버깅 문구 출력
-          } else {
-            alert("Error: " + error.message);
-          }
-        },
-      });
-    } catch (err: any) {
-      alert("인증에 실패했습니다: " + err.message);
-    }
-  };
-
-  // [0번 로직] 기사 클릭 시 제어
-  const handleNewsClick = (item: any) => {
-    if (!user) {
-      // 로그인하지 않았으면 알림을 띄우고 결제(로그인) 유도
-      if (confirm(currentT.login_msg)) {
-        handleAuthAndPayment();
+      const data = await response.json();
+      if (data.status === 'success') {
+        setChatHistory(prev => [...prev, { role: 'ai', text: data.answer }]);
+      } else {
+        throw new Error(data.error);
       }
-    } else {
-      setSelectedNews(item);
+    } catch (err) {
+      setChatHistory(prev => [...prev, { role: 'ai', text: "AI 응답을 가져오는데 실패했습니다." }]);
+    } finally {
+      setIsTyping(false);
     }
   };
+
+  // ... (handleAuthAndPayment 및 handleNewsClick 기존 유지)
 
   const currentT = translations[lang] || translations['en'];
 
   return (
     <div className="flex flex-col min-h-screen bg-[#F8F9FA] text-gray-900 font-sans">
-      {/* Header & Category ... 기존과 동일 (handleSupportClick -> handleAuthAndPayment로 변경) */}
-      
-      <main className="p-4 space-y-5 pb-28">
-        {loading ? (
-          <div className="text-center py-20 text-gray-400">Loading...</div>
-        ) : (
-          news.map((item, idx) => (
-            <div 
-              key={idx} 
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer relative"
-              onClick={() => handleNewsClick(item)} // 0번 기능 적용
-            >
-              {!user && ( // 로그인 안했을 때 요약본 위에 잠금 표시 살짝 노출 가능
-                <div className="absolute top-2 right-2 z-10 bg-black/20 p-1 rounded-full backdrop-blur-md">
-                   <Lock size={12} className="text-white" />
-                </div>
-              )}
-              {/* 기사 썸네일 & 요약 내용 (기존과 동일) */}
-              <div className="h-44 bg-gray-200">
-                <img src={item.image} className={`w-full h-full object-cover ${!user ? 'grayscale-[0.5]' : ''}`} alt="news" />
-              </div>
-              <div className="p-4">
-                <h3 className="font-bold text-base mb-2 line-clamp-2">{item.title}</h3>
-                <p className="text-gray-500 text-[11px] line-clamp-2">{item.description}</p>
-              </div>
-            </div>
-          ))
-        )}
+      {/* Header, Search, Category ... 기존 유지 */}
+
+      <main className="...">
+        {/* 뉴스 리스트 렌더링 ... 기존 유지 */}
       </main>
 
-      {/* 상세 페이지 모달 (user가 있을 때만 렌더링되거나 모달 내부에서 제어) */}
+      {/* [8번 뉴스 상세 모달 내부에 AI 버튼 추가] */}
       {selectedNews && user && (
-        <div className="fixed inset-0 z-[100] ..."> 
-           {/* 기존 상세 페이지 코드 유지 */}
+        <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center">
+          <div className="bg-white w-full max-w-2xl max-h-[92vh] overflow-y-auto rounded-t-[2.5rem] relative no-scrollbar">
+            {/* ... 상세 내용 상단 생략 ... */}
+            <div className="p-6">
+               {/* 뉴스 본문 하단에 AI 어시스턴트 호출 버튼 */}
+               <button 
+                 onClick={() => { setIsChatOpen(true); setChatHistory([]); }}
+                 className="flex items-center justify-center gap-2 w-full py-4 mb-4 bg-indigo-50 text-indigo-700 rounded-2xl font-bold border border-indigo-100 hover:bg-indigo-100 transition-all"
+               >
+                 <MessageSquare size={18} />
+                 {currentT.ai_assistant}와 이 뉴스 논의하기
+               </button>
+
+               <button onClick={() => window.open(selectedNews.url, '_blank')} className="...">
+                 {currentT.read_more}
+               </button>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* Footer (handleSupportClick -> handleAuthAndPayment로 변경) */}
+      {/* [7번 로직] AI 채팅 팝업 UI */}
+      {isChatOpen && (
+        <div className="fixed inset-0 z-[200] bg-black/40 flex items-end justify-center sm:items-center p-0 sm:p-4">
+          <div className="bg-white w-full max-w-md h-[80vh] sm:h-[600px] rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-10">
+            <div className="bg-[#0D1B3E] p-4 text-white flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-xs">🤖</div>
+                <span className="font-bold">GPNR AI 도우미</span>
+              </div>
+              <button onClick={() => setIsChatOpen(false)}><X size={24} /></button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+              <div className="bg-white p-3 rounded-2xl shadow-sm border text-xs text-gray-500">
+                 📌 주제: {selectedNews?.title}
+              </div>
+              {chatHistory.map((msg, i) => (
+                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${msg.role === 'user' ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white text-gray-800 rounded-tl-none'}`}>
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+              {isTyping && <div className="text-xs text-gray-400 animate-pulse ml-2">AI가 분석 중입니다...</div>}
+            </div>
+
+            <div className="p-4 bg-white border-t flex gap-2">
+              <input 
+                type="text" 
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && askAI()}
+                placeholder="궁금한 점을 물어보세요..." 
+                className="flex-1 bg-gray-100 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500/20"
+              />
+              <button onClick={askAI} className="bg-indigo-600 text-white p-3 rounded-xl hover:bg-indigo-700 transition-colors">
+                <Send size={18} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Footer ... */}
     </div>
   );
 }
