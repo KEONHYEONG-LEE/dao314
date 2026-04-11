@@ -5,8 +5,10 @@ export async function GET(request: Request) {
   const lang = searchParams.get('lang') || 'ko';
   const category = searchParams.get('category') || 'all';
 
+  // 실제 표시될 17개 카테고리 리스트 (태그용)
+  const categoryList = ['MAINNET', 'COMMERCE', 'COMMUNITY', 'SOCIAL', 'EDUCATION', 'HEALTH', 'TRAVEL', 'UTILITIES', 'CAREER', 'ENTERTAIN', 'GAMES', 'FINANCE', 'MUSIC', 'SPORTS', 'DEFI', 'DAPP', 'NFT'];
+
   try {
-    // 카테고리별 검색어 최적화
     const searchQuery = category === 'all' ? 'Pi Network' : `Pi Network ${category}`;
     const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery)}&hl=${lang === 'ko' ? 'ko' : 'en-US'}`;
 
@@ -20,19 +22,23 @@ export async function GET(request: Request) {
       const pubDate = item.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1] || "";
       const rawDesc = item.match(/<description>([\s\S]*?)<\/description>/)?.[1] || "";
       
-      // 기사 본문 정제: HTML 태그, 엔티티(&nbsp; 등), 링크 주소를 모두 제거
       const cleanDesc = rawDesc
-        .replace(/<[^>]*>?/gm, '') // 태그 제거
-        .replace(/&[a-z0-9#]+;/gi, '') // HTML 엔티티 제거
-        .replace(/(http|https):\/\/[^\s]+/g, '') // 본문 내 URL 제거
+        .replace(/<[^>]*>?/gm, '')
+        .replace(/&[a-z0-9#]+;/gi, '')
+        .replace(/(http|https):\/\/[^\s]+/g, '')
         .trim();
+
+      // [수정 포인트 1] category가 'all'인 경우, 17개 카테고리 중 하나를 매칭 (인덱스 활용)
+      // 특정 단어가 제목에 있으면 그 카테고리를 우선 배정하는 로직 추가 가능
+      const displayCategory = category === 'all' 
+        ? categoryList[index % categoryList.length] 
+        : category.toUpperCase();
 
       return {
         id: `news-${index}-${category}`,
-        // 전부 LIVE가 아닌 선택된 카테고리 이름을 부여
-        category: category.toUpperCase(),
+        category: displayCategory, // 이제 'ALL' 대신 구체적인 카테고리명이 찍힙니다.
         title: title.split(' - ')[0],
-        content: cleanDesc || "상세 내용을 가져오는 중입니다. 원문 링크를 통해 더 자세한 내용을 확인하실 수 있습니다.",
+        content: cleanDesc || "상세 내용을 가져오는 중입니다.",
         author: title.split(' - ')[1] || "GPNR News",
         date: new Date(pubDate).toLocaleDateString(),
         image: `https://picsum.photos/seed/${index}${category}/800/600`,
