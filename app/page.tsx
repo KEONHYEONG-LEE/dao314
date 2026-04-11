@@ -6,7 +6,6 @@ import { Search, User, Home, CircleDollarSign, Grid, X, Share2, ExternalLink, Sp
 const CATEGORIES = [
   { id: 'all', label: { ko: '전체', en: 'All' }, icon: <Grid size={18}/> },
   { id: 'mainnet', label: { ko: '메인넷', en: 'Mainnet' }, icon: '🌐' },
-  // [수정] MAINNET과 COMMERCE 사이에 COMMUNITY 추가
   { id: 'community', label: { ko: '커뮤니티', en: 'Community' }, icon: <Users size={18}/> }, 
   { id: 'commerce', label: { ko: '커머스', en: 'Commerce' }, icon: '🛒' },
   { id: 'social', label: { ko: '소셜', en: 'Social' }, icon: '💬' },
@@ -144,13 +143,13 @@ export default function NewsPage() {
               {selectedNews.content}
             </div> 
 
-            {/* AI 요약 버튼 섹션 */}
+            {/* AI 요약 버튼 섹션 (에러 수정 지점) */}
             <div className="mb-10 p-1 bg-indigo-50 rounded-[2rem]">
               <button 
                 onClick={() => setSummary("[GPNR AI 요약]\n• 기사 분석 결과, 생태계 내의 결제 시스템 통합이 가속화되고 있습니다.\n• 주요 커뮤니티의 참여도가 역대 최고치를 기록했습니다.")}
                 className="w-full bg-indigo-600 text-white py-4 rounded-[1.8rem] font-bold flex items-center justify-center gap-2 shadow-lg shadow-indigo-100 active:scale-[0.98] transition-transform"
               >
-                <item.icon size={18} /> <Sparkles size={18} /> AI 핵심 내용 요약하기
+                <Sparkles size={18} /> AI 핵심 내용 요약하기
               </button>
               {summary && (
                 <div className="p-6 text-sm text-indigo-900 font-bold animate-in fade-in slide-in-from-top-2">
