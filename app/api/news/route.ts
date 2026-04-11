@@ -6,12 +6,12 @@ export async function GET(request: Request) {
   const category = searchParams.get('category') || 'all';
 
   try {
+    // 카테고리별 검색어 최적화
     const searchQuery = category === 'all' ? 'Pi Network' : `Pi Network ${category}`;
     const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery)}&hl=${lang === 'ko' ? 'ko' : 'en-US'}`;
 
     const response = await fetch(rssUrl, { next: { revalidate: 3600 } });
     const xmlData = await response.text();
-
     const items = xmlData.match(/<item>([\s\S]*?)<\/item>/g) || [];
     
     const realNews = items.map((item, index) => {
@@ -20,17 +20,21 @@ export async function GET(request: Request) {
       const pubDate = item.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1] || "";
       const rawDesc = item.match(/<description>([\s\S]*?)<\/description>/)?.[1] || "";
       
-      // HTML 태그 제거 및 본문 추출
-      const cleanDesc = rawDesc.replace(/<[^>]*>?/gm, '');
+      // 기사 본문 정제: HTML 태그, 엔티티(&nbsp; 등), 링크 주소를 모두 제거
+      const cleanDesc = rawDesc
+        .replace(/<[^>]*>?/gm, '') // 태그 제거
+        .replace(/&[a-z0-9#]+;/gi, '') // HTML 엔티티 제거
+        .replace(/(http|https):\/\/[^\s]+/g, '') // 본문 내 URL 제거
+        .trim();
 
       return {
-        id: `real-${index}`,
-        category: category === 'all' ? 'LIVE' : category.toUpperCase(),
+        id: `news-${index}-${category}`,
+        // 전부 LIVE가 아닌 선택된 카테고리 이름을 부여
+        category: category.toUpperCase(),
         title: title.split(' - ')[0],
-        // 상세 페이지에서 보여줄 충분한 양의 본문 데이터
-        content: cleanDesc + "\n\n이 기사는 실시간 뉴스 피드를 통해 수집된 상세 정보를 포함하고 있습니다. GPNR AI는 파이오니어들이 생태계의 흐름을 정확히 파악할 수 있도록 원문의 핵심 내용을 그대로 전달합니다.",
+        content: cleanDesc || "상세 내용을 가져오는 중입니다. 원문 링크를 통해 더 자세한 내용을 확인하실 수 있습니다.",
         author: title.split(' - ')[1] || "GPNR News",
-        date: new Date(pubDate).toLocaleString(),
+        date: new Date(pubDate).toLocaleDateString(),
         image: `https://picsum.photos/seed/${index}${category}/800/600`,
         url: link
       };
@@ -38,6 +42,6 @@ export async function GET(request: Request) {
 
     return NextResponse.json(realNews);
   } catch (error) {
-    return NextResponse.json({ error: "Failed" }, { status: 500 });
+    return NextResponse.json({ error: "Fail" }, { status: 500 });
   }
 }
