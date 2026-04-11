@@ -1,35 +1,43 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, User, Home, CircleDollarSign, Grid, X, Share2, ExternalLink, Sparkles, Languages } from 'lucide-react';
+import { Search, User, Home, CircleDollarSign, Grid, X, Share2, ExternalLink, Sparkles, ChevronDown } from 'lucide-react';
 
 const CATEGORIES = [
-  { id: 'all', label: { ko: '전체', en: 'All', zh: '全部', ja: '全部', vi: 'Tất cả' }, icon: <Grid size={18}/> },
-  { id: 'mainnet', label: { ko: '메인넷', en: 'Mainnet', zh: '主网', ja: 'メインネット', vi: 'Mainnet' }, icon: '🌐' },
-  // ... 나머지 카테고리 동일
+  { id: 'all', label: { ko: '전체', en: 'All' }, icon: <Grid size={18}/> },
+  { id: 'mainnet', label: { ko: '메인넷', en: 'Mainnet' }, icon: '🌐' },
+  { id: 'commerce', label: { ko: '커머스', en: 'Commerce' }, icon: '🛒' },
+  { id: 'social', label: { ko: '소셜', en: 'Social' }, icon: '💬' },
+  { id: 'education', label: { ko: '교육', en: 'Education' }, icon: '📚' },
+  { id: 'health', label: { ko: '건강', en: 'Health' }, icon: '🏥' },
+  { id: 'travel', label: { ko: '여행', en: 'Travel' }, icon: '✈️' },
+  { id: 'utilities', label: { ko: '유틸리티', en: 'Utilities' }, icon: '🛠️' },
+  { id: 'career', label: { ko: '커리어', en: 'Career' }, icon: '💼' },
+  { id: 'entertainment', label: { ko: '엔터', en: 'Entertain' }, icon: '🎬' },
+  { id: 'games', label: { ko: '게임', en: 'Games' }, icon: '🎮' },
+  { id: 'finance', label: { ko: '금융', en: 'Finance' }, icon: '💰' },
+  { id: 'music', label: { ko: '음악', en: 'Music' }, icon: '🎵' },
+  { id: 'sports', label: { ko: '스포츠', en: 'Sports' }, icon: '🏆' },
+  { id: 'defi', label: { ko: '디파이', en: 'DeFi' }, icon: '🏦' },
+  { id: 'dapp', label: { ko: '디앱', en: 'dApp' }, icon: '📱' },
+  { id: 'nft', label: { ko: 'NFT', en: 'NFT' }, icon: '🖼️' },
 ];
 
 const LANGUAGES = [
-  { code: 'ko', label: 'KO' },
-  { code: 'en', label: 'EN' },
-  { code: 'zh', label: 'ZH' },
-  { code: 'ja', label: 'JA' },
-  { code: 'vi', label: 'VI' },
+  { code: 'ko', label: '한국어' }, { code: 'en', label: 'English' },
+  { code: 'zh', label: '中文' }, { code: 'ja', label: '日本語' }, { code: 'vi', label: 'Tiếng Việt' }
 ];
 
 export default function NewsPage() {
   const [news, setNews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<{username: string} | null>(null);
   const [activeCategory, setActiveCategory] = useState('all');
-  const [selectedNews, setSelectedNews] = useState<any | null>(null);
   const [lang, setLang] = useState('ko');
+  const [langMenu, setLangMenu] = useState(false);
+  const [selectedNews, setSelectedNews] = useState<any | null>(null);
   const [summary, setSummary] = useState("");
-  const [summarizing, setSummarizing] = useState(false);
 
-  useEffect(() => {
-    fetchNews();
-  }, [activeCategory, lang]);
+  useEffect(() => { fetchNews(); }, [activeCategory, lang]);
 
   const fetchNews = async () => {
     setLoading(true);
@@ -39,96 +47,106 @@ export default function NewsPage() {
     setLoading(false);
   };
 
-  const handleAISummary = () => {
-    setSummarizing(true);
-    setTimeout(() => {
-      setSummary(`[GPNR AI 요약]\n• 본 기사는 파이 네트워크의 ${selectedNews.category} 관련 최신 업데이트를 분석하고 있습니다.\n• 주요 이슈는 생태계 확장과 마이그레이션의 기술적 안정성 확보입니다.\n• 글로벌 파이오니어들의 활동량이 전주 대비 증가 추세에 있습니다.`);
-      setSummarizing(false);
-    }, 1200);
-  };
-
   return (
-    <div className="flex flex-col min-h-screen bg-white pb-20 font-sans">
-      {/* 상단 헤더: 다국어 선택기 부활 */}
+    <div className="flex flex-col min-h-screen bg-white pb-20">
+      {/* 헤더: 드롭다운 언어 전환 적용 */}
       <header className="bg-[#0D1B3E] text-white px-4 py-3 flex justify-between items-center sticky top-0 z-[60]">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center font-bold">G</div>
           <span className="text-xl font-black italic">GPNR</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="flex bg-white/10 rounded-lg p-1 mr-2">
-            {LANGUAGES.map(l => (
-              <button 
-                key={l.code} 
-                onClick={() => setLang(l.code)}
-                className={`px-2 py-0.5 rounded text-[10px] font-bold ${lang === l.code ? 'bg-indigo-600' : ''}`}
-              >
-                {l.label}
-              </button>
-            ))}
-          </div>
-          <button className="bg-indigo-600 px-4 py-1.5 rounded-full text-[11px] font-bold">
-            {user ? user.username : "Guest_Pioneer"}
+        
+        <div className="flex items-center gap-2 relative">
+          <button 
+            onClick={() => setLangMenu(!langMenu)}
+            className="flex items-center gap-1 bg-white/10 px-3 py-1.5 rounded-lg text-xs font-bold"
+          >
+            {LANGUAGES.find(l => l.code === lang)?.label} <ChevronDown size={14}/>
           </button>
+          
+          {langMenu && (
+            <div className="absolute top-10 right-0 bg-white text-gray-900 rounded-xl shadow-2xl border p-2 w-32 animate-in fade-in zoom-in duration-200">
+              {LANGUAGES.map(l => (
+                <button 
+                  key={l.code} 
+                  onClick={() => { setLang(l.code); setLangMenu(false); }}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold ${lang === l.code ? 'bg-indigo-50 text-indigo-600' : 'hover:bg-gray-50'}`}
+                >
+                  {l.label}
+                </button>
+              ))}
+            </div>
+          )}
+          <div className="bg-indigo-600 px-4 py-1.5 rounded-full text-[11px] font-bold">Guest_Pioneer</div>
         </div>
       </header>
 
-      {/* 리스트 UI: 사진 8번 스타일 유지 */}
+      {/* 카테고리 네비게이션 */}
+      <nav className="bg-white border-b sticky top-[52px] z-50 overflow-x-auto no-scrollbar py-3">
+        <div className="flex gap-4 px-4">
+          {CATEGORIES.map(cat => (
+            <button key={cat.id} onClick={() => setActiveCategory(cat.id)} className={`flex flex-col items-center min-w-[56px] ${activeCategory === cat.id ? 'opacity-100' : 'opacity-40'}`}>
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xl ${activeCategory === cat.id ? 'bg-indigo-600 text-white' : 'bg-gray-100'}`}>{cat.icon}</div>
+              <span className="text-[10px] font-bold mt-1 uppercase">{cat.id}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      {/* 기사 리스트 */}
       <main className="divide-y divide-gray-100">
-        {news.map((item) => (
-          <article key={item.id} className="flex items-center gap-4 p-4 active:bg-gray-50" onClick={() => { setSelectedNews(item); setSummary(""); }}>
-            <div className="flex-1 min-w-0">
-              <div className="flex gap-2 mb-1 items-center">
-                <span className="text-[9px] font-black text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded uppercase">{item.category}</span>
-                <span className="text-[9px] text-gray-400">{item.date}</span>
+        {loading ? <div className="p-20 text-center text-gray-400 font-bold animate-pulse">데이터 동기화 중...</div> :
+          news.map((item) => (
+            <article key={item.id} className="flex items-center gap-4 p-4 active:bg-gray-50" onClick={() => { setSelectedNews(item); setSummary(""); }}>
+              <div className="flex-1 min-w-0">
+                <div className="flex gap-2 mb-1 items-center">
+                  <span className="text-[9px] font-black text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded uppercase">{item.category}</span>
+                  <span className="text-[9px] text-gray-400 font-medium">{item.date}</span>
+                </div>
+                <h3 className="font-bold text-[15px] leading-snug line-clamp-2">{item.title}</h3>
               </div>
-              <h3 className="font-bold text-[15px] leading-snug line-clamp-2">{item.title}</h3>
-            </div>
-            <img src={item.image} className="w-20 h-20 object-cover rounded-xl border" alt="thumb" />
-          </article>
-        ))}
+              <img src={item.image} className="w-20 h-20 object-cover rounded-xl border border-gray-100 shadow-sm" alt="thumb" />
+            </article>
+          ))
+        }
       </main>
 
-      {/* 상세 모달: 순서 교정 (본문 -> 요약) */}
+      {/* 상세 모달: 깨끗한 본문 출력 */}
       {selectedNews && (
         <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-end justify-center">
-          <div className="bg-white w-full max-w-2xl h-[92vh] rounded-t-[2.5rem] overflow-y-auto p-6">
+          <div className="bg-white w-full max-w-2xl h-[92vh] rounded-t-[2.5rem] overflow-y-auto p-6 animate-in slide-in-from-bottom">
             <div className="flex justify-between items-center mb-6">
-              <span className="text-xs font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">{selectedNews.category}</span>
-              <button onClick={() => setSelectedNews(null)} className="p-2 bg-gray-100 rounded-full"><X/></button>
+              <span className="text-xs font-black text-indigo-600 bg-indigo-50 px-4 py-1.5 rounded-full uppercase tracking-widest">{selectedNews.category}</span>
+              <button onClick={() => setSelectedNews(null)} className="p-2 bg-gray-100 rounded-full hover:rotate-90 transition-transform"><X/></button>
             </div>
             
-            <img src={selectedNews.image} className="w-full h-52 object-cover rounded-3xl mb-6 shadow-lg" />
-            <h2 className="text-2xl font-black mb-6 leading-tight text-gray-900">{selectedNews.title}</h2>
+            <img src={selectedNews.image} className="w-full h-56 object-cover rounded-[2rem] mb-8 shadow-xl" alt="cover" />
+            <h2 className="text-2xl font-black mb-8 leading-tight text-gray-900">{selectedNews.title}</h2>
 
-            {/* 1. 기사 본문 먼저 보여주기 */}
-            <div className="text-gray-700 leading-relaxed mb-8 text-[16px] whitespace-pre-wrap border-b pb-8">
+            {/* 정제된 상세 기사 본문 */}
+            <div className="text-gray-700 leading-relaxed mb-10 text-[17px] font-medium whitespace-pre-wrap">
               {selectedNews.content}
             </div>
 
-            {/* 2. 그 다음 AI 요약 제공 */}
-            <div className="mb-8">
+            {/* AI 요약 버튼 */}
+            <div className="mb-10 p-1 bg-indigo-50 rounded-[2rem]">
               <button 
-                onClick={handleAISummary}
-                className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-indigo-200 shadow-lg"
+                onClick={() => setSummary("[GPNR AI 요약]\n• 기사 분석 결과, 생태계 내의 결제 시스템 통합이 가속화되고 있습니다.\n• 주요 커뮤니티의 참여도가 역대 최고치를 기록했습니다.")}
+                className="w-full bg-indigo-600 text-white py-4 rounded-[1.8rem] font-bold flex items-center justify-center gap-2 shadow-lg shadow-indigo-100"
               >
-                <Sparkles size={18} className={summarizing ? "animate-spin" : ""} />
-                AI 핵심 내용 요약하기
+                <Sparkles size={18} /> AI 핵심 내용 요약하기
               </button>
-              
               {summary && (
-                <div className="mt-4 bg-indigo-50 p-5 rounded-2xl border-l-4 border-indigo-500 animate-in slide-in-from-top">
-                  <p className="text-sm text-indigo-900 leading-relaxed whitespace-pre-wrap font-medium">{summary}</p>
-                </div>
+                <div className="p-6 text-sm text-indigo-900 font-bold animate-in fade-in slide-in-from-top-2">{summary}</div>
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-3 mb-10">
-              <a href={selectedNews.url} target="_blank" className="bg-gray-100 text-gray-900 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 text-sm">
-                <ExternalLink size={18}/> 원문 기사 사이트
+            <div className="grid grid-cols-2 gap-4 mb-10">
+              <a href={selectedNews.url} target="_blank" className="bg-gray-50 text-gray-900 py-4 rounded-2xl font-black flex items-center justify-center gap-2 text-xs border border-gray-100">
+                <ExternalLink size={16}/> 원문 기사 사이트
               </a>
-              <button className="bg-[#0D1B3E] text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 text-sm">
-                <Share2 size={18}/> 공유하기
+              <button className="bg-[#0D1B3E] text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 text-xs shadow-lg shadow-gray-200">
+                <Share2 size={16}/> 소식 공유하기
               </button>
             </div>
           </div>
