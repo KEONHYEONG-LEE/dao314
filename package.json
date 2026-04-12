@@ -58,7 +58,12 @@
     "@ai-sdk/react": "^1.0.0",
     "next-themes": "^0.4.4",
     "tailwind-scrollbar-hide": "^1.1.7",
-    "@google/generative-ai": "^0.11.4"
+    "@google/generative-ai": "^0.11.4",
+    "axios": "^1.6.0",
+    "node-cron": "^3.0.3",
+    "dotenv": "^16.4.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/node-cron": "^3.0.11"
+  }
 }
