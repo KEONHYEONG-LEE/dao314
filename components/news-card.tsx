@@ -14,12 +14,28 @@ import {
   X
 } from "lucide-react";
 
-export default function NewsCard({ title, content, date, source, image }: any) {
+// 뉴스 본문에서 HTML 태그를 완전히 제거하는 안전한 함수
+const stripHtml = (html: string) => {
+  if (!html) return "";
+  // 1. <style>, <script> 등 내용까지 지워야 하는 태그 처리
+  // 2. 모든 HTML 태그 제거 및 엔티티(&nbsp; 등) 공백 처리
+  return html
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+    .replace(/<[^>]*>?/gm, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+};
+
+export default function NewsCard({ category, title, content, date, source, image }: any) {
   const [isOpen, setIsOpen] = useState(false);
   const [summary, setSummary] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // AI 요약 요청 함수
+  // 깨끗하게 정제된 본문 데이터
+  const cleanContent = stripHtml(content);
+
   const handleSummarize = async (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsLoading(true);
@@ -29,7 +45,7 @@ export default function NewsCard({ title, content, date, source, image }: any) {
       const res = await fetch("/api/summary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content, lang: "ko" }),
+        body: JSON.stringify({ content: cleanContent, lang: "ko" }),
       });
       const data = await res.json();
       setSummary(data.summary);
@@ -50,7 +66,10 @@ export default function NewsCard({ title, content, date, source, image }: any) {
         <div className="p-4 flex items-center justify-between border-b border-gray-50">
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4 text-blue-500" />
-            <span className="text-xs font-bold text-blue-600">Global Community</span>
+            {/* 'ALL' 대신 실제 데이터의 카테고리 표시 (값이 없으면 기본값 사용) */}
+            <span className="text-xs font-bold text-blue-600">
+              {category && category !== 'ALL' ? category : 'Pi Network'}
+            </span>
           </div>
           <div className="flex gap-3 text-gray-300">
             <EyeOff className="w-4 h-4" />
@@ -61,7 +80,8 @@ export default function NewsCard({ title, content, date, source, image }: any) {
         
         <div className="p-4">
           <h3 className="text-lg font-bold text-gray-900 leading-tight mb-2">{title}</h3>
-          <p className="text-sm text-gray-500 line-clamp-2 mb-4">{content}</p>
+          {/* 정제된 텍스트만 2줄로 표시 */}
+          <p className="text-sm text-gray-500 line-clamp-2 mb-4">{cleanContent}</p>
           
           {image && (
             <img src={image} alt="news" className="w-full h-48 object-cover rounded-xl mb-4" />
@@ -70,7 +90,7 @@ export default function NewsCard({ title, content, date, source, image }: any) {
           <div className="flex items-center justify-between text-[11px] text-gray-400 border-t border-gray-50 pt-3">
             <div className="flex items-center gap-2">
               <Youtube className="w-4 h-4 text-red-600" />
-              <span>{source || "Pi Network Community"}</span>
+              <span>{source || "GPNR News"}</span>
             </div>
             <div className="flex items-center gap-1">
               <span>{date}</span>
@@ -90,12 +110,11 @@ export default function NewsCard({ title, content, date, source, image }: any) {
 
             <h2 className="text-xl font-bold mt-4 mb-4">{title}</h2>
             
-            {/* 본문 내용 (태그 없이 깨끗하게 출력) */}
+            {/* 상세 본문도 깨끗하게 출력 */}
             <div className="text-gray-700 leading-relaxed mb-6 whitespace-pre-wrap">
-              {content}
+              {cleanContent}
             </div>
 
-            {/* AI 요약 섹션 */}
             <div className="bg-indigo-50 rounded-2xl p-5 border border-indigo-100 mb-6">
               <button 
                 onClick={handleSummarize}
