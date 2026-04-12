@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, Search, Globe, Moon, Sun } from "lucide-react";
+import { Menu, X, Search, Globe, Moon, Sun, ChevronDown } from "lucide-react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
@@ -15,8 +15,19 @@ const navItems = [
   { name: "문화", href: "/culture" },
 ];
 
+// 5개 국어 리스트
+const languages = [
+  { code: "ko", name: "한국어" },
+  { code: "en", name: "English" },
+  { code: "zh", name: "中国" },
+  { code: "ja", name: "日本語" },
+  { code: "vi", name: "Tiếng Việt" },
+];
+
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLangOpen, setIsLangOpen] = useState(false); // 언어 드롭다운 상태
+  const [currentLang, setCurrentLang] = useState(languages[0]); // 현재 선택된 언어
   const { theme, setTheme } = useTheme();
 
   return (
@@ -25,7 +36,7 @@ export function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <Globe className="h-8 w-8 text-accent" />
+            <Globe className="h-8 w-8 text-blue-600" />
             <span className="text-xl font-bold tracking-tight">GPNR</span>
           </Link>
 
@@ -44,6 +55,36 @@ export function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
+            {/* 언어 선택 드롭다운 추가 */}
+            <div className="relative mr-2">
+              <button
+                onClick={() => setIsLangOpen(!isLangOpen)}
+                className="flex items-center gap-1.5 h-9 px-3 rounded-md hover:bg-secondary transition-colors text-xs font-medium"
+              >
+                <Globe className="h-4 w-4" />
+                <span className="hidden sm:inline">{currentLang.name}</span>
+                <ChevronDown className={cn("h-3 w-3 transition-transform", isLangOpen && "rotate-180")} />
+              </button>
+
+              {isLangOpen && (
+                <div className="absolute right-0 mt-2 w-32 bg-white dark:bg-slate-900 border border-border rounded-lg shadow-xl z-[60] overflow-hidden">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        setCurrentLang(lang);
+                        setIsLangOpen(false);
+                        // 여기서 나중에 전역 언어 설정을 변경할 예정입니다.
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-xs hover:bg-secondary transition-colors"
+                    >
+                      {lang.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <button
               className="hidden md:flex h-9 w-9 items-center justify-center rounded-md hover:bg-secondary transition-colors"
               aria-label="검색"
@@ -63,11 +104,7 @@ export function Header() {
               className="md:hidden h-9 w-9 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
               aria-label="메뉴"
             >
-              {isMenuOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Menu className="h-5 w-5" />
-              )}
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
         </div>
@@ -95,4 +132,4 @@ export function Header() {
       </div>
     </header>
   );
-} 
+}
