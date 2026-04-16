@@ -1,30 +1,33 @@
 import React, { useEffect, useState } from 'react';
-// 확실한 것들은 그대로 유지
 import { Header } from '@/components/Header';
 import { CategoryTabs } from '@/components/category-tabs';
-import { Footer } from '@/components/footer';
 
-// 문제의 NewsFeed 불러오기 방식 수정
-// 만약 NewsFeed가 default export라면 아래줄이 작동합니다.
-import NewsFeedDefault from '@/components/news-feed';
-// 만약 NewsFeed가 named export라면 아래줄이 작동합니다.
-import * as NewsFeedModule from '@/components/news-feed';
+// 파일 전체를 모듈 객체로 가져옵니다. (이름 불일치 완전 방어)
+import * as NewsModule from '@/components/news-feed';
+import * as FooterModule from '@/components/footer';
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // 실제 사용할 NewsFeed 컴포넌트 결정
-  const ActualNewsFeed = NewsFeedDefault || (NewsFeedModule as any).NewsFeed || (NewsFeedModule as any).default;
+  // 모듈 객체에서 컴포넌트를 찾는 함수
+  const getComponent = (module: any) => {
+    if (!module) return null;
+    // 1. default export 확인, 2. 첫 번째로 발견되는 함수/객체 확인
+    return module.default || Object.values(module).find(val => typeof val === 'function' || typeof val === 'object');
+  };
+
+  const NewsFeed = getComponent(NewsModule);
+  const Footer = getComponent(FooterModule);
 
   const handlePiLogin = async () => {
     if (typeof window !== 'undefined' && window.Pi) {
       try {
         await window.Pi.authenticate(['username', 'payments'], (payment: any) => {
-          console.log("Incomplete payment:", payment);
+          console.log("미결제 발견:", payment);
         });
         setIsLoggedIn(true);
       } catch (err) {
-        console.error("Pi Auth failed", err);
+        console.error("인증 실패:", err);
       }
     }
   };
@@ -39,18 +42,14 @@ export default function Home() {
         </section>
 
         <section>
-          {/* NewsFeed가 어떤 방식으로 export 되었든 실행되도록 처리 */}
-          {ActualNewsFeed ? <ActualNewsFeed /> : <p className="text-center">뉴스를 불러오는 중...</p>}
+          {/* 찾은 컴포넌트가 있으면 실행, 없으면 메시지 표시 */}
+          {NewsFeed ? <NewsFeed /> : <div className="py-10 text-center">뉴스를 불러올 수 없습니다.</div>}
         </section>
       </main>
 
-      <Footer />
+      {Footer && <Footer />}
     </div>
   );
 }
 
-declare global {
-  interface Window {
-    Pi: any;
-  }
-}
+declare global { interface Window { Pi: any; } }
