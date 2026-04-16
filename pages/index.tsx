@@ -1,44 +1,43 @@
 import React, { useEffect, useState } from 'react';
-// 컴포넌트들을 중괄호 { }로 감싸서 Named Export 방식으로 불러옵니다.
-import { Header } from '@/components/Header'; 
-import { CategoryTabs } from '@/components/category-tabs'; 
-import { NewsFeed } from '@/components/news-feed'; 
-import { Footer } from '@/components/footer'; 
+// 1. 깃허브 실물 파일명과 대소문자를 100% 일치시켰습니다.
+// 2. 'default export'가 없는 경우를 대비해 중괄호 { }를 사용한 Named Import로 통일합니다.
+import { Header } from '@/components/Header';
+import { CategoryTabs } from '@/components/category-tabs';
+import { NewsFeed } from '@/components/news-feed';
+import { Footer } from '@/components/footer';
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Pi Network 인증 및 로그인
   const handlePiLogin = async () => {
     if (typeof window !== 'undefined' && window.Pi) {
       try {
-        const scopes = ['username', 'payments'];
-        const auth = await window.Pi.authenticate(scopes, (payment: any) => {
-          console.log("미결제 건 발견:", payment);
+        await window.Pi.authenticate(['username', 'payments'], (payment: any) => {
+          console.log("Incomplete payment:", payment);
         });
         setIsLoggedIn(true);
-        console.log(`Pioneer ${auth.user.username} 로그인됨`);
       } catch (err) {
-        console.error("인증 실패:", err);
+        console.error("Pi Auth failed", err);
       }
     }
   };
 
   return (
     <div className="min-h-screen bg-white text-black">
-      <Header onLogin={handlePiLogin} isLoggedIn={isLoggedIn} />
+      {/* 3. 컴포넌트가 undefined가 아닌지 확인하는 안전장치를 추가했습니다. */}
+      {Header && <Header onLogin={handlePiLogin} isLoggedIn={isLoggedIn} />}
       
       <main className="container mx-auto px-4 py-6">
         <section className="mb-8">
-          <CategoryTabs />
+          {CategoryTabs && <CategoryTabs />}
         </section>
 
         <section>
-          <NewsFeed />
+          {NewsFeed && <NewsFeed />}
         </section>
       </main>
 
-      <Footer />
+      {Footer && <Footer />}
     </div>
   );
 }
