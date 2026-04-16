@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { Grid, X, Share2, ExternalLink, Sparkles, ChevronDown, Users, Eye, Calendar, Quote, Loader2 } from 'lucide-react'; 
-import { Header } from '@/components/Header'; // 기존 헤더 유지 시 사용
 
 const CATEGORIES = [
   { id: 'all', label: { ko: '전체', en: 'All' }, icon: <Grid size={18}/> },
@@ -40,8 +39,8 @@ export default function Home() {
   const fetchNews = async () => {
     setLoading(true);
     try {
-      // API 경로를 /api/news에서 실제 파일 위치로 맞춤
-      const res = await fetch(`/api/news?category=${activeCategory}&lang=${lang}`);
+      // [수정된 부분] 호출 경로를 /api/fetch-news 로 맞췄습니다.
+      const res = await fetch(`/api/fetch-news?category=${activeCategory}&lang=${lang}`);
       const data = await res.json();
       if (Array.isArray(data)) {
         setNews(data);
@@ -76,7 +75,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-white pb-20 font-sans">
-      {/* 상단 헤더 */}
+      {/* 헤더 */}
       <header className="bg-[#0D1B3E] text-white px-4 py-3 flex justify-between items-center sticky top-0 z-[60]">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center font-bold text-white">G</div>
@@ -101,7 +100,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 카테고리 네비게이션 */}
+      {/* 카테고리 탭 (4번째 사진 스타일) */}
       <nav className="bg-white border-b sticky top-[52px] z-50 overflow-x-auto no-scrollbar py-3 shadow-sm">
         <div className="flex gap-4 px-4">
           {CATEGORIES.map(cat => (
@@ -116,7 +115,7 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* 기사 리스트 */}
+      {/* 기사 리스트 (4번째 사진 스타일) */}
       <main className="divide-y divide-gray-100 px-2">
         {loading ? (
           <div className="p-20 text-center text-gray-400 font-bold animate-pulse">
@@ -142,7 +141,7 @@ export default function Home() {
         )}
       </main>
 
-      {/* 상세 모달 (생략된 스타일 유지) */}
+      {/* 상세 모달 */}
       {selectedNews && (
         <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-end justify-center">
           <div className="bg-white w-full max-w-2xl h-[92vh] rounded-t-[2.5rem] overflow-y-auto p-6 animate-in slide-in-from-bottom duration-300">
@@ -157,11 +156,19 @@ export default function Home() {
             </div> 
             <div className="mb-10 bg-indigo-50 p-1 rounded-[2rem]">
               <button onClick={() => handleGetSummary(selectedNews.content)} disabled={isSummarizing}
-                className="w-full bg-indigo-600 text-white py-4 rounded-[1.8rem] font-bold flex items-center justify-center gap-2">
+                className="w-full bg-indigo-600 text-white py-4 rounded-[1.8rem] font-bold flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
                 {isSummarizing ? <Loader2 className="animate-spin" size={18} /> : <Sparkles size={18} />}
-                요약하기
+                GPNR AI 핵심 내용 요약하기
               </button>
-              {aiSummary && <div className="p-5 text-sm text-indigo-900 bg-white/50 m-2 rounded-2xl border border-indigo-100">{aiSummary}</div>}
+              {aiSummary && <div className="p-5 text-sm text-indigo-900 bg-white/50 m-2 rounded-2xl border border-indigo-100 whitespace-pre-wrap">{aiSummary}</div>}
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-10">
+              <a href={selectedNews.url} target="_blank" rel="noopener noreferrer" className="bg-gray-50 text-gray-900 py-4 rounded-2xl font-black flex items-center justify-center gap-2 text-xs border border-gray-100">
+                <ExternalLink size={16}/> 원문 기사 사이트
+              </a>
+              <button className="bg-[#0D1B3E] text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 text-xs shadow-lg shadow-gray-200">
+                <Share2 size={16}/> 소식 공유하기
+              </button>
             </div>
           </div>
         </div>
