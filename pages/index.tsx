@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from 'react';
-// 모든 컴포넌트를 중괄호 { }를 사용하는 Named Import 방식으로 통일합니다.
+// 확실한 것들은 그대로 유지
 import { Header } from '@/components/Header';
 import { CategoryTabs } from '@/components/category-tabs';
-import { NewsFeed } from '@/components/news-feed'; // 중괄호 추가
-import { Footer } from '@/components/footer';     // 중괄호 추가
+import { Footer } from '@/components/footer';
+
+// 문제의 NewsFeed 불러오기 방식 수정
+// 만약 NewsFeed가 default export라면 아래줄이 작동합니다.
+import NewsFeedDefault from '@/components/news-feed';
+// 만약 NewsFeed가 named export라면 아래줄이 작동합니다.
+import * as NewsFeedModule from '@/components/news-feed';
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // 실제 사용할 NewsFeed 컴포넌트 결정
+  const ActualNewsFeed = NewsFeedDefault || (NewsFeedModule as any).NewsFeed || (NewsFeedModule as any).default;
 
   const handlePiLogin = async () => {
     if (typeof window !== 'undefined' && window.Pi) {
@@ -31,8 +39,8 @@ export default function Home() {
         </section>
 
         <section>
-          {/* NewsFeed가 제대로 로드되지 않았을 때를 대비한 메시지 */}
-          {NewsFeed ? <NewsFeed /> : <p className="text-center">뉴스를 불러올 수 없습니다.</p>}
+          {/* NewsFeed가 어떤 방식으로 export 되었든 실행되도록 처리 */}
+          {ActualNewsFeed ? <ActualNewsFeed /> : <p className="text-center">뉴스를 불러오는 중...</p>}
         </section>
       </main>
 
