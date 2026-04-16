@@ -1,35 +1,34 @@
+import { NextApiRequest, NextApiResponse } from 'next';
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import type { NextApiRequest, NextApiResponse } from 'next';
-
-// 환경 변수에서 키를 불러옵니다.
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // POST 방식만 허용
+  // POST 요청인지 확인
   if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
-
-  const { content, lang } = req.body;
-
-  if (!content) {
-    return res.status(400).json({ summary: "요약할 내용이 없습니다." });
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   try {
-    // Gemini 1.5 Flash 모델 설정
+    const { content, lang } = req.body;
+    
+    // 제티가 제공해주신 Gemini API KEY
+    const apiKey = "AIzaSyDTjfvDq3RADo1JWydG5r0HdmLOeeUmSeU"; 
+
+    if (!apiKey) {
+      return res.status(500).json({ summary: "API 키 설정이 필요합니다." });
+    }
+
+    const genAI = new GoogleGenerativeAI(apiKey);
+    // 속도가 빠른 gemini-1.5-flash 모델 사용
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    // 언어에 따른 프롬프트 자동 설정
+    // AI에게 전달할 프롬프트 (3문장 요약)
     const prompt = `
-      대상: 아래 뉴스 기사 본문
-      언어: ${lang === 'en' ? 'English' : lang === 'zh' ? 'Chinese' : lang === 'vi' ? 'Vietnamese' : 'Korean'}
-      요청사항:
-      1. 핵심 내용을 3줄 이내로 명확하게 요약할 것.
-      2. 반드시 요청받은 언어로 답변할 것.
-      3. Pi Network 커뮤니티에 도움이 될 만한 관점으로 작성할 것.
+      You are a smart news assistant for GPNR (Global Pi News Room). 
+      Summarize the following news article within 3 concise bullet points.
+      The summary MUST be written in the following language: ${lang}.
       
-      기사 본문: ${content.substring(0, 3000)}
+      Article Content:
+      ${content}
     `;
 
     const result = await model.generateContent(prompt);
@@ -37,9 +36,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const text = response.text();
 
     res.status(200).json({ summary: text });
-  } catch (error) {
-    console.error("Gemini API 에러:", error);
-    res.status(500).json({ summary: "AI가 잠시 휴식 중입니다. 다시 시도해 주세요!" });
+  } catch (error: any) {
+    console.error("Gemini Error:", error);
+    
+    let errorMsg = "AI 요약 중 오류가 발생했습니다.";
+    if (error.message?.includes("429")) {
+      errorMsg = "현재 AI 요청이 너무 많습니다. 잠시 후 다시 시도해주세요. (무료 한도 초과)";
+    }
+    
+    res.status(500).json({ summary: errorMsg });
   }
 }
-
