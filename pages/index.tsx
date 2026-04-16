@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-// 깃허브 파일명(이미지 17393.jpg)과 100% 일치하도록 수정했습니다.
-import Header from '@/components/Header'; // 대문자 H
-import CategoryTabs from '@/components/category-tabs'; // 소문자 + 하이픈
-import NewsFeed from '@/components/news-feed'; // 소문자 + 하이픈
-import Footer from '@/components/footer'; // 소문자 f
+// 컴포넌트들을 중괄호 { }로 감싸서 Named Export 방식으로 불러옵니다.
+import { Header } from '@/components/Header'; 
+import { CategoryTabs } from '@/components/category-tabs'; 
+import { NewsFeed } from '@/components/news-feed'; 
+import { Footer } from '@/components/footer'; 
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -26,7 +26,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      {/* 컴포넌트 이름도 파일명에 맞춰 정확히 호출합니다. */}
       <Header onLogin={handlePiLogin} isLoggedIn={isLoggedIn} />
       
       <main className="container mx-auto px-4 py-6">
