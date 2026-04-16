@@ -1,8 +1,15 @@
-// index.tsx의 Home 함수 내부 수정
+import React, { useEffect, useState } from 'react';
+import { Header } from '@/components/Header';
+import { CategoryTabs } from '@/components/category-tabs';
+
+// 파일 전체를 모듈 객체로 가져옵니다.
+import * as NewsModule from '@/components/news-feed';
+import * as FooterModule from '@/components/footer';
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // 1. 카테고리 상태 추가 (기본값 "all")
+  
+  // [추가] 카테고리 상태 관리: 초기값은 'all'
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const getComponent = (module: any) => {
@@ -13,7 +20,18 @@ export default function Home() {
   const NewsFeed = getComponent(NewsModule);
   const Footer = getComponent(FooterModule);
 
-  // ... handlePiLogin 생략 ...
+  const handlePiLogin = async () => {
+    if (typeof window !== 'undefined' && window.Pi) {
+      try {
+        await window.Pi.authenticate(['username', 'payments'], (payment: any) => {
+          console.log("미결제 발견:", payment);
+        });
+        setIsLoggedIn(true);
+      } catch (err) {
+        console.error("인증 실패:", err);
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white text-black">
@@ -21,12 +39,15 @@ export default function Home() {
       
       <main className="container mx-auto px-4 py-6">
         <section className="mb-8">
-          {/* 2. 카테고리 변경 함수 전달 (CategoryTabs 내부 구현에 따라 다를 수 있음) */}
-          <CategoryTabs onCategoryChange={setSelectedCategory} />
+          {/* [수정] 현재 선택된 카테고리와 변경 함수를 전달합니다 */}
+          <CategoryTabs 
+            selectedCategory={selectedCategory} 
+            onCategoryChange={setSelectedCategory} 
+          />
         </section>
 
         <section>
-          {/* 3. NewsFeed에 selectedCategory 전달 */}
+          {/* [수정] NewsFeed에 현재 선택된 카테고리를 전달합니다 */}
           {NewsFeed ? (
             <NewsFeed selectedCategory={selectedCategory} />
           ) : (
@@ -39,3 +60,5 @@ export default function Home() {
     </div>
   );
 }
+
+declare global { interface Window { Pi: any; } }
