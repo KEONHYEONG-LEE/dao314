@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-// 파일명 대소문자 및 import 방식을 깃허브 구조에 맞춰 재정렬했습니다.
-import { Header } from '@/components/Header'; // Header.tsx
-import { CategoryTabs } from '@/components/category-tabs'; // category-tabs.tsx
-
-// 아래 두 항목이 경고의 주범입니다. 일단 중괄호를 제거하고 시도해 봅니다.
-import NewsFeed from '@/components/news-feed'; 
-import Footer from '@/components/footer'; 
+// 모든 컴포넌트를 중괄호 { }를 사용하는 Named Import 방식으로 통일합니다.
+import { Header } from '@/components/Header';
+import { CategoryTabs } from '@/components/category-tabs';
+import { NewsFeed } from '@/components/news-feed'; // 중괄호 추가
+import { Footer } from '@/components/footer';     // 중괄호 추가
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -25,20 +23,20 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      {/* 컴포넌트가 존재할 때만 렌더링하도록 방어 코드를 넣었습니다. */}
-      {Header && <Header onLogin={handlePiLogin} isLoggedIn={isLoggedIn} />}
+      <Header onLogin={handlePiLogin} isLoggedIn={isLoggedIn} />
       
       <main className="container mx-auto px-4 py-6">
         <section className="mb-8">
-          {CategoryTabs && <CategoryTabs />}
+          <CategoryTabs />
         </section>
 
         <section>
-          {NewsFeed ? <NewsFeed /> : <p className="text-center">뉴스를 불러오는 중...</p>}
+          {/* NewsFeed가 제대로 로드되지 않았을 때를 대비한 메시지 */}
+          {NewsFeed ? <NewsFeed /> : <p className="text-center">뉴스를 불러올 수 없습니다.</p>}
         </section>
       </main>
 
-      {Footer && <Footer />}
+      <Footer />
     </div>
   );
 }
