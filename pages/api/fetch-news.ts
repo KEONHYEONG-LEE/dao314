@@ -1,4 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+// Gemini 설정 (Vercel 환경변수에 GEMINI_API_KEY가 있어야 합니다)
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
 function cleanText(text: string) {
   if (!text) return "";
@@ -16,42 +21,50 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const searchQuery = category === 'all' ? 'Pi Network' : `Pi Network ${category}`;
-    // Google RSS를 활용해 최신 뉴스를 긁어옵니다.
-    const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery as string)}&hl=${lang === 'ko' ? 'ko' : 'en'}&gl=${lang === 'ko' ? 'KR' : 'US'}&ceid=${lang === 'ko' ? 'KR:ko' : 'US:en'}`;
+    // 최신 정보를 위해 무조건 영어(en) 소스에서 먼저 가져옵니다.
+    const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery as string)}&hl=en-US&gl=US&ceid=US:en`;
 
     const response = await fetch(rssUrl);
     const xmlData = await response.text();
-    
     const items = xmlData.match(/<item>([\s\S]*?)<\/item>/g) || [];
     
-    const realNews = items.slice(0, 15).map((item, index) => {
+    const newsData = items.slice(0, 10).map((item, index) => {
       const titleRaw = item.match(/<title>([\s\S]*?)<\/title>/)?.[1] || "";
       const link = item.match(/<link>([\s\S]*?)<\/link>/)?.[1] || "";
       const pubDate = item.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1] || "";
       let rawDesc = item.match(/<description>([\s\S]*?)<\/description>/)?.[1] || "";
-      
       rawDesc = rawDesc.replace("<![CDATA[", "").replace("]]>", "");
       
       const titleParts = titleRaw.split(' - ');
       const source = titleParts.length > 1 ? titleParts.pop() : "GPNR News";
-      const title = titleParts.join(' - ');
-      const content = cleanText(rawDesc);
-
       return {
         id: `news-${index}`,
-        category: (category as string).toUpperCase(),
-        title: title,
-        content: content && content.length > 10 ? content : `${title} - 원문 링크를 참조하세요.`,
+        title: titleParts.join(' - '),
+        content: cleanText(rawDesc),
         source: source,
         date: new Date(pubDate).toLocaleDateString(),
-        image: `https://picsum.photos/seed/${encodeURIComponent(title)}/400/300`, // 뉴스별 랜덤 이미지
         url: link
       };
     });
 
-    res.status(200).json(realNews);
-  } catch (error) {
-    console.error("RSS Fetch Error:", error);
-    res.status(500).json({ error: "Fail to fetch news" });
-  }
-}
+    // 만약 한국어(ko) 요청이면 Gemini로 통번역 실시
+    if (lang === 'ko') {
+      const newsToTranslate = newsData.map(n => `Title: ${n.title}\nContent: ${n.content}`).join('\n\n---\n\n');
+      const prompt = `Translate the following Pi Network news into professional Korean. Keep the meaning accurate. \n\n${newsToTranslate}`;
+      
+      const result = await model.generateContent(prompt);
+      const translatedText = result.response.text();
+      const translatedParts = translatedText.split('---');
+
+      const translatedNews = newsData.map((item, i) => {
+        const translatedItem = translatedParts[i] || "";
+        const lines = translatedItem.trim().split('\n');
+        return {
+          ...item,
+          category: (category as string).toUpperCase(),
+          title: lines[0]?.replace('Title: ', '') || item.title,
+          content: lines[1]?.replace('Content: ', '') || item.content,
+          image: `https://picsum.photos/seed/${encodeURIComponent(item.title)}/400/300`,
+        };
+      });
+      return res
