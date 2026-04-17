@@ -1,14 +1,21 @@
-// AI가 실시간으로 데이터를 채워넣을 수 있도록 형식을 유연하게 설정합니다.
+// lib/news-data.ts 수정안
+
 export interface NewsItem {
   id: string;
   date: string;
   author: string;
-  title: any;    // 여러 언어 대응을 위해 any로 설정
-  content: any;
+  // 여러 언어를 지원하도록 구조를 명확히 합니다.
+  title: {
+    en: string;
+    ko: string; // 한국어 제목 필드 추가
+  };
+  content: {
+    en: string;
+    ko: string; // 한국어 내용 필드 추가
+  };
   category: string;
+  imageUrl?: string; // 스크린샷에 이미지가 있으니 추가해두면 좋습니다.
+  source?: string;
 }
 
-// 처음 앱을 켰을 때 에러가 나지 않도록 빈 리스트로 시작합니다.
-// 나중에 AI가 이 리스트에 새로운 소식을 채워넣게 됩니다.
 export const NEWS_DATA: NewsItem[] = [];
-
