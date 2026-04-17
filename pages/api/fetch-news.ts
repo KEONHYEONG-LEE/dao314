@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Gemini 설정 (Vercel 환경변수에 GEMINI_API_KEY가 있어야 합니다)
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
@@ -21,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const searchQuery = category === 'all' ? 'Pi Network' : `Pi Network ${category}`;
-    // 최신 정보를 위해 무조건 영어(en) 소스에서 먼저 가져옵니다.
+    // 최신 영문 기사를 가져옵니다.
     const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery as string)}&hl=en-US&gl=US&ceid=US:en`;
 
     const response = await fetch(rssUrl);
@@ -47,10 +46,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       };
     });
 
-    // 만약 한국어(ko) 요청이면 Gemini로 통번역 실시
-    if (lang === 'ko') {
+    if (lang === 'ko' && newsData.length > 0) {
       const newsToTranslate = newsData.map(n => `Title: ${n.title}\nContent: ${n.content}`).join('\n\n---\n\n');
-      const prompt = `Translate the following Pi Network news into professional Korean. Keep the meaning accurate. \n\n${newsToTranslate}`;
+      const prompt = `Translate the following Pi Network news into professional Korean. Output only the translations separated by '---'. \n\n${newsToTranslate}`;
       
       const result = await model.generateContent(prompt);
       const translatedText = result.response.text();
@@ -62,9 +60,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return {
           ...item,
           category: (category as string).toUpperCase(),
-          title: lines[0]?.replace('Title: ', '') || item.title,
-          content: lines[1]?.replace('Content: ', '') || item.content,
+          title: lines[0]?.replace('Title: ', '').trim() || item.title,
+          content: lines[1]?.replace('Content: ', '').trim() || item.content,
           image: `https://picsum.photos/seed/${encodeURIComponent(item.title)}/400/300`,
         };
       });
-      return res
+      return res.status(200).json(translatedNews);
+    }
+
+    const finalNews = newsData.map(item => ({
+      ...item,
+      category: (category as string).toUpperCase(),
+      image: `https://picsum.photos/seed/${encodeURIComponent(item.title)}/400/300`,
+    }));
+
+    return res.status(200).json(finalNews);
+  } catch (error) {
+    console.error("Fetch/Translate Error:", error);
+    return res.status(500).json({ error: "Fail to process news" });
+  }
+}
