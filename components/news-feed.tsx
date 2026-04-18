@@ -1,45 +1,30 @@
-"use client";
+"use client"; 
 
 import { useState, useEffect } from "react";
 import NewsCard from "./news-card"; 
-
-interface NewsItem {
-  id: string;
-  category: string;
-  title: string;
-  excerpt: string;
-  author: string;
-  date: string;
-  image: string;
-} 
+// 1. 우리가 만든 실데이터 가져오기
+import { NEWS_DATA } from "@/lib/news-data"; 
 
 export default function NewsFeed({ selectedCategory }: { selectedCategory: string }) {
-  const [news, setNews] = useState<NewsItem[]>([]); 
+  const [news, setNews] = useState<any[]>([]); 
 
   useEffect(() => {
-    // Pi Browser의 구형 엔진을 위해 데이터를 동기적으로 즉시 설정
-    const allNews: NewsItem[] = [
-      {
-        id: "1",
-        category: "mainnet",
-        title: "Pi Network Mainnet Migration Update",
-        excerpt: "The latest news on the Open Mainnet preparation...",
-        author: "GPNR AI",
-        date: "2026-03-29",
-        image: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800"
-      },
-      {
-        id: "2",
-        category: "community",
-        title: "Global Pi Community Growing Fast",
-        excerpt: "New nodes are being added globally at an incredible rate.",
-        author: "GPNR AI",
-        date: "2026-04-01",
-        image: "https://images.unsplash.com/photo-1516245834210-c4c142787335?w=800"
-      }
-    ]; 
+    // 2. NEWS_DATA를 화면 구조에 맞게 변환 (한국어 우선 적용)
+    const formattedNews = NEWS_DATA.map(item => ({
+      id: item.id,
+      category: item.category.toLowerCase(),
+      // 한국어 제목이 있으면 사용, 없으면 영어 사용
+      title: item.title.ko || item.title.en, 
+      // 지저분한 태그가 제거된 한국어 내용 사용
+      content: item.content.ko || item.content.en, 
+      author: item.author,
+      date: item.date.split('T')[0], // 날짜만 깔끔하게 출력
+      image: item.imageUrl, // 이제 실제 추출된 이미지 경로 연결
+      url: item.url
+    })); 
 
-    const filtered = allNews.filter(
+    // 3. 카테고리 필터링 로직
+    const filtered = formattedNews.filter(
       item => selectedCategory === "all" || item.category === selectedCategory
     );
     
@@ -48,12 +33,31 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
 
   return (
     <section className="mt-8 px-4 pb-10">
-      <h2 className="text-2xl font-bold mb-6 capitalize">{selectedCategory} News</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold capitalize">
+          {selectedCategory === 'all' ? '최신 뉴스' : `${selectedCategory} 소식`}
+        </h2>
+        <span className="text-xs text-gray-400">Total {news.length}</span>
+      </div>
+
       <div className="space-y-6">
         {news.length > 0 ? (
-          news.map((item) => <NewsCard key={item.id} {...item} />)
+          news.map((item) => (
+            <NewsCard 
+              key={item.id} 
+              category={item.category}
+              title={item.title}
+              content={item.content} // 정제된 텍스트 전달
+              date={item.date}
+              source={item.author}
+              image={item.image}
+              url={item.url}
+            />
+          ))
         ) : (
-          <p className="text-gray-500 text-center py-10">뉴스를 불러오는 중입니다...</p>
+          <div className="text-center py-20">
+            <p className="text-gray-400">해당 카테고리의 뉴스가 없습니다.</p>
+          </div>
         )}
       </div>
     </section>
