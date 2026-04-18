@@ -1,4 +1,4 @@
-"use client";
+"use client"; 
 
 import { useState } from "react";
 import { 
@@ -13,41 +13,44 @@ import {
   X,
   ExternalLink,
   Calendar
-} from "lucide-react";
+} from "lucide-react"; 
 
-// 유틸리티 함수 (cn 함수가 없을 경우를 대비해 직접 구현)
-const cn = (...classes: any[]) => classes.filter(Boolean).join(" ");
+const cn = (...classes: any[]) => classes.filter(Boolean).join(" "); 
 
+// HTML 태그 및 특수문자를 제거하는 함수 강화
 const stripHtml = (html: string) => {
   if (!html) return "";
   return html
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
     .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
-    .replace(/<[^>]*>?/gm, "")
+    .replace(/<[^>]*>?/gm, "") // 모든 HTML 태그 제거
     .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
     .replace(/\s+/g, " ")
     .trim();
-};
+}; 
 
 export default function NewsCard({ category, title, content, date, source, image, url }: any) {
   const [isOpen, setIsOpen] = useState(false);
   const [summary, setSummary] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); 
 
-  const cleanContent = stripHtml(content);
+  // 뉴스 목록과 상세 페이지 모두에서 깨끗한 텍스트 사용
+  const cleanContent = stripHtml(content); 
 
   const handleSummarize = async (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsLoading(true);
     setSummary("GPNR AI가 분석 중입니다...");
     
-    // 언어 감지 로직
+    // 현재 선택된 언어 감지
     const headerElement = document.querySelector('header');
     const headerText = headerElement?.innerText || "";
     let currentLang = "ko";
     if (headerText.includes('English')) currentLang = "en";
-    else if (headerText.includes('中国')) currentLang = "zh";
-    else if (headerText.includes('Tiếng Việt')) currentLang = "vi";
 
     try {
       const res = await fetch("/api/summary", {
@@ -62,10 +65,11 @@ export default function NewsCard({ category, title, content, date, source, image
     } finally {
       setIsLoading(false);
     }
-  };
+  }; 
 
   return (
     <>
+      {/* 뉴스 카드 (목록) */}
       <div 
         onClick={() => setIsOpen(true)}
         className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-6 cursor-pointer active:scale-[0.98] transition-all hover:shadow-md"
@@ -73,7 +77,6 @@ export default function NewsCard({ category, title, content, date, source, image
         <div className="p-4 flex items-center justify-between border-b border-gray-50">
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4 text-blue-500" />
-            {/* Badge 대신 직접 span 디자인 적용 */}
             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-600">
               {category && category !== 'ALL' ? category : 'Pi Network'}
             </span>
@@ -107,9 +110,9 @@ export default function NewsCard({ category, title, content, date, source, image
             </div>
           </div>
         </div>
-      </div>
+      </div> 
 
-      {/* 뉴스 상세 모달 */}
+      {/* 뉴스 상세 모달 (클릭 시 열림) */}
       {isOpen && (
         <div className="fixed inset-0 z-[100] bg-black/60 flex items-end sm:items-center justify-center p-0 sm:p-4 backdrop-blur-sm">
           <div className="bg-white w-full max-w-lg rounded-t-[2rem] sm:rounded-3xl max-h-[90vh] overflow-y-auto p-6 relative shadow-2xl animate-in slide-in-from-bottom-10 duration-300">
@@ -118,7 +121,7 @@ export default function NewsCard({ category, title, content, date, source, image
               className="absolute right-4 top-4 p-2 bg-gray-100 hover:bg-gray-200 rounded-full z-10"
             >
               <X className="w-5 h-5 text-gray-500" />
-            </button>
+            </button> 
 
             {image && <img src={image} alt="news" className="w-full h-52 object-cover rounded-2xl mb-6 mt-2 shadow-sm" />}
             
@@ -127,12 +130,13 @@ export default function NewsCard({ category, title, content, date, source, image
             </span>
             <h2 className="text-2xl font-bold mb-4 leading-tight text-gray-900">{title}</h2>
             
+            {/* 수정된 부분: 뉴스 본문 영역 */}
             <div className="text-gray-700 leading-relaxed mb-8 whitespace-pre-wrap text-[16px]">
               {cleanContent}
-            </div>
+            </div> 
 
+            {/* AI 요약 영역 */}
             <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl p-5 border border-indigo-100 mb-8">
-              {/* Button 대신 직접 button 디자인 적용 */}
               <button 
                 onClick={handleSummarize}
                 disabled={isLoading}
@@ -140,7 +144,7 @@ export default function NewsCard({ category, title, content, date, source, image
               >
                 <Sparkles className={cn("w-5 h-5", isLoading && "animate-spin")} />
                 {isLoading ? "분석 중..." : "GPNR AI 핵심 내용 요약하기"}
-              </button>
+              </button> 
 
               {summary && (
                 <div className="bg-white/90 rounded-xl p-4 text-sm text-indigo-900 border border-indigo-50 shadow-sm">
@@ -150,7 +154,7 @@ export default function NewsCard({ category, title, content, date, source, image
                   <p className="leading-relaxed whitespace-pre-line">{summary}</p>
                 </div>
               )}
-            </div>
+            </div> 
 
             <div className="flex gap-3 pb-2">
               <a 
