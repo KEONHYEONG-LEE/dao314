@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-// [수정] "gemini-pro"를 "gemini-1.5-flash"로 변경했습니다. (속도와 안정성이 훨씬 좋습니다)
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 function cleanText(text: string) {
@@ -50,7 +49,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const newsToTranslate = newsData.map(n => `Title: ${n.title}\nContent: ${n.content}`).join('\n\n---\n\n');
       const prompt = `Translate the following Pi Network news into professional Korean. Output only the translations separated by '---'. \n\n${newsToTranslate}`;
       
-      // 최신 모델로 번역을 요청합니다.
       const result = await model.generateContent(prompt);
       const translatedText = result.response.text();
       const translatedParts = translatedText.split('---');
