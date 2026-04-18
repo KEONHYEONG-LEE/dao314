@@ -13,16 +13,18 @@ export default function Home() {
     const fetchNews = async () => {
       setLoading(true);
       try {
-        // API 경로와 쿼리 파라미터를 가장 기본형으로 복구
+        // 1. API 요청 시 카테고리 쿼리를 제거하거나 기본값으로 시도해 봅니다.
+        // 데이터가 안 나온다면 api 경로에 문제가 있거나 쿼리 형식이 바뀐 것입니다.
         const res = await fetch(`/api/fetch-news?category=${activeCategory}`);
+        
+        if (!res.ok) throw new Error("Network response was not ok");
+        
         const data = await res.json();
         
-        // 데이터가 배열이기만 하면 일단 무조건 받습니다.
-        if (Array.isArray(data)) {
-          setNews(data);
-        } else {
-          setNews([]);
-        }
+        // 2. 데이터 구조가 { news: [...] } 형태일 경우를 대비한 안전 로직
+        const articles = Array.isArray(data) ? data : (data.news || []);
+        setNews(articles);
+
       } catch (error) {
         console.error("Fetch error:", error);
         setNews([]);
@@ -32,9 +34,8 @@ export default function Home() {
     fetchNews();
   }, [activeCategory]);
 
-  // 태그 제거는 상세 페이지에서 출력할 때만 안전하게 처리
   const cleanBody = (item: any) => {
-    const text = item.content || item.description || "";
+    const text = item.content || item.description || item.body || ""; // body 필드 추가 확인
     return typeof text === 'string' ? text.replace(/<[^>]*>?/gm, "").replace(/&nbsp;/g, " ") : "";
   };
 
@@ -47,7 +48,7 @@ export default function Home() {
       <nav className="flex gap-2 p-4 overflow-x-auto bg-white border-b">
         {['all', 'mainnet', 'community', 'commerce'].map(cat => (
           <button key={cat} onClick={() => setActiveCategory(cat)}
-            className={`px-4 py-1.5 rounded-full text-xs font-bold ${activeCategory === cat ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500'}`}>
+            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors ${activeCategory === cat ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-500'}`}>
             {cat.toUpperCase()}
           </button>
         ))}
@@ -55,30 +56,45 @@ export default function Home() {
 
       <main className="divide-y divide-gray-100">
         {loading ? (
-          <div className="p-20 text-center text-gray-400">로딩 중...</div>
-        ) : news.length > 0 ? (
+          <div className="p-20 text-center text-gray-400">데이터를 불러오는 중...</div>
+        ) : news && news.length > 0 ? (
           news.map((item, idx) => (
-            <article key={idx} className="flex gap-4 p-4" onClick={() => setSelectedNews(item)}>
+            <article key={item.id || idx} className="flex gap-4 p-4 cursor-pointer active:bg-gray-50" onClick={() => setSelectedNews(item)}>
               <div className="flex-1">
-                <h3 className="font-bold text-[15px] line-clamp-2">{item.title || "No Title"}</h3>
-                <p className="text-[10px] text-gray-400 mt-1">{item.source || "GPNR"}</p>
+                {/* 제목(title) 외에 다른 필드명(subject 등)이 있는지 확인 필요 */}
+                <h3 className="font-bold text-[15px] line-clamp-2 text-gray-900">{item.title || item.subject || "No Title"}</h3>
+                <div className="flex gap-2 mt-1">
+                  <p className="text-[10px] text-indigo-500 font-semibold">{item.category?.toUpperCase() || activeCategory.toUpperCase()}</p>
+                  <p className="text-[10px] text-gray-400">{item.source || "GPNR"}</p>
+                </div>
               </div>
-              {item.image && (
-                <img src={item.image} className="w-20 h-20 object-cover rounded-xl" alt="" />
+              {(item.image || item.thumbnail) && (
+                <img src={item.image || item.thumbnail} className="w-20 h-20 object-cover rounded-xl bg-gray-100" alt="" />
               )}
             </article>
           ))
         ) : (
-          <div className="p-20 text-center text-gray-400">뉴스를 찾을 수 없습니다.</div>
+          <div className="p-20 text-center">
+            <p className="text-gray-400 mb-4">등록된 기사가 없습니다.</p>
+            <button 
+              onClick={() => setActiveCategory('all')}
+              className="text-xs text-indigo-600 underline">
+              전체 보기로 돌아가기
+            </button>
+          </div>
         )}
       </main>
 
       {selectedNews && (
         <div className="fixed inset-0 z-[100] bg-white overflow-y-auto p-6">
-          <button onClick={() => setSelectedNews(null)} className="float-right p-2 bg-gray-100 rounded-full"><X/></button>
-          <img src={selectedNews.image} className="w-full h-48 object-cover rounded-2xl mb-4" />
-          <h2 className="text-xl font-bold mb-4">{selectedNews.title}</h2>
-          <div className="text-gray-600 leading-relaxed whitespace-pre-wrap">
+          <div className="flex justify-end mb-4">
+            <button onClick={() => setSelectedNews(null)} className="p-2 bg-gray-100 rounded-full"><X size={20}/></button>
+          </div>
+          {(selectedNews.image || selectedNews.thumbnail) && (
+            <img src={selectedNews.image || selectedNews.thumbnail} className="w-full h-48 object-cover rounded-2xl mb-4" />
+          )}
+          <h2 className="text-xl font-bold mb-4">{selectedNews.title || selectedNews.subject}</h2>
+          <div className="text-gray-600 leading-relaxed whitespace-pre-wrap text-[14px]">
             {cleanBody(selectedNews)}
           </div>
         </div>
