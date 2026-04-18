@@ -2,7 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+// [수정] "gemini-pro"를 "gemini-1.5-flash"로 변경했습니다. (속도와 안정성이 훨씬 좋습니다)
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 function cleanText(text: string) {
   if (!text) return "";
@@ -20,7 +21,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const searchQuery = category === 'all' ? 'Pi Network' : `Pi Network ${category}`;
-    // 최신 영문 기사를 가져옵니다.
     const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery as string)}&hl=en-US&gl=US&ceid=US:en`;
 
     const response = await fetch(rssUrl);
@@ -50,6 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const newsToTranslate = newsData.map(n => `Title: ${n.title}\nContent: ${n.content}`).join('\n\n---\n\n');
       const prompt = `Translate the following Pi Network news into professional Korean. Output only the translations separated by '---'. \n\n${newsToTranslate}`;
       
+      // 최신 모델로 번역을 요청합니다.
       const result = await model.generateContent(prompt);
       const translatedText = result.response.text();
       const translatedParts = translatedText.split('---');
