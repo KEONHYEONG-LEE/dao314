@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-// 텍스트 정제 함수 (HTML 태그 및 불필요한 공백 제거)
 function cleanText(text: string) {
   if (!text) return "";
   return text
@@ -13,11 +12,9 @@ function cleanText(text: string) {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // 영어 우선 모드이므로 lang 설정은 무시하고 category만 가져옵니다.
   const { category = 'all' } = req.query;
 
   try {
-    // 1. Google News RSS 호출 (영어 데이터)
     const searchQuery = category === 'all' ? 'Pi Network' : `Pi Network ${category}`;
     const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery as string)}&hl=en-US&gl=US&ceid=US:en`;
 
@@ -27,14 +24,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const xmlData = await response.text();
     const items = xmlData.match(/<item>([\s\S]*?)<\/item>/g) || [];
     
-    // 2. 뉴스 데이터 매핑 (영어 전용)
-    const newsData = items.slice(0, 15).map((item, index) => {
+    const newsData = items.map((item, index) => {
       const titleRaw = item.match(/<title>([\s\S]*?)<\/title>/)?.[1] || "";
       const link = item.match(/<link>([\s\S]*?)<\/link>/)?.[1] || "";
       const pubDate = item.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1] || "";
       let rawDesc = item.match(/<description>([\s\S]*?)<\/description>/)?.[1] || "";
       
-      // CDATA 및 태그 정리
       rawDesc = rawDesc.replace("<![CDATA[", "").replace("]]>", "");
       
       const titleParts = titleRaw.split(' - ');
@@ -44,18 +39,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return {
         id: `news-${index}`,
         title: cleanTitle,
-        content: cleanText(rawDesc), // 정제된 영어 본문
+        content: cleanText(rawDesc),
         source: source,
-        date: new Date(pubDate).toLocaleDateString('en-US'),
+        date: pubDate, // 정렬을 위해 원본 날짜 데이터 유지
+        displayDate: new Date(pubDate).toLocaleDateString('en-US'), // 화면 표시용
         url: link,
         category: (category as string).toUpperCase(),
-        // index.tsx에서 사용하는 필드명인 imageUrl로 통일
         imageUrl: `https://picsum.photos/seed/${encodeURIComponent(cleanTitle)}/400/300`
       };
     });
 
-    // 3. 결과 반환 (번역 과정 없이 즉시 반환하여 500 에러 방지)
-    return res.status(200).json(newsData);
+    // 3. 최신 날짜순 정렬 (정렬 로직 추가)
+    const sortedNews = newsData.sort((a, b) => {
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+
+    // 최종적으로 15개만 반환
+    return res.status(200).json(sortedNews.slice(0, 15));
 
   } catch (error) {
     console.error("API Error:", error);
