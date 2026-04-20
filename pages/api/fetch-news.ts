@@ -1,9 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
+// 텍스트 정제 함수 (HTML 태그 및 불필요한 공백 제거)
 function cleanText(text: string) {
   if (!text) return "";
   return text
@@ -16,66 +13,52 @@ function cleanText(text: string) {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { lang = 'ko', category = 'all' } = req.query;
+  // 영어 우선 모드이므로 lang 설정은 무시하고 category만 가져옵니다.
+  const { category = 'all' } = req.query;
 
   try {
+    // 1. Google News RSS 호출 (영어 데이터)
     const searchQuery = category === 'all' ? 'Pi Network' : `Pi Network ${category}`;
     const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery as string)}&hl=en-US&gl=US&ceid=US:en`;
 
     const response = await fetch(rssUrl);
+    if (!response.ok) throw new Error('Failed to fetch RSS');
+    
     const xmlData = await response.text();
     const items = xmlData.match(/<item>([\s\S]*?)<\/item>/g) || [];
     
-    const newsData = items.slice(0, 10).map((item, index) => {
+    // 2. 뉴스 데이터 매핑 (영어 전용)
+    const newsData = items.slice(0, 15).map((item, index) => {
       const titleRaw = item.match(/<title>([\s\S]*?)<\/title>/)?.[1] || "";
       const link = item.match(/<link>([\s\S]*?)<\/link>/)?.[1] || "";
       const pubDate = item.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1] || "";
       let rawDesc = item.match(/<description>([\s\S]*?)<\/description>/)?.[1] || "";
+      
+      // CDATA 및 태그 정리
       rawDesc = rawDesc.replace("<![CDATA[", "").replace("]]>", "");
       
       const titleParts = titleRaw.split(' - ');
       const source = titleParts.length > 1 ? titleParts.pop() : "GPNR News";
+      const cleanTitle = titleParts.join(' - ');
+
       return {
         id: `news-${index}`,
-        title: titleParts.join(' - '),
-        content: cleanText(rawDesc),
+        title: cleanTitle,
+        content: cleanText(rawDesc), // 정제된 영어 본문
         source: source,
-        date: new Date(pubDate).toLocaleDateString(),
-        url: link
+        date: new Date(pubDate).toLocaleDateString('en-US'),
+        url: link,
+        category: (category as string).toUpperCase(),
+        // index.tsx에서 사용하는 필드명인 imageUrl로 통일
+        imageUrl: `https://picsum.photos/seed/${encodeURIComponent(cleanTitle)}/400/300`
       };
     });
 
-    if (lang === 'ko' && newsData.length > 0) {
-      const newsToTranslate = newsData.map(n => `Title: ${n.title}\nContent: ${n.content}`).join('\n\n---\n\n');
-      const prompt = `Translate the following Pi Network news into professional Korean. Output only the translations separated by '---'. \n\n${newsToTranslate}`;
-      
-      const result = await model.generateContent(prompt);
-      const translatedText = result.response.text();
-      const translatedParts = translatedText.split('---');
+    // 3. 결과 반환 (번역 과정 없이 즉시 반환하여 500 에러 방지)
+    return res.status(200).json(newsData);
 
-      const translatedNews = newsData.map((item, i) => {
-        const translatedItem = translatedParts[i] || "";
-        const lines = translatedItem.trim().split('\n');
-        return {
-          ...item,
-          category: (category as string).toUpperCase(),
-          title: lines[0]?.replace('Title: ', '').trim() || item.title,
-          content: lines[1]?.replace('Content: ', '').trim() || item.content,
-          image: `https://picsum.photos/seed/${encodeURIComponent(item.title)}/400/300`,
-        };
-      });
-      return res.status(200).json(translatedNews);
-    }
-
-    const finalNews = newsData.map(item => ({
-      ...item,
-      category: (category as string).toUpperCase(),
-      image: `https://picsum.photos/seed/${encodeURIComponent(item.title)}/400/300`,
-    }));
-
-    return res.status(200).json(finalNews);
   } catch (error) {
-    console.error("Fetch/Translate Error:", error);
-    return res.status(500).json({ error: "Fail to process news" });
+    console.error("API Error:", error);
+    return res.status(500).json({ error: "Failed to process news" });
   }
 }
