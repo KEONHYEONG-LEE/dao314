@@ -1,25 +1,25 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-// 1. 카테고리별 대표 이미지 풀 (Unsplash의 키워드 활용)
-const CATEGORY_IMAGES: { [key: string]: string[] } = {
-  ALL: ["business", "news", "technology"],
-  MAINNET: ["network", "server", "blockchain"],
-  COMMUNITY: ["people", "meeting", "shaking-hands"],
-  COMMERCE: ["shopping", "ecommerce", "market"],
-  NODE: ["datacenter", "connection", "nodes"],
-  MINING: ["cryptocurrency-mining", "hardware", "cpu"],
-  WALLET: ["digital-wallet", "finance", "savings"],
-  BROWSER: ["web-browser", "internet", "surfing"],
-  KYC: ["identity", "security-check", "verification"],
-  DEVELOPER: ["coding", "software", "programming"],
-  ECOSYSTEM: ["nature-connection", "growth", "collaboration"],
-  LISTING: ["stock-market", "exchange", "trading"],
-  PRICE: ["chart", "bitcoin-price", "financial-growth"],
-  SECURITY: ["cyber-security", "lock", "protection"],
-  EVENT: ["conference", "stage", "celebration"],
-  ROADMAP: ["strategy", "planning", "highway"],
-  WHITEPAPER: ["document", "study", "research"],
-  LEGAL: ["law", "hammer", "compliance"]
+// 1. 카테고리별 고유 이미지 ID (Picsum에서 엄선한 번호들)
+const CATEGORY_IMAGE_IDS: { [key: string]: number[] } = {
+  ALL: [1, 10, 16],        // 일반 뉴스/비즈니스
+  MAINNET: [0, 201, 160],  // 서버/네트워크
+  COMMUNITY: [129, 238, 447], // 사람들/모임
+  COMMERCE: [2, 3, 4],     // 기술/커머스
+  NODE: [48, 160, 532],    // 데이터센터/연결
+  MINING: [180, 192, 225], // 하드웨어/칩
+  WALLET: [431, 442, 555], // 금융/디지털
+  BROWSER: [367, 370, 396], // 노트북/웹
+  KYC: [558, 628, 984],    // 보안/신원확인
+  DEVELOPER: [4, 5, 6],    // 코드/프로그래밍
+  ECOSYSTEM: [10, 11, 12], // 성장/생태계
+  LISTING: [20, 26, 39],   // 거래/시장
+  PRICE: [513, 520, 521],  // 경제/차트
+  SECURITY: [445, 529, 611], // 자물쇠/보안
+  EVENT: [68, 69, 70],     // 행사/무대
+  ROADMAP: [141, 142, 145], // 전략/지도
+  WHITEPAPER: [24, 25, 26], // 문서/연구
+  LEGAL: [175, 176, 177]   // 법률/질서
 };
 
 function cleanText(text: string) {
@@ -54,9 +54,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const source = titleParts.length > 1 ? titleParts.pop() : "GPNR News";
       const cleanTitle = titleParts.join(' - ');
 
-      // 2. 해당 카테고리의 이미지 풀에서 랜덤 선택
-      const imagePool = CATEGORY_IMAGES[currentCat] || CATEGORY_IMAGES["ALL"];
-      const randomKeyword = imagePool[Math.floor(Math.random() * imagePool.length)];
+      // 2. 해당 카테고리의 이미지 ID 풀에서 랜덤 선택
+      const idPool = CATEGORY_IMAGE_IDS[currentCat] || CATEGORY_IMAGE_IDS["ALL"];
+      const selectedId = idPool[index % idPool.length]; // 뉴스 순서에 따라 고르게 분배
       
       return {
         id: `news-${index}`,
@@ -67,8 +67,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         displayDate: new Date(pubDate).toLocaleDateString('en-US'),
         url: link,
         category: currentCat,
-        // 키워드 기반으로 연관성 있는 이미지 호출
-        imageUrl: `https://source.unsplash.com/featured/400x300?${randomKeyword}`
+        // 가장 안정적인 Picsum 고정 ID 방식 사용
+        imageUrl: `https://picsum.photos/id/${selectedId}/400/300`
       };
     });
 
