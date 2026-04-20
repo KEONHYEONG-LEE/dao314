@@ -2,16 +2,10 @@ export interface NewsItem {
   id: string;
   date: string;
   author: string;
-  title: {
-    en: string;
-    ko: string;
-  };
-  content: {
-    en: string;
-    ko: string;
-  };
+  title: string;      // 객체에서 단일 문자열(영어)로 변경
+  content: string;    // 객체에서 단일 문자열(영어)로 변경
   category: string;
-  imageUrl?: string; // 여기에 사진 주소가 저장됩니다.
+  imageUrl?: string;
   source?: string;
   url?: string;
 }
@@ -33,36 +27,17 @@ const cleanText = (html: string): string => {
     .trim();
 };
 
-// 3. 실제 데이터를 생성하거나 가져오는 로직 (예시 데이터 포함)
+// 3. 영어 전용 데이터 구조로 초기화
 export const NEWS_DATA: NewsItem[] = [
   {
     id: "1",
     date: new Date().toISOString(),
     author: "GPNR Reporter",
-    title: {
-      en: "Pi Network Mainnet Upgrade to Protocol 22",
-      ko: "파이 네트워크 메인넷 프로토콜 22로 업그레이드"
-    },
-    content: {
-      en: "Critical Deadline for Node Operators Approaches...",
-      ko: "노드 운영자를 위한 중요한 마감 기한이 다가오고 있습니다..."
-    },
+    title: "Pi Network Mainnet Upgrade to Protocol 22",
+    content: "Critical Deadline for Node Operators Approaches. Ensure your software is updated to the latest version to maintain network stability.",
     category: "MAINNET",
-    // 만약 외부 RSS에서 데이터를 가져온다면 아래처럼 처리하세요
     imageUrl: "https://example.com/pi-image.jpg", 
     source: "MEXC",
     url: "https://news.google.com/..."
   }
 ];
-
-/**
- * [팁] 만약 Google News RSS 등을 fetch로 가져오고 있다면, 
- * 데이터를 매핑할 때 아래와 같이 적용하세요:
- * * const newsItem = {
- * imageUrl: item.enclosure?.url || extractImageUrl(item.content),
- * content: {
- * ko: cleanText(item.content), // 이제 태그 없이 깨끗한 텍스트만 저장됩니다.
- * en: item.contentSnippet 
- * }
- * }
- */
