@@ -14,10 +14,8 @@ const PiLogin = () => {
 
   const handleLoginClick = () => {
     const savedId = localStorage.getItem('pi_user_id');
-    
-    // 팝업으로 ID 입력 받기
     const inputId = prompt(
-      savedId ? `이전 로그인 기록: ${savedId}\n새로운 Pi ID를 입력하거나 확인을 눌러주세요.` : "Pi ID를 입력해주세요.", 
+      savedId ? `이전 기록: ${savedId.substring(0, 10)}...` : "Pi ID를 입력해주세요.", 
       savedId || ""
     );
 
@@ -25,37 +23,31 @@ const PiLogin = () => {
       setPiId(inputId);
       localStorage.setItem('pi_user_id', inputId);
       setIsLoggedIn(true);
-      alert(`${inputId}님, 반갑습니다!`);
     }
   };
 
-  const handleSupport = () => {
-    alert("0.001 Pi 후원을 진행합니다.");
-  };
-
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 flex-shrink-0">
       {!isLoggedIn ? (
         <button 
           onClick={handleLoginClick}
-          className="flex items-center gap-1.5 bg-[#4A69FF] hover:bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm"
+          className="flex items-center gap-1 bg-[#4A69FF] text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm active:scale-95 transition-all"
         >
-          {/* 2번 이미지 스타일의 로그인 아이콘 */}
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-            <polyline points="10 17 15 12 10 7" />
-            <line x1="15" y1="12" x2="3" y2="12" />
-          </svg>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
           Login
         </button>
       ) : (
         <div className="flex items-center gap-2">
-           <span className="text-[10px] text-gray-300 bg-white/10 px-2 py-1 rounded-md">{piId}</span>
+           {/* ID가 길어도 작게 표시되도록 너비 제한 */}
+           <div className="flex items-center gap-1 bg-white/10 px-2 py-1.5 rounded-lg border border-white/20">
+             <span className="text-[10px] text-green-400 font-bold">●</span>
+             <span className="text-[10px] text-white max-w-[50px] truncate">{piId}</span>
+           </div>
            <button 
-            onClick={handleSupport}
-            className="bg-[#FF9800] text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm"
+            onClick={() => alert("0.001 Pi 후원을 진행합니다.")}
+            className="bg-[#FF9800] text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm active:scale-95"
           >
-            Tip 0.001π
+            Tip
           </button>
         </div>
       )}
