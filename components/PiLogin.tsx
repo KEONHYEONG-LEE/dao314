@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 
 const PiLogin = () => {
@@ -6,54 +5,59 @@ const PiLogin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // 3. 최초 1회 로그인 기억 로직
     const savedId = localStorage.getItem('pi_user_id');
     if (savedId) {
       setPiId(savedId);
+      setIsLoggedIn(true);
     }
   }, []);
 
-  const handleLogin = () => {
-    if (!piId) return alert("Pi ID를 입력해주세요.");
-    
+  const handleLoginClick = () => {
     const savedId = localStorage.getItem('pi_user_id');
-    if (savedId) {
-      alert(`이전 로그인 기록이 있습니다: ${savedId}`);
-    }
+    
+    // 팝업으로 ID 입력 받기
+    const inputId = prompt(
+      savedId ? `이전 로그인 기록: ${savedId}\n새로운 Pi ID를 입력하거나 확인을 눌러주세요.` : "Pi ID를 입력해주세요.", 
+      savedId || ""
+    );
 
-    localStorage.setItem('pi_user_id', piId);
-    setIsLoggedIn(true);
-    alert(`${piId}님, 로그인되었습니다.`);
+    if (inputId) {
+      setPiId(inputId);
+      localStorage.setItem('pi_user_id', inputId);
+      setIsLoggedIn(true);
+      alert(`${inputId}님, 반갑습니다!`);
+    }
   };
 
-  const handleDonate = async () => {
-    // 2. 0.001 Pi 후원 기능 (Pi SDK 연동 필요)
-    alert("0.001 Pi 후원 결제를 진행합니다.");
-    // 실제 Pi SDK 결제 로직이 들어가는 자리입니다.
+  const handleSupport = () => {
+    alert("0.001 Pi 후원을 진행합니다.");
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+    <div className="flex items-center gap-2">
       {!isLoggedIn ? (
-        <>
-          <input 
-            type="text" 
-            placeholder="Pi ID 입력" 
-            value={piId} 
-            onChange={(e) => setPiId(e.target.value)}
-            style={{ color: '#000', padding: '4px', borderRadius: '4px', fontSize: '12px' }}
-          />
-          <button onClick={handleLogin} style={{ background: '#ffa500', padding: '4px 8px', borderRadius: '4px' }}>
-            로그인
-          </button>
-        </>
+        <button 
+          onClick={handleLoginClick}
+          className="flex items-center gap-1.5 bg-[#4A69FF] hover:bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm"
+        >
+          {/* 2번 이미지 스타일의 로그인 아이콘 */}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+            <polyline points="10 17 15 12 10 7" />
+            <line x1="15" y1="12" x2="3" y2="12" />
+          </svg>
+          Login
+        </button>
       ) : (
-        <>
-          <span style={{ fontSize: '12px' }}>{piId}님</span>
-          <button onClick={handleDonate} style={{ background: '#6200ee', color: '#fff', padding: '4px 8px', borderRadius: '4px' }}>
-            0.001π 후원
+        <div className="flex items-center gap-2">
+           <span className="text-[10px] text-gray-300 bg-white/10 px-2 py-1 rounded-md">{piId}</span>
+           <button 
+            onClick={handleSupport}
+            className="bg-[#FF9800] text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm"
+          >
+            Tip 0.001π
           </button>
-        </>
+        </div>
       )}
     </div>
   );
