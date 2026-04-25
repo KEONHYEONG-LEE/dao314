@@ -1,4 +1,7 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
+import { cn } from "@/lib/utils";
 
 const PiLogin = () => {
   const [piId, setPiId] = useState('');
@@ -27,36 +30,39 @@ const PiLogin = () => {
   };
 
   return (
-    <div className="flex items-center gap-2 flex-shrink-0">
-      {/* 후원 버튼: 왼쪽 배치 및 금액 표시 */}
+    <div className="flex items-center gap-1.5 flex-shrink-0">
+      {/* 1. Support 버튼 (2단 구성, 폭 축소) */}
       <button 
         onClick={() => alert("0.001 Pi 후원을 진행합니다.")}
-        className="bg-[#FF9800] text-white px-2 py-1.5 rounded-lg text-[10px] font-bold shadow-sm active:scale-95 flex items-center gap-1"
+        className="bg-[#f6ad55] text-white w-[58px] h-9 flex flex-col items-center justify-center rounded-md leading-none shadow-sm active:scale-95"
       >
-        <span>Support</span>
-        <span className="bg-white/20 px-1 rounded text-[9px]">0.001π</span>
+        <span className="text-[8px] font-bold uppercase">Support</span>
+        <span className="text-[10px] font-black tracking-tighter">0.001π</span>
       </button>
 
-      {/* 로그인 버튼: 오른쪽 배치 및 상태별 배경색 */}
+      {/* 2. 로그인 아이콘 (텍스트 제거, 불빛으로만 식별) */}
       <button 
         onClick={handleLoginClick}
-        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-all active:scale-95 ${
-          isLoggedIn ? 'bg-[#1E2B5E] border border-indigo-400/30' : 'bg-[#4A69FF]'
-        } text-white`}
-      >
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
-        </svg>
-        <span>Login</span>
-        {isLoggedIn && (
-          <div className="flex items-center gap-1 ml-1 border-l border-white/20 pl-1.5">
-            <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
-            <span className="text-[9px] opacity-80 truncate max-w-[40px]">{piId}</span>
-          </div>
+        className={cn(
+          "relative flex items-center justify-center h-9 w-9 rounded-md border transition-all active:scale-95 shadow-sm",
+          isLoggedIn ? "bg-slate-800 border-slate-700" : "bg-[#4A69FF] border-blue-400"
         )}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        
+        {/* 상태 표시 불빛 (녹색/회색) */}
+        <span className={cn(
+          "absolute top-1 right-1 h-2.5 w-2.5 rounded-full border-2",
+          isLoggedIn 
+            ? "bg-green-500 border-slate-800 shadow-[0_0_5px_#22c55e]" 
+            : "bg-gray-400 border-blue-500"
+        )} />
       </button>
     </div>
   );
 };
 
 export default PiLogin;
+
