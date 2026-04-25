@@ -1,16 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import { Menu, X, Globe, Moon, Sun } from "lucide-react";
+import { Globe, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import PiLogin from "./PiLogin"; 
 
 export function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
+    // 1. 구글 번역 스크립트 추가
     const addScript = () => {
       if (!document.getElementById("google-translate-script")) {
         const s = document.createElement("script");
@@ -21,58 +20,55 @@ export function Header() {
       }
     };
     
+    // 2. 번역 초기화 및 자동 실행 로직
     // @ts-ignore
     window.googleTranslateElementInit = () => {
       // @ts-ignore
       new window.google.translate.TranslateElement({ 
         pageLanguage: 'en', 
         includedLanguages: 'ko,en', 
-        layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE, // 레이아웃 단순화
-        autoDisplay: false 
+        autoDisplay: true 
       }, 'google_translate_element');
+
+      // 강제로 한국어 번역 실행 (약간의 지연 필요)
+      setTimeout(() => {
+        const translateCombo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+        if (translateCombo) {
+          translateCombo.value = 'ko';
+          translateCombo.dispatchEvent(new Event('change'));
+        }
+      }, 1000);
     };
+
     addScript();
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur notranslate">
+    // 배경색을 투명하게 하거나 높이를 최소화하여 '흰색 바' 느낌을 제거합니다.
+    <header className="fixed top-0 z-50 w-full bg-transparent notranslate">
       
-      {/* 구글 번역 엘리먼트가 화면에 절대 나타나지 않도록 처리 */}
-      <div id="google_translate_element" style={{ visibility: 'hidden', width: 0, height: 0, position: 'absolute' }}></div>
+      {/* 구글 번역 엘리먼트 (숨김 처리) */}
+      <div id="google_translate_element" style={{ display: 'none' }}></div>
       
-      <div className="mx-auto max-w-7xl px-3">
-        <div className="flex h-[56px] items-center justify-between">
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="flex h-[50px] items-center justify-end gap-2">
           
-          {/* [좌측] 로고 영역: 중복을 피하기 위해 텍스트 위주로 간결하게 설정 */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="bg-blue-600 p-1 rounded-lg">
-              <Globe className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-lg font-black tracking-tighter">GPNR</span>
-          </Link>
+          {/* [좌측 GPNR 로고 제거] - 눈에 거슬리는 흰색 바의 주범을 삭제했습니다. */}
 
-          {/* [우측] 액션 버튼 그룹 */}
-          <div className="flex items-center gap-1">
+          {/* [우측] 필수 기능만 배치 (번역 아이콘이 포함된 PiLogin + 테마) */}
+          <div className="flex items-center gap-2 bg-background/80 backdrop-blur-md p-1 rounded-full border border-border shadow-sm">
             
-            {/* PiLogin 컴포넌트: 언어 선택, 지원, 로그인 버튼이 들어있음 */}
             <PiLogin />
 
-            {/* 테마 토글 버튼 (선택 사항: 아이콘이 많아 보이면 이 부분을 제거해도 좋습니다) */}
             <button 
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")} 
-              className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ml-1"
+              className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-accent transition-colors"
+              title="테마 변경"
             >
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
-
-            {/* 모바일 메뉴 (필요 시) */}
-            <button 
-              onClick={() => setIsMenuOpen(!isMenuOpen)} 
-              className="md:hidden h-8 w-8 flex items-center justify-center rounded-md ml-1"
-            >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
           </div>
+
         </div>
       </div>
     </header>
