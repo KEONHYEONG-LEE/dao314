@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { Globe, ChevronUp } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const languages = [
   { code: "en", name: "English" },
@@ -15,7 +14,7 @@ export function FloatingLanguageSwitcher() {
 
   useEffect(() => {
     const addScript = () => {
-      if (!document.getElementById("google-translate-script")) {
+      if (typeof window !== "undefined" && !document.getElementById("google-translate-script")) {
         const s = document.createElement("script");
         s.id = "google-translate-script";
         s.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
@@ -23,12 +22,16 @@ export function FloatingLanguageSwitcher() {
         document.body.appendChild(s);
       }
     };
-    window.googleTranslateElementInit = () => {
-      new (window as any).google.translate.TranslateElement(
-        { pageLanguage: "en", includedLanguages: "ko,en", autoDisplay: false },
-        "google_translate_element"
-      );
+
+    (window as any).googleTranslateElementInit = () => {
+      if ((window as any).google && (window as any).google.translate) {
+        new (window as any).google.translate.TranslateElement(
+          { pageLanguage: "en", includedLanguages: "ko,en", autoDisplay: false },
+          "google_translate_element"
+        );
+      }
     };
+
     addScript();
   }, []);
 
@@ -44,34 +47,59 @@ export function FloatingLanguageSwitcher() {
 
   return (
     <>
-      <div id="google_translate_element" className="hidden invisible"></div>
-      <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end gap-3">
+      {/* 구글 번역 숨김 박스 */}
+      <div id="google_translate_element" style={{ display: 'none', visibility: 'hidden' }}></div>
+
+      {/* 플로팅 버튼 - z-index를 최상위(9999)로 고정 */}
+      <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 9999, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '12px' }}>
+        
+        {/* 드롭다운 메뉴 */}
         {isOpen && (
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xl p-2 w-32 mb-2">
+          <div style={{ backgroundColor: 'var(--popover)', border: '1px solid var(--border)', borderRadius: '12px', padding: '8px', width: '120px', boxShadow: '0 10px 25px rgba(0,0,0,0.2)' }}>
             {languages.map((lang) => (
               <button
                 key={lang.code}
                 onClick={() => handleLanguageChange(lang.code)}
-                className={cn(
-                  "w-full text-left px-3 py-2 rounded-lg text-sm font-bold hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors",
-                  currentLang === lang.code ? "text-blue-600" : "text-slate-600 dark:text-slate-300"
-                )}
+                style={{
+                  width: '100%',
+                  textAlign: 'left',
+                  padding: '10px',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  borderRadius: '8px',
+                  color: currentLang === lang.code ? '#2563eb' : 'inherit',
+                  backgroundColor: 'transparent'
+                }}
               >
                 {lang.name}
               </button>
             ))}
           </div>
         )}
+
+        {/* 메인 버튼 */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 h-12 px-4 rounded-full bg-blue-600 text-white shadow-xl hover:bg-blue-700 transition-all active:scale-95 shadow-blue-500/40"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            height: '48px',
+            padding: '0 20px',
+            borderRadius: '9999px',
+            backgroundColor: '#2563eb',
+            color: 'white',
+            fontWeight: 'bold',
+            boxShadow: '0 4px 15px rgba(37, 99, 235, 0.4)',
+            border: 'none',
+            cursor: 'pointer'
+          }}
         >
-          <Globe className="h-5 w-5" />
-          <span className="text-sm font-bold">Language</span>
-          <ChevronUp className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
+          <Globe size={20} />
+          <span>Language</span>
+          <ChevronUp size={18} style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
         </button>
       </div>
     </>
   );
 }
-
