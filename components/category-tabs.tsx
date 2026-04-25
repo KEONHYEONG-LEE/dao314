@@ -3,11 +3,15 @@
 import { useState, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react"; 
 
+// [수정] 모든 카테고리 라벨을 영어로 고정
 const categories = [
   { id: "all", label: "All" },
   { id: "mainnet", label: "Mainnet" },
-  { id: "community", label: "Global Community" },
+  { id: "community", label: "Community" }, // Global Community -> Community로 간결화
   { id: "commerce", label: "Commerce" },
+  { id: "node", label: "Node" },        // 이미지에 있던 카테고리 반영 가능
+  { id: "mining", label: "Mining" },    // 이미지에 있던 카테고리 반영 가능
+  { id: "wallet", label: "Wallet" },    // 이미지에 있던 카테고리 반영 가능
   { id: "social", label: "Social" },
   { id: "education", label: "Education" },
   { id: "health", label: "Health" },
@@ -60,10 +64,11 @@ export function CategoryTabs({
           </button>
         )} 
 
+        {/* [수정] 'notranslate' 클래스를 추가하여 구글 번역기가 이 영역을 무시하게 함 */}
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex gap-2 py-3 overflow-x-auto scrollbar-hide"
+          className="flex gap-2 py-3 overflow-x-auto scrollbar-hide notranslate"
         >
           {categories.map((category) => (
             <button
