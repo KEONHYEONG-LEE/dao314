@@ -5,7 +5,7 @@ import PiLogin from "./PiLogin";
 
 export function Header() {
   useEffect(() => {
-    // 1. 구글 번역 스크립트 추가
+    // 1. 구글 번역 스크립트 로드
     const addScript = () => {
       if (!document.getElementById("google-translate-script")) {
         const s = document.createElement("script");
@@ -16,7 +16,6 @@ export function Header() {
       }
     };
     
-    // 2. 번역 초기화 로직
     // @ts-ignore
     window.googleTranslateElementInit = () => {
       // @ts-ignore
@@ -26,22 +25,22 @@ export function Header() {
         autoDisplay: false 
       }, 'google_translate_element');
     };
-
     addScript();
   }, []);
 
   return (
-    // '상단 흰색 바'가 보이지 않도록 배경을 transparent로 설정하고 shadow를 제거했습니다.
-    <header className="fixed top-0 z-[60] w-full bg-transparent border-none notranslate">
-      
-      {/* 구글 번역 엘리먼트 (기능 유지를 위해 존재하되 완전히 숨김) */}
-      <div id="google_translate_element" style={{ visibility: 'hidden', width: 0, height: 0, position: 'absolute' }}></div>
+    // 상단 네이비 바 유지, 배경 투명화는 삭제하여 깔끔하게 정리
+    <header className="sticky top-0 z-50 w-full bg-[#0f172a] border-b border-slate-800 notranslate">
+      {/* 구글 위젯은 여기에 숨겨둡니다 */}
+      <div id="google_translate_element" style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}></div>
       
       <div className="mx-auto max-w-7xl px-4">
-        {/* 우측 상단에 로그인/언어 버튼만 띄우기 위해 justify-end 설정 */}
-        <div className="flex h-[60px] items-center justify-end gap-2">
-          {/* PiLogin 컴포넌트 내부에 로그인 아이콘과 후원 버튼이 포함됩니다. */}
-          <div className="p-1">
+        <div className="flex h-[56px] items-center justify-between">
+          {/* 좌측 로고 */}
+          <div className="text-white font-black text-xl tracking-tighter">GPNR</div>
+          
+          {/* 우측 로그인 영역 (하나만 렌더링) */}
+          <div className="flex items-center">
             <PiLogin />
           </div>
         </div>
