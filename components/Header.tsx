@@ -6,13 +6,11 @@ import { Menu, X, Globe, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import PiLogin from "./PiLogin"; 
 
-const languages = [{ code: "en", name: "EN" }, { code: "ko", name: "KO" }];
-
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLangOpen, setIsLangOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
+  // 구글 번역 초기화 로직 (유지)
   useEffect(() => {
     const addScript = () => {
       if (!document.getElementById("google-translate-script")) {
@@ -33,17 +31,9 @@ export function Header() {
     addScript();
   }, []);
 
-  const handleLanguageChange = (lang: typeof languages[0]) => {
-    const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-    if (combo) { 
-      combo.value = lang.code; 
-      combo.dispatchEvent(new Event('change')); 
-    }
-    setIsLangOpen(false);
-  };
-
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur">
+      {/* 구글 번역용 숨김 엘리먼트 */}
       <div id="google_translate_element" className="hidden invisible"></div>
       
       <div className="mx-auto max-w-7xl px-3">
@@ -56,52 +46,37 @@ export function Header() {
           </Link>
 
           {/* [우측] 액션 버튼 그룹 */}
-          <div className="flex items-center gap-1.5 ml-auto">
+          <div className="flex items-center gap-1 ml-auto">
             
-            {/* ★★★ 번역 아이콘 (여기가 핵심) ★★★ */}
-            <div className="relative z-[70]">
-              <button
-                onClick={() => setIsLangOpen(!isLangOpen)}
-                className="flex items-center justify-center h-9 w-9 min-w-[36px] rounded-md border-2 border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 transition-all"
-                aria-label="Language Switcher"
-              >
-                <Globe className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-              </button>
-
-              {isLangOpen && (
-                <div className="absolute right-0 mt-2 w-20 bg-popover border border-border rounded-md shadow-2xl py-1 animate-in fade-in zoom-in duration-200">
-                  {languages.map((lang) => (
-                    <button 
-                      key={lang.code} 
-                      onClick={() => handleLanguageChange(lang)} 
-                      className="w-full text-center px-2 py-2.5 text-[11px] font-black hover:bg-accent border-b border-border last:border-0"
-                    >
-                      {lang.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* PiLogin 컴포넌트 (Support + 로그인 아이콘) */}
+            {/* 1. 번역 + 후원 + 로그인 뭉치 (PiLogin.tsx에서 한꺼번에 처리) */}
             <PiLogin />
 
-            {/* 테마 토글 */}
+            {/* 2. 테마 토글 */}
             <button 
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")} 
-              className="h-9 w-9 flex items-center justify-center rounded-md border border-border hover:bg-secondary transition-colors"
+              className="h-9 w-9 ml-1 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
             >
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
 
-            {/* 모바일 메뉴 (필요시) */}
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden h-9 w-9 flex items-center justify-center rounded-md border border-border">
+            {/* 3. 모바일 메뉴 (md 사이즈 미만에서만 표시) */}
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)} 
+              className="md:hidden h-9 w-9 flex items-center justify-center rounded-md"
+            >
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
 
           </div>
         </div>
       </div>
+      
+      {/* 모바일 메뉴 펼침 영역 (필요시) */}
+      {isMenuOpen && (
+        <div className="md:hidden border-b border-border bg-background px-4 py-2">
+          {/* 메뉴 내용 추가 가능 */}
+        </div>
+      )}
     </header>
   );
 }
