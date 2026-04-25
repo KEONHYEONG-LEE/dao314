@@ -4,18 +4,16 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X, Globe, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { cn } from "@/lib/utils";
-import PiLogin from "./PiLogin"; // 수정된 PiLogin 컴포넌트 임포트
+import PiLogin from "./PiLogin"; 
 
 const languages = [{ code: "en", name: "EN" }, { code: "ko", name: "KO" }];
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
-  const [currentLang, setCurrentLang] = useState(languages[0]);
   const { theme, setTheme } = useTheme();
 
-  // 구글 번역 초기화 로직
+  // 구글 번역 초기화 로직 (유지)
   useEffect(() => {
     const addScript = () => {
       if (!document.getElementById("google-translate-script")) {
@@ -37,47 +35,48 @@ export function Header() {
   }, []);
 
   const handleLanguageChange = (lang: typeof languages[0]) => {
-    setCurrentLang(lang);
-    setIsLangOpen(false);
     const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
     if (combo) { 
       combo.value = lang.code; 
       combo.dispatchEvent(new Event('change')); 
     }
+    setIsLangOpen(false);
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      {/* 구글 번역용 숨김 엘리먼트 */}
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur">
       <div id="google_translate_element" className="hidden invisible"></div>
       
-      <div className="mx-auto max-w-7xl px-2 sm:px-4">
+      <div className="mx-auto max-w-7xl px-2">
         <div className="flex h-16 items-center justify-between gap-1">
           
-          {/* 1. 로고 영역 */}
+          {/* 로고 */}
           <Link href="/" className="flex-shrink-0 flex items-center gap-1">
             <Globe className="h-6 w-6 text-blue-600" />
             <span className="text-base font-bold hidden xs:block">GPNR</span>
           </Link>
 
-          {/* 2. 우측 액션 그룹 (번역 + PiLogin + 테마) */}
-          <div className="flex items-center gap-1 sm:gap-2">
+          {/* 우측 액션 영역 */}
+          <div className="flex items-center gap-1">
             
-            {/* [번역 버튼] - Support 버튼 좌측 배치 */}
-            <div className="relative flex-shrink-0">
+            {/* 1. 번역 아이콘 (강제 표시 버전) */}
+            <div className="relative">
               <button
                 onClick={() => setIsLangOpen(!isLangOpen)}
-                className="flex items-center justify-center h-9 w-9 rounded-md border border-border bg-secondary/30 hover:bg-secondary transition-colors"
+                className="flex items-center justify-center h-9 w-9 rounded-md border border-border bg-secondary/40 hover:bg-secondary transition-all"
+                title="Language"
               >
-                <Globe className="h-4 w-4" />
+                <Globe className="h-4 w-4 text-foreground" />
               </button>
+
+              {/* 언어 선택 드롭다운 */}
               {isLangOpen && (
-                <div className="absolute right-0 mt-2 w-20 bg-popover border border-border rounded-md shadow-2xl z-50 py-1">
+                <div className="absolute right-0 mt-2 w-20 bg-popover border border-border rounded-md shadow-xl z-[60] py-1">
                   {languages.map((lang) => (
                     <button 
                       key={lang.code} 
                       onClick={() => handleLanguageChange(lang)} 
-                      className="w-full text-center px-2 py-1.5 text-[10px] font-bold hover:bg-accent"
+                      className="w-full text-center px-2 py-2 text-[11px] font-bold hover:bg-accent"
                     >
                       {lang.name}
                     </button>
@@ -86,22 +85,19 @@ export function Header() {
               )}
             </div>
 
-            {/* [PiLogin 컴포넌트] - 이 안에 Support와 로그인 아이콘(불빛)이 다 들어있습니다 */}
+            {/* 2. PiLogin (Support + 로그인 아이콘) */}
             <PiLogin />
 
-            {/* [테마 토글] */}
+            {/* 3. 테마 토글 */}
             <button 
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")} 
-              className="h-9 w-9 flex-shrink-0 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
+              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
             >
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
 
-            {/* [모바일 메뉴] */}
-            <button 
-              onClick={() => setIsMenuOpen(!isMenuOpen)} 
-              className="md:hidden h-9 w-9 flex-shrink-0 flex items-center justify-center rounded-md hover:bg-secondary"
-            >
+            {/* 4. 모바일 메뉴 */}
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden h-9 w-9 flex items-center justify-center">
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
 
