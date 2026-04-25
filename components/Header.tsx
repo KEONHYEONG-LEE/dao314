@@ -13,7 +13,6 @@ export function Header() {
   const [isLangOpen, setIsLangOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
-  // 구글 번역 초기화 로직 (유지)
   useEffect(() => {
     const addScript = () => {
       if (!document.getElementById("google-translate-script")) {
@@ -47,36 +46,35 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur">
       <div id="google_translate_element" className="hidden invisible"></div>
       
-      <div className="mx-auto max-w-7xl px-2">
-        <div className="flex h-16 items-center justify-between gap-1">
+      <div className="mx-auto max-w-7xl px-3">
+        <div className="flex h-16 items-center justify-between">
           
-          {/* 로고 */}
-          <Link href="/" className="flex-shrink-0 flex items-center gap-1">
+          {/* [좌측] 로고 영역 */}
+          <Link href="/" className="flex items-center gap-1 min-w-fit">
             <Globe className="h-6 w-6 text-blue-600" />
-            <span className="text-base font-bold hidden xs:block">GPNR</span>
+            <span className="text-base font-extrabold hidden xs:block">GPNR</span>
           </Link>
 
-          {/* 우측 액션 영역 */}
-          <div className="flex items-center gap-1">
+          {/* [우측] 액션 버튼 그룹 */}
+          <div className="flex items-center gap-1.5 ml-auto">
             
-            {/* 1. 번역 아이콘 (강제 표시 버전) */}
-            <div className="relative">
+            {/* ★★★ 번역 아이콘 (여기가 핵심) ★★★ */}
+            <div className="relative z-[70]">
               <button
                 onClick={() => setIsLangOpen(!isLangOpen)}
-                className="flex items-center justify-center h-9 w-9 rounded-md border border-border bg-secondary/40 hover:bg-secondary transition-all"
-                title="Language"
+                className="flex items-center justify-center h-9 w-9 min-w-[36px] rounded-md border-2 border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 transition-all"
+                aria-label="Language Switcher"
               >
-                <Globe className="h-4 w-4 text-foreground" />
+                <Globe className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               </button>
 
-              {/* 언어 선택 드롭다운 */}
               {isLangOpen && (
-                <div className="absolute right-0 mt-2 w-20 bg-popover border border-border rounded-md shadow-xl z-[60] py-1">
+                <div className="absolute right-0 mt-2 w-20 bg-popover border border-border rounded-md shadow-2xl py-1 animate-in fade-in zoom-in duration-200">
                   {languages.map((lang) => (
                     <button 
                       key={lang.code} 
                       onClick={() => handleLanguageChange(lang)} 
-                      className="w-full text-center px-2 py-2 text-[11px] font-bold hover:bg-accent"
+                      className="w-full text-center px-2 py-2.5 text-[11px] font-black hover:bg-accent border-b border-border last:border-0"
                     >
                       {lang.name}
                     </button>
@@ -85,19 +83,19 @@ export function Header() {
               )}
             </div>
 
-            {/* 2. PiLogin (Support + 로그인 아이콘) */}
+            {/* PiLogin 컴포넌트 (Support + 로그인 아이콘) */}
             <PiLogin />
 
-            {/* 3. 테마 토글 */}
+            {/* 테마 토글 */}
             <button 
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")} 
-              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
+              className="h-9 w-9 flex items-center justify-center rounded-md border border-border hover:bg-secondary transition-colors"
             >
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
 
-            {/* 4. 모바일 메뉴 */}
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden h-9 w-9 flex items-center justify-center">
+            {/* 모바일 메뉴 (필요시) */}
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden h-9 w-9 flex items-center justify-center rounded-md border border-border">
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
 
