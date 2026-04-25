@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { Globe, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const PiLogin = () => {
   const [piId, setPiId] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLangOpen, setIsLangOpen] = useState(false);
 
   useEffect(() => {
     const savedId = localStorage.getItem('pi_user_id');
@@ -29,9 +31,37 @@ const PiLogin = () => {
     }
   };
 
+  // 언어 변경 함수
+  const handleLanguageChange = (code: string) => {
+    const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+    if (combo) {
+      combo.value = code;
+      combo.dispatchEvent(new Event('change'));
+    }
+    setIsLangOpen(false);
+  };
+
   return (
     <div className="flex items-center gap-1.5 flex-shrink-0">
-      {/* 1. Support 버튼 (2단 구성, 폭 축소) */}
+      
+      {/* [추가] 1. 번역 아이콘 (Support 좌측 배치) */}
+      <div className="relative">
+        <button
+          onClick={() => setIsLangOpen(!isLangOpen)}
+          className="flex items-center justify-center h-9 w-9 rounded-md border border-border bg-secondary/40 hover:bg-secondary transition-all"
+        >
+          <Globe className="h-4 w-4" />
+        </button>
+
+        {isLangOpen && (
+          <div className="absolute right-0 mt-2 w-20 bg-popover border border-border rounded-md shadow-xl z-[100] py-1">
+            <button onClick={() => handleLanguageChange('en')} className="w-full py-2 text-[11px] font-bold hover:bg-accent">EN</button>
+            <button onClick={() => handleLanguageChange('ko')} className="w-full py-2 text-[11px] font-bold hover:bg-accent border-t border-border">KO</button>
+          </div>
+        )}
+      </div>
+
+      {/* 2. Support 버튼 (2단 구성) */}
       <button 
         onClick={() => alert("0.001 Pi 후원을 진행합니다.")}
         className="bg-[#f6ad55] text-white w-[58px] h-9 flex flex-col items-center justify-center rounded-md leading-none shadow-sm active:scale-95"
@@ -40,29 +70,9 @@ const PiLogin = () => {
         <span className="text-[10px] font-black tracking-tighter">0.001π</span>
       </button>
 
-      {/* 2. 로그인 아이콘 (텍스트 제거, 불빛으로만 식별) */}
+      {/* 3. 로그인 아이콘 (불빛 표시) */}
       <button 
         onClick={handleLoginClick}
         className={cn(
           "relative flex items-center justify-center h-9 w-9 rounded-md border transition-all active:scale-95 shadow-sm",
-          isLoggedIn ? "bg-slate-800 border-slate-700" : "bg-[#4A69FF] border-blue-400"
-        )}
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-        </svg>
-        
-        {/* 상태 표시 불빛 (녹색/회색) */}
-        <span className={cn(
-          "absolute top-1 right-1 h-2.5 w-2.5 rounded-full border-2",
-          isLoggedIn 
-            ? "bg-green-500 border-slate-800 shadow-[0_0_5px_#22c55e]" 
-            : "bg-gray-400 border-blue-500"
-        )} />
-      </button>
-    </div>
-  );
-};
-
-export default PiLogin;
-
+          isLoggedIn ?
