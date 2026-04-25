@@ -16,6 +16,15 @@ const PiLogin = () => {
       setPiId(savedId);
       setIsLoggedIn(true);
     }
+
+    // 초기 로드 시 구글 번역 관련 UI 강제 숨김 스타일 주입
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .goog-te-banner-frame.skiptranslate, .goog-te-gadget-simple, .goog-te-balloon-frame, #goog-gt-tt { display: none !important; }
+      body { top: 0px !important; }
+      .goog-text-highlight { background: none !important; box-shadow: none !important; }
+    `;
+    document.head.appendChild(style);
   }, []);
 
   const handleLoginClick = () => {
@@ -37,6 +46,15 @@ const PiLogin = () => {
     if (combo) {
       combo.value = code;
       combo.dispatchEvent(new Event('change'));
+
+      // 언어 변경 직후 구글이 생성하는 툴바와 팝업을 0.1초 뒤에 다시 한번 강제 제거
+      setTimeout(() => {
+        const banner = document.querySelector('.goog-te-banner-frame') as HTMLElement;
+        if (banner) banner.style.display = 'none';
+        document.body.style.top = '0px';
+        const tooltip = document.getElementById('goog-gt-tt');
+        if (tooltip) tooltip.style.display = 'none';
+      }, 100);
     }
     setIsLangOpen(false);
     setIsBottomLangOpen(false);
@@ -44,9 +62,8 @@ const PiLogin = () => {
 
   return (
     <>
-      {/* 1. 상단 헤더 내부 버튼들: 중복을 피하기 위해 오직 필요한 버튼 3개만 깔끔하게 배치 */}
-      <div className="flex items-center gap-1.5 flex-nowrap h-full">
-        
+      {/* 1. 상단 헤더 내부 버튼들 */}
+      <div className="flex items-center gap-1.5 flex-nowrap h-full notranslate">
         {/* 번역 아이콘 (헤더 전용) */}
         <div className="relative flex items-center">
           <button
@@ -89,10 +106,10 @@ const PiLogin = () => {
         </button>
       </div>
 
-      {/* 2. 우측 하단 Language 플로팅 버튼: 헤더 영역 밖으로 완전히 분리 (고정 위치) */}
-      <div className="fixed bottom-6 right-6 z-[1000] flex flex-col items-end gap-2">
+      {/* 2. 우측 하단 Language 플로팅 버튼 */}
+      <div className="fixed bottom-6 right-6 z-[1000] flex flex-col items-end gap-2 notranslate">
         {isBottomLangOpen && (
-          <div className="w-24 bg-background border border-border shadow-2xl rounded-lg overflow-hidden notranslate">
+          <div className="w-24 bg-background border border-border shadow-2xl rounded-lg overflow-hidden">
             <button onClick={() => handleLanguageChange('en')} className="w-full px-4 py-2.5 text-xs font-semibold hover:bg-accent border-b border-border flex justify-between items-center">
               <span>EN</span>
             </button>
