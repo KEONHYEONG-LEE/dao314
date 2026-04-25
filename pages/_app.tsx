@@ -3,8 +3,10 @@ import Head from 'next/head';
 import Script from 'next/script';
 import { ThemeProvider } from 'next-themes';
 import '../globals.css';
-import { Header } from '@/components/Header'; // Header 임포트
-import { FloatingLanguageSwitcher } from '@/components/FloatingLanguageSwitcher'; // 새로 만든 컴포넌트 임포트
+
+// 경로 에러를 방지하기 위해 상대 경로(../)로 설정했습니다.
+import { Header } from '../components/Header';
+import { FloatingLanguageSwitcher } from '../components/FloatingLanguageSwitcher';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -20,15 +22,19 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         strategy="beforeInteractive" 
       />
 
-      {/* 1. 공통 헤더 (이제 모든 페이지에 나옵니다) */}
-      <Header />
+      {/* 모든 페이지 공통 레이아웃 */}
+      <div className="relative min-h-screen flex flex-col">
+        {/* 상단 헤더 */}
+        <Header />
 
-      {/* 2. 각 페이지 내용 */}
-      <Component {...pageProps} />
+        {/* 페이지 본문 */}
+        <main className="flex-grow">
+          <Component {...pageProps} />
+        </main>
 
-      {/* 3. 하단 고정 번역 버튼 (상단바와 충돌 없이 바닥에 표시) */}
-      <FloatingLanguageSwitcher />
-      
+        {/* 하단 플로팅 번역 버튼 (고정 위치) */}
+        <FloatingLanguageSwitcher />
+      </div>
     </ThemeProvider>
   );
 }
