@@ -20,10 +20,14 @@ export function Header() {
         document.body.appendChild(s);
       }
     };
+    
+    // @ts-ignore
     window.googleTranslateElementInit = () => {
+      // @ts-ignore
       new window.google.translate.TranslateElement({ 
         pageLanguage: 'en', 
         includedLanguages: 'ko,en', 
+        layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE, // 레이아웃 단순화
         autoDisplay: false 
       }, 'google_translate_element');
     };
@@ -31,45 +35,43 @@ export function Header() {
   }, []);
 
   return (
-    // 1. 상단에 불필요한 공간이 생기지 않도록 header의 위치를 엄격히 고정
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur notranslate">
       
-      {/* 2. 구글 번역 엘리먼트가 공간을 차지하지 않도록 완전히 숨김 (중요) */}
-      <div id="google_translate_element" style={{ display: 'none', position: 'absolute', top: '-9999px' }}></div>
+      {/* 구글 번역 엘리먼트가 화면에 절대 나타나지 않도록 처리 */}
+      <div id="google_translate_element" style={{ visibility: 'hidden', width: 0, height: 0, position: 'absolute' }}></div>
       
-      {/* 3. '두번째, 세번째 줄'처럼 보이는 중복 요소를 제거하기 위해 내부 구조를 딱 한 줄(h-16)로 제한 */}
       <div className="mx-auto max-w-7xl px-3">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-[56px] items-center justify-between">
           
-          {/* [좌측] 로고 영역 */}
-          <Link href="/" className="flex items-center gap-1 min-w-fit">
-            <Globe className="h-6 w-6 text-blue-600" />
-            <span className="text-base font-extrabold hidden xs:block">GPNR</span>
+          {/* [좌측] 로고 영역: 중복을 피하기 위해 텍스트 위주로 간결하게 설정 */}
+          <Link href="/" className="flex items-center gap-2">
+            <div className="bg-blue-600 p-1 rounded-lg">
+              <Globe className="h-5 w-5 text-white" />
+            </div>
+            <span className="text-lg font-black tracking-tighter">GPNR</span>
           </Link>
 
           {/* [우측] 액션 버튼 그룹 */}
-          <div className="flex items-center gap-1 ml-auto">
+          <div className="flex items-center gap-1">
             
-            {/* PiLogin 내부에 중복된 로고나 바가 있는지 확인이 필요합니다. 
-                일단 현재 헤더에서는 딱 필요한 버튼들만 노출합니다. */}
+            {/* PiLogin 컴포넌트: 언어 선택, 지원, 로그인 버튼이 들어있음 */}
             <PiLogin />
 
-            {/* 테마 토글 */}
+            {/* 테마 토글 버튼 (선택 사항: 아이콘이 많아 보이면 이 부분을 제거해도 좋습니다) */}
             <button 
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")} 
-              className="h-9 w-9 ml-1 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
+              className="h-8 w-8 flex items-center justify-center rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ml-1"
             >
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
 
-            {/* 모바일 메뉴 */}
+            {/* 모바일 메뉴 (필요 시) */}
             <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)} 
-              className="md:hidden h-9 w-9 flex items-center justify-center rounded-md"
+              className="md:hidden h-8 w-8 flex items-center justify-center rounded-md ml-1"
             >
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
-
           </div>
         </div>
       </div>
