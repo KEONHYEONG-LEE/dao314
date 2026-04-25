@@ -26,7 +26,6 @@ export function Header() {
   const [currentLang, setCurrentLang] = useState(languages[0]);
   const { theme, setTheme } = useTheme();
 
-  // 구글 번역 스크립트 초기화 로직
   useEffect(() => {
     const addGoogleTranslateScript = () => {
       if (!document.getElementById("google-translate-script")) {
@@ -53,8 +52,7 @@ export function Header() {
     addGoogleTranslateScript();
   }, []);
 
-  // 언어 변경 시 구글 번역기 트리거
-  const handleLanguageChange = (lang) => {
+  const handleLanguageChange = (lang: typeof languages[0]) => {
     setCurrentLang(lang);
     setIsLangOpen(false);
     
@@ -67,50 +65,42 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      {/* 구글 번역 위젯 숨김 처리 */}
-      <div id="google_translate_element" style={{ display: 'none' }}></div>
+      {/* 번역 위젯은 레이아웃에 영향을 주지 않도록 절대 좌표로 숨김 */}
+      <div id="google_translate_element" className="absolute opacity-0 pointer-events-none"></div>
+      
       <style jsx global>{`
         .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon { display: none !important; }
         body { top: 0px !important; }
         .goog-tooltip { display: none !important; }
-        .goog-tooltip:hover { display: none !important; }
-        .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+        .goog-text-highlight { background-color: transparent !important; border: none !important; }
       `}</style>
 
       <div className="mx-auto max-w-7xl px-4">
         <div className="flex h-16 items-center justify-between">
+          {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <Globe className="h-8 w-8 text-blue-600" />
             <span className="text-xl font-bold tracking-tight">GPNR</span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <div className="relative mr-1">
+          {/* Actions - 순서 조정: 언어 선택 -> Support -> Login */}
+          <div className="flex items-center gap-3">
+            
+            {/* 1. 언어 선택 드롭다운 (Support 좌측 배치) */}
+            <div className="relative">
               <button
                 onClick={() => setIsLangOpen(!isLangOpen)}
-                className="flex items-center gap-1.5 h-9 px-2.5 rounded-md hover:bg-secondary transition-colors text-xs font-semibold border border-transparent hover:border-border"
+                className="flex items-center gap-1.5 h-9 px-2 rounded-md hover:bg-secondary transition-colors text-xs font-semibold border border-border"
               >
                 <Globe className="h-4 w-4 text-muted-foreground" />
-                <span className="hidden sm:inline uppercase">{currentLang.code}</span>
-                <ChevronDown className={cn("h-3 w-3 transition-transform text-muted-foreground", isLangOpen && "rotate-180")} />
+                <span className="uppercase">{currentLang.code}</span>
+                <ChevronDown className={cn("h-3 w-3 transition-transform", isLangOpen && "rotate-180")} />
               </button>
 
               {isLangOpen && (
                 <>
                   <div className="fixed inset-0 z-[-1]" onClick={() => setIsLangOpen(false)} />
-                  <div className="absolute right-0 mt-2 w-44 bg-popover border border-border rounded-md shadow-lg z-[60] py-1">
+                  <div className="absolute right-0 mt-2 w-32 bg-popover border border-border rounded-md shadow-lg z-[60] py-1">
                     {languages.map((lang) => (
                       <button
                         key={lang.code}
@@ -128,24 +118,27 @@ export function Header() {
               )}
             </div>
 
-            <button className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-secondary transition-colors">
-              <Search className="h-5 w-5" />
-            </button>
-            
-            <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
-            >
-              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            {/* 2. Support 버튼 */}
+            <button className="hidden sm:flex items-center gap-1 px-3 py-1.5 bg-orange-500 text-white rounded-md text-xs font-bold hover:bg-orange-600 transition-colors">
+              Support <span className="text-[10px]">0.001π</span>
             </button>
 
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden h-9 w-9 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
-            >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
+            {/* 3. 기타 아이콘들 */}
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
+              >
+                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </button>
+
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="md:hidden h-9 w-9 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
+              >
+                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </button>
+            </div>
           </div>
         </div>
       </div>
