@@ -16,13 +16,15 @@ const PiLogin = () => {
       setIsLoggedIn(true);
     }
 
-    // 스타일 주입 시 발생할 수 있는 에러 방지
+    // 1. 구글 번역 UI 강제 숨김 및 스타일 정리
     if (typeof document !== 'undefined') {
       const style = document.createElement('style');
       style.innerHTML = `
-        .goog-te-banner-frame.skiptranslate, .goog-te-gadget-simple, .goog-te-balloon-frame, #goog-gt-tt { display: none !important; }
-        body { top: 0px !important; }
-        .goog-text-highlight { background: none !important; box-shadow: none !important; }
+        /* 기존 구글 번역 위젯/바 강제 숨김 */
+        .goog-te-banner-frame, .goog-te-gadget, #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+        body { top: 0px !important; position: static !important; }
+        .skiptranslate { display: none !important; }
+        .notranslate .skiptranslate { display: none !important; }
       `;
       document.head.appendChild(style);
     }
@@ -42,17 +44,14 @@ const PiLogin = () => {
     }
   };
 
+  // 번역 실행 함수: 콤보박스를 직접 조작
   const handleLanguageChange = (code: string) => {
     const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
     if (combo) {
       combo.value = code;
       combo.dispatchEvent(new Event('change'));
-
-      setTimeout(() => {
-        const banner = document.querySelector('.goog-te-banner-frame') as HTMLElement;
-        if (banner) banner.style.display = 'none';
-        document.body.style.top = '0px';
-      }, 100);
+    } else {
+      console.error("구글 번역 요소가 로드되지 않았습니다.");
     }
     setIsBottomLangOpen(false);
   };
@@ -69,52 +68,56 @@ const PiLogin = () => {
           <span className="text-[10px] font-bold">0.001</span>
         </button>
 
+        {/* [수정] 로그인 아이콘 색상 반전: Off(남색), On(밝은 파랑) */}
         <button 
           onClick={handleLoginClick}
           className={cn(
             "flex items-center justify-center h-8 w-8 rounded-full border transition-all active:scale-95 shadow-sm",
-            isLoggedIn ? "bg-slate-900 border-slate-700" : "bg-blue-600 border-blue-500"
+            isLoggedIn 
+              ? "bg-blue-400 border-blue-300" // On: 밝은 파랑
+              : "bg-[#0f172a] border-slate-700" // Off: 남색 (Slate 950 계열)
           )}
         >
-          <User className={cn("h-4 w-4", isLoggedIn ? "text-blue-400" : "text-white")} />
+          <User className={cn("h-4 w-4", isLoggedIn ? "text-white" : "text-slate-400")} />
         </button>
       </div>
 
-      {/* 2. 하단 Language 플로팅 버튼 */}
+      {/* 2. 하단 Language 플로팅 버튼 (기존 아이콘 중복 제거) */}
       <div className="fixed bottom-8 right-6 z-[1000] flex flex-col items-end gap-3 notranslate">
         {isBottomLangOpen && (
-          <div className="mb-2 w-28 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200 dark:border-slate-700 shadow-2xl rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4">
+          <div className="mb-2 w-32 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-700 shadow-2xl rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4">
             <button 
               onClick={() => handleLanguageChange('en')} 
-              className="w-full px-4 py-3 text-xs font-bold hover:bg-blue-600 hover:text-white transition-colors flex items-center justify-between group text-slate-900 dark:text-white"
+              className="w-full px-4 py-3 text-sm font-bold hover:bg-blue-600 hover:text-white transition-colors flex items-center justify-between group text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800"
             >
               <span>English</span>
-              <span className="text-[10px] opacity-50 group-hover:opacity-100 uppercase">en</span>
+              <span className="text-[10px] opacity-40 uppercase font-normal">en</span>
             </button>
             <button 
               onClick={() => handleLanguageChange('ko')} 
-              className="w-full px-4 py-3 text-xs font-bold hover:bg-blue-600 hover:text-white transition-colors flex items-center justify-between group text-slate-900 dark:text-white"
+              className="w-full px-4 py-3 text-sm font-bold hover:bg-blue-600 hover:text-white transition-colors flex items-center justify-between group text-slate-900 dark:text-white"
             >
               <span>한국어</span>
-              <span className="text-[10px] opacity-50 group-hover:opacity-100 uppercase">ko</span>
+              <span className="text-[10px] opacity-40 uppercase font-normal">ko</span>
             </button>
           </div>
         )}
 
+        {/* 중복된 아이콘을 하나로 통합한 세련된 버튼 */}
         <button
           onClick={() => setIsBottomLangOpen(!isBottomLangOpen)}
           className={cn(
-            "flex items-center gap-2 px-4 py-3 rounded-full shadow-lg transition-all active:scale-90 border",
+            "flex items-center gap-2 px-5 py-3 rounded-full shadow-2xl transition-all active:scale-90 border",
             isBottomLangOpen 
               ? "bg-slate-900 border-slate-700 text-white" 
-              : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
+              : "bg-blue-600 border-blue-500 text-white"
           )}
         >
           <Languages className="h-4 w-4" />
-          <span className="text-xs font-extrabold tracking-tight">
-            {isBottomLangOpen ? "CLOSE" : "LANG"}
+          <span className="text-xs font-black tracking-widest uppercase">
+            {isBottomLangOpen ? "CLOSE" : "언어/Lang"}
           </span>
-          <ChevronUp className={cn("h-3 w-3 opacity-50 transition-transform", isBottomLangOpen && "rotate-180")} />
+          <ChevronUp className={cn("h-3 w-3 opacity-70 transition-transform", isBottomLangOpen && "rotate-180")} />
         </button>
       </div>
     </Fragment>
