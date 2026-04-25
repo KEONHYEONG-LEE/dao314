@@ -7,24 +7,24 @@ import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { name: "홈", href: "/" },
-  { name: "정치", href: "/politics" },
-  { name: "경제", href: "/economy" },
-  { name: "기술", href: "/tech" },
-  { name: "스포츠", href: "/sports" },
-  { name: "문화", href: "/culture" },
+  { name: "Home", href: "/" },
+  { name: "Politics", href: "/politics" },
+  { name: "Economy", href: "/economy" },
+  { name: "Tech", href: "/tech" },
+  { name: "Sports", href: "/sports" },
+  { name: "Culture", href: "/culture" },
 ];
 
-// 요청하신 대로 일단 2가지 언어(한국어, 영어)만 설정합니다.
+// 선택 가능한 언어 (기능 중심)
 const languages = [
-  { code: "ko", name: "한국어" },
   { code: "en", name: "English" },
+  { code: "ko", name: "Korean (Auto-Translate)" },
 ];
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false); 
-  const [currentLang, setCurrentLang] = useState(languages[0]); 
+  const [currentLang, setCurrentLang] = useState(languages[0]); // 기본은 영어
   const { theme, setTheme } = useTheme();
 
   return (
@@ -37,7 +37,7 @@ export function Header() {
             <span className="text-xl font-bold tracking-tight">GPNR</span>
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - 영문 이름 유지 */}
           <nav className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
               <Link
@@ -53,7 +53,7 @@ export function Header() {
           {/* Actions */}
           <div className="flex items-center gap-2">
             
-            {/* 언어 선택 드롭다운 (Support/Search 좌측 배치) */}
+            {/* 언어 선택 드롭다운 (번역 트리거) */}
             <div className="relative mr-1">
               <button
                 onClick={() => setIsLangOpen(!isLangOpen)}
@@ -66,16 +66,17 @@ export function Header() {
 
               {isLangOpen && (
                 <>
-                  {/* 드롭다운 바깥 클릭 시 닫히기 위한 투명 배경 */}
                   <div className="fixed inset-0 z-[-1]" onClick={() => setIsLangOpen(false)} />
-                  <div className="absolute right-0 mt-2 w-28 bg-popover border border-border rounded-md shadow-lg z-[60] py-1 animate-in fade-in zoom-in duration-100">
+                  <div className="absolute right-0 mt-2 w-44 bg-popover border border-border rounded-md shadow-lg z-[60] py-1">
                     {languages.map((lang) => (
                       <button
                         key={lang.code}
                         onClick={() => {
                           setCurrentLang(lang);
                           setIsLangOpen(false);
-                          // TODO: i18n 라이브러리 연결 시 언어 변경 로직 삽입
+                          // 로컬 스토리지 등에 저장하여 기사 컴포넌트가 이를 감지하게 함
+                          localStorage.setItem("gpnr-language", lang.code);
+                          window.dispatchEvent(new Event("languageChange"));
                         }}
                         className={cn(
                           "w-full text-left px-3 py-2 text-xs hover:bg-accent transition-colors",
@@ -90,18 +91,13 @@ export function Header() {
               )}
             </div>
 
-            {/* Support/Search 및 기타 버튼들 */}
-            <button
-              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
-              aria-label="검색"
-            >
+            <button className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-secondary transition-colors">
               <Search className="h-5 w-5" />
             </button>
             
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
-              aria-label="테마 변경"
             >
               <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -110,32 +106,10 @@ export function Header() {
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="md:hidden h-9 w-9 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
-              aria-label="메뉴"
             >
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        <div
-          className={cn(
-            "md:hidden overflow-hidden transition-all duration-300",
-            isMenuOpen ? "max-h-96 pb-4" : "max-h-0"
-          )}
-        >
-          <nav className="flex flex-col gap-2 pt-4">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary rounded-md transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
         </div>
       </div>
     </header>
