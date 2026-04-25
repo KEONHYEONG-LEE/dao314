@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Globe, User, ChevronDown } from "lucide-react"; 
+import { Globe, User, ChevronUp, Languages } from "lucide-react"; 
 import { cn } from "@/lib/utils";
 
 const PiLogin = () => {
@@ -17,7 +17,6 @@ const PiLogin = () => {
       setIsLoggedIn(true);
     }
 
-    // 초기 로드 시 구글 번역 관련 UI 강제 숨김 스타일 주입
     const style = document.createElement('style');
     style.innerHTML = `
       .goog-te-banner-frame.skiptranslate, .goog-te-gadget-simple, .goog-te-balloon-frame, #goog-gt-tt { display: none !important; }
@@ -47,13 +46,10 @@ const PiLogin = () => {
       combo.value = code;
       combo.dispatchEvent(new Event('change'));
 
-      // 언어 변경 직후 구글이 생성하는 툴바와 팝업을 0.1초 뒤에 다시 한번 강제 제거
       setTimeout(() => {
         const banner = document.querySelector('.goog-te-banner-frame') as HTMLElement;
         if (banner) banner.style.display = 'none';
         document.body.style.top = '0px';
-        const tooltip = document.getElementById('goog-gt-tt');
-        if (tooltip) tooltip.style.display = 'none';
       }, 100);
     }
     setIsLangOpen(false);
@@ -62,73 +58,62 @@ const PiLogin = () => {
 
   return (
     <>
-      {/* 1. 상단 헤더 내부 버튼들 */}
-      <div className="flex items-center gap-1.5 flex-nowrap h-full notranslate">
-        {/* 번역 아이콘 (헤더 전용) */}
-        <div className="relative flex items-center">
-          <button
-            onClick={() => setIsLangOpen(!isLangOpen)}
-            className="flex items-center justify-center h-8 w-8 rounded-md bg-slate-100 dark:bg-slate-800 border border-border hover:bg-slate-200 transition-all flex-shrink-0"
-          >
-            <Globe className="h-4 w-4 text-slate-600 dark:text-slate-300" />
-          </button>
-
-          {isLangOpen && (
-            <div className="absolute top-full left-0 mt-1 w-20 bg-background border border-border shadow-xl rounded-md z-[100] overflow-hidden notranslate">
-              <button onClick={() => handleLanguageChange('en')} className="w-full py-2 text-[11px] font-bold hover:bg-accent border-b border-border">EN</button>
-              <button onClick={() => handleLanguageChange('ko')} className="w-full py-2 text-[11px] font-bold hover:bg-accent">KO</button>
-            </div>
-          )}
-        </div>
-
-        {/* Support 버튼 */}
+      {/* 1. 상단 액션 그룹: 흰색 바 느낌을 없애기 위해 배경 없이 투명하게 구성 */}
+      <div className="flex items-center gap-2 notranslate">
+        
+        {/* 미니멀 지원 버튼 */}
         <button 
           onClick={() => alert("0.001 Pi 후원을 진행합니다.")}
-          className="bg-[#f6ad55] text-white w-[58px] h-8 flex flex-col items-center justify-center rounded-md leading-none shadow-sm active:scale-95 flex-shrink-0"
+          className="bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 px-2.5 h-8 flex items-center gap-1 rounded-full border border-amber-200 dark:border-amber-800/50 transition-all active:scale-95"
         >
-          <span className="text-[7px] font-bold uppercase">Support</span>
-          <span className="text-[10px] font-black tracking-tighter">0.001π</span>
+          <span className="text-[10px] font-black italic">π</span>
+          <span className="text-[10px] font-bold">0.001</span>
         </button>
 
-        {/* 로그인 아이콘 */}
+        {/* 상단 로그인/프로필 버튼 */}
         <button 
           onClick={handleLoginClick}
           className={cn(
-            "relative flex items-center justify-center h-8 w-8 rounded-md border transition-all active:scale-95 shadow-sm flex-shrink-0",
-            isLoggedIn ? "bg-slate-800 border-slate-700" : "bg-[#4A69FF] border-blue-400"
+            "flex items-center justify-center h-8 w-8 rounded-full border transition-all active:scale-95 shadow-sm",
+            isLoggedIn ? "bg-slate-900 border-slate-700" : "bg-primary border-primary/20"
           )}
         >
-          <User className="h-4 w-4 text-white" />
-          <span className={cn(
-            "absolute top-0.5 right-0.5 h-2 w-2 rounded-full border",
-            isLoggedIn ? "bg-green-500 border-slate-800" : "bg-gray-400 border-blue-500"
-          )} />
+          <User className={cn("h-4 w-4", isLoggedIn ? "text-blue-400" : "text-white")} />
         </button>
       </div>
 
-      {/* 2. 우측 하단 Language 플로팅 버튼 */}
-      <div className="fixed bottom-6 right-6 z-[1000] flex flex-col items-end gap-2 notranslate">
+      {/* 2. 세련된 우측 하단 Language 플로팅 버튼 */}
+      <div className="fixed bottom-8 right-6 z-[1000] flex flex-col items-end gap-3 notranslate">
+        
+        {/* 언어 선택 팝업: 모던한 블러 효과 적용 */}
         {isBottomLangOpen && (
-          <div className="w-24 bg-background border border-border shadow-2xl rounded-lg overflow-hidden">
-            <button onClick={() => handleLanguageChange('en')} className="w-full px-4 py-2.5 text-xs font-semibold hover:bg-accent border-b border-border flex justify-between items-center">
-              <span>EN</span>
+          <div className="mb-2 w-28 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-white/20 shadow-2xl rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4">
+            <button 
+              onClick={() => handleLanguageChange('en')} 
+              className="w-full px-4 py-3 text-xs font-bold hover:bg-primary hover:text-white transition-colors flex items-center justify-between group"
+            >
+              <span>English</span>
+              <span className="text-[10px] opacity-50 group-hover:opacity-100">EN</span>
             </button>
-            <button onClick={() => handleLanguageChange('ko')} className="w-full px-4 py-2.5 text-xs font-semibold hover:bg-accent flex justify-between items-center">
-              <span>KO</span>
+            <button 
+              onClick={() => handleLanguageChange('ko')} 
+              className="w-full px-4 py-3 text-xs font-bold hover:bg-primary hover:text-white transition-colors flex items-center justify-between group"
+            >
+              <span>한국어</span>
+              <span className="text-[10px] opacity-50 group-hover:opacity-100">KO</span>
             </button>
           </div>
         )}
+
+        {/* 플로팅 버튼 메인: 아이콘 중심의 세련된 디자인 */}
         <button
           onClick={() => setIsBottomLangOpen(!isBottomLangOpen)}
-          className="flex items-center gap-1.5 bg-[#4A69FF] hover:bg-blue-700 text-white px-3 py-1.5 rounded-full shadow-lg transition-all active:scale-90"
+          className={cn(
+            "flex items-center gap-2 px-4 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all active:scale-90 border",
+            isBottomLangOpen 
+              ? "bg-slate-900 border-slate-700 text-white" 
+              : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
+          )}
         >
-          <Globe className="h-3.5 w-3.5" />
-          <span className="text-xs font-bold tracking-tight">언어</span>
-          <ChevronDown className={cn("h-3 w-3 transition-transform", isBottomLangOpen && "rotate-180")} />
-        </button>
-      </div>
-    </>
-  );
-};
-
-export default PiLogin;
+          <Languages className={cn("h-4 w-4 transition-transform", isBottomLangOpen && "scale-110")} />
+          <span className="text-xs font-extrabold tracking-tight">
