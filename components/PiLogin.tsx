@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Globe, User, ChevronUp, Languages } from "lucide-react"; 
+import React, { useState, useEffect, Fragment } from 'react';
+import { User, ChevronUp, Languages } from "lucide-react"; 
 import { cn } from "@/lib/utils";
 
 const PiLogin = () => {
   const [piId, setPiId] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLangOpen, setIsLangOpen] = useState(false);
   const [isBottomLangOpen, setIsBottomLangOpen] = useState(false);
 
   useEffect(() => {
@@ -17,13 +16,16 @@ const PiLogin = () => {
       setIsLoggedIn(true);
     }
 
-    const style = document.createElement('style');
-    style.innerHTML = `
-      .goog-te-banner-frame.skiptranslate, .goog-te-gadget-simple, .goog-te-balloon-frame, #goog-gt-tt { display: none !important; }
-      body { top: 0px !important; }
-      .goog-text-highlight { background: none !important; box-shadow: none !important; }
-    `;
-    document.head.appendChild(style);
+    // 스타일 주입 시 발생할 수 있는 에러 방지
+    if (typeof document !== 'undefined') {
+      const style = document.createElement('style');
+      style.innerHTML = `
+        .goog-te-banner-frame.skiptranslate, .goog-te-gadget-simple, .goog-te-balloon-frame, #goog-gt-tt { display: none !important; }
+        body { top: 0px !important; }
+        .goog-text-highlight { background: none !important; box-shadow: none !important; }
+      `;
+      document.head.appendChild(style);
+    }
   }, []);
 
   const handleLoginClick = () => {
@@ -52,16 +54,13 @@ const PiLogin = () => {
         document.body.style.top = '0px';
       }, 100);
     }
-    setIsLangOpen(false);
     setIsBottomLangOpen(false);
   };
 
   return (
-    <>
-      {/* 1. 상단 액션 그룹: 흰색 바 느낌을 없애기 위해 배경 없이 투명하게 구성 */}
+    <Fragment>
+      {/* 1. 상단 액션 그룹 */}
       <div className="flex items-center gap-2 notranslate">
-        
-        {/* 미니멀 지원 버튼 */}
         <button 
           onClick={() => alert("0.001 Pi 후원을 진행합니다.")}
           className="bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 px-2.5 h-8 flex items-center gap-1 rounded-full border border-amber-200 dark:border-amber-800/50 transition-all active:scale-95"
@@ -70,50 +69,56 @@ const PiLogin = () => {
           <span className="text-[10px] font-bold">0.001</span>
         </button>
 
-        {/* 상단 로그인/프로필 버튼 */}
         <button 
           onClick={handleLoginClick}
           className={cn(
             "flex items-center justify-center h-8 w-8 rounded-full border transition-all active:scale-95 shadow-sm",
-            isLoggedIn ? "bg-slate-900 border-slate-700" : "bg-primary border-primary/20"
+            isLoggedIn ? "bg-slate-900 border-slate-700" : "bg-blue-600 border-blue-500"
           )}
         >
           <User className={cn("h-4 w-4", isLoggedIn ? "text-blue-400" : "text-white")} />
         </button>
       </div>
 
-      {/* 2. 세련된 우측 하단 Language 플로팅 버튼 */}
+      {/* 2. 하단 Language 플로팅 버튼 */}
       <div className="fixed bottom-8 right-6 z-[1000] flex flex-col items-end gap-3 notranslate">
-        
-        {/* 언어 선택 팝업: 모던한 블러 효과 적용 */}
         {isBottomLangOpen && (
-          <div className="mb-2 w-28 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-white/20 shadow-2xl rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4">
+          <div className="mb-2 w-28 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200 dark:border-slate-700 shadow-2xl rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4">
             <button 
               onClick={() => handleLanguageChange('en')} 
-              className="w-full px-4 py-3 text-xs font-bold hover:bg-primary hover:text-white transition-colors flex items-center justify-between group"
+              className="w-full px-4 py-3 text-xs font-bold hover:bg-blue-600 hover:text-white transition-colors flex items-center justify-between group text-slate-900 dark:text-white"
             >
               <span>English</span>
-              <span className="text-[10px] opacity-50 group-hover:opacity-100">EN</span>
+              <span className="text-[10px] opacity-50 group-hover:opacity-100 uppercase">en</span>
             </button>
             <button 
               onClick={() => handleLanguageChange('ko')} 
-              className="w-full px-4 py-3 text-xs font-bold hover:bg-primary hover:text-white transition-colors flex items-center justify-between group"
+              className="w-full px-4 py-3 text-xs font-bold hover:bg-blue-600 hover:text-white transition-colors flex items-center justify-between group text-slate-900 dark:text-white"
             >
               <span>한국어</span>
-              <span className="text-[10px] opacity-50 group-hover:opacity-100">KO</span>
+              <span className="text-[10px] opacity-50 group-hover:opacity-100 uppercase">ko</span>
             </button>
           </div>
         )}
 
-        {/* 플로팅 버튼 메인: 아이콘 중심의 세련된 디자인 */}
         <button
           onClick={() => setIsBottomLangOpen(!isBottomLangOpen)}
           className={cn(
-            "flex items-center gap-2 px-4 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all active:scale-90 border",
+            "flex items-center gap-2 px-4 py-3 rounded-full shadow-lg transition-all active:scale-90 border",
             isBottomLangOpen 
               ? "bg-slate-900 border-slate-700 text-white" 
               : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
           )}
         >
-          <Languages className={cn("h-4 w-4 transition-transform", isBottomLangOpen && "scale-110")} />
+          <Languages className="h-4 w-4" />
           <span className="text-xs font-extrabold tracking-tight">
+            {isBottomLangOpen ? "CLOSE" : "LANG"}
+          </span>
+          <ChevronUp className={cn("h-3 w-3 opacity-50 transition-transform", isBottomLangOpen && "rotate-180")} />
+        </button>
+      </div>
+    </Fragment>
+  );
+};
+
+export default PiLogin;
