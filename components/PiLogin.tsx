@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Globe, User, ChevronDown } from "lucide-react"; // ChevronDown 추가
+import { Globe, User, ChevronDown } from "lucide-react"; 
 import { cn } from "@/lib/utils";
 
 const PiLogin = () => {
   const [piId, setPiId] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
-  const [isBottomLangOpen, setIsBottomLangOpen] = useState(false); // 하단 버튼용 상태 추가
+  const [isBottomLangOpen, setIsBottomLangOpen] = useState(false);
 
   useEffect(() => {
     const savedId = localStorage.getItem('pi_user_id');
@@ -44,9 +44,11 @@ const PiLogin = () => {
 
   return (
     <>
-      <div className="flex items-center gap-1.5 flex-nowrap">
-        {/* [1순위] 헤더 번역 아이콘 */}
-        <div className="relative">
+      {/* 1. 상단 헤더 내부 버튼들: 중복을 피하기 위해 오직 필요한 버튼 3개만 깔끔하게 배치 */}
+      <div className="flex items-center gap-1.5 flex-nowrap h-full">
+        
+        {/* 번역 아이콘 (헤더 전용) */}
+        <div className="relative flex items-center">
           <button
             onClick={() => setIsLangOpen(!isLangOpen)}
             className="flex items-center justify-center h-8 w-8 rounded-md bg-slate-100 dark:bg-slate-800 border border-border hover:bg-slate-200 transition-all flex-shrink-0"
@@ -55,14 +57,14 @@ const PiLogin = () => {
           </button>
 
           {isLangOpen && (
-            <div className="absolute left-0 mt-2 w-20 bg-background border border-border shadow-xl rounded-md z-[100] overflow-hidden">
+            <div className="absolute top-full left-0 mt-1 w-20 bg-background border border-border shadow-xl rounded-md z-[100] overflow-hidden notranslate">
               <button onClick={() => handleLanguageChange('en')} className="w-full py-2 text-[11px] font-bold hover:bg-accent border-b border-border">EN</button>
               <button onClick={() => handleLanguageChange('ko')} className="w-full py-2 text-[11px] font-bold hover:bg-accent">KO</button>
             </div>
           )}
         </div>
 
-        {/* [2순위] Support 버튼 */}
+        {/* Support 버튼 */}
         <button 
           onClick={() => alert("0.001 Pi 후원을 진행합니다.")}
           className="bg-[#f6ad55] text-white w-[58px] h-8 flex flex-col items-center justify-center rounded-md leading-none shadow-sm active:scale-95 flex-shrink-0"
@@ -71,7 +73,7 @@ const PiLogin = () => {
           <span className="text-[10px] font-black tracking-tighter">0.001π</span>
         </button>
 
-        {/* [3순위] 로그인 아이콘 */}
+        {/* 로그인 아이콘 */}
         <button 
           onClick={handleLoginClick}
           className={cn(
@@ -87,17 +89,15 @@ const PiLogin = () => {
         </button>
       </div>
 
-      {/* [수정사항] 우측 하단 Language 플로팅 버튼 - 사이즈 축소 버전 */}
-      <div className="fixed bottom-6 right-6 z-[100]">
+      {/* 2. 우측 하단 Language 플로팅 버튼: 헤더 영역 밖으로 완전히 분리 (고정 위치) */}
+      <div className="fixed bottom-6 right-6 z-[1000] flex flex-col items-end gap-2">
         {isBottomLangOpen && (
-          <div className="absolute bottom-full right-0 mb-2 w-24 bg-background border border-border shadow-2xl rounded-lg overflow-hidden animate-in fade-in slide-in-from-bottom-2">
+          <div className="w-24 bg-background border border-border shadow-2xl rounded-lg overflow-hidden notranslate">
             <button onClick={() => handleLanguageChange('en')} className="w-full px-4 py-2.5 text-xs font-semibold hover:bg-accent border-b border-border flex justify-between items-center">
-              <span>English</span>
-              <span className="text-[10px] opacity-50">EN</span>
+              <span>EN</span>
             </button>
             <button onClick={() => handleLanguageChange('ko')} className="w-full px-4 py-2.5 text-xs font-semibold hover:bg-accent flex justify-between items-center">
-              <span>한국어</span>
-              <span className="text-[10px] opacity-50">KO</span>
+              <span>KO</span>
             </button>
           </div>
         )}
