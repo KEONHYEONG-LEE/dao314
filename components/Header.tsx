@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X, Search, Globe, Moon, Sun, ChevronDown } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -15,29 +15,75 @@ const navItems = [
   { name: "Culture", href: "/culture" },
 ];
 
-// 선택 가능한 언어 (기능 중심)
 const languages = [
   { code: "en", name: "English" },
-  { code: "ko", name: "Korean (Auto-Translate)" },
+  { code: "ko", name: "Korean" },
 ];
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false); 
-  const [currentLang, setCurrentLang] = useState(languages[0]); // 기본은 영어
+  const [currentLang, setCurrentLang] = useState(languages[0]);
   const { theme, setTheme } = useTheme();
+
+  // 구글 번역 스크립트 초기화 로직
+  useEffect(() => {
+    const addGoogleTranslateScript = () => {
+      if (!document.getElementById("google-translate-script")) {
+        const script = document.createElement("script");
+        script.id = "google-translate-script";
+        script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+        script.async = true;
+        document.body.appendChild(script);
+      }
+    };
+
+    window.googleTranslateElementInit = () => {
+      new window.google.translate.TranslateElement(
+        {
+          pageLanguage: 'en',
+          includedLanguages: 'ko,en',
+          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false,
+        },
+        'google_translate_element'
+      );
+    };
+
+    addGoogleTranslateScript();
+  }, []);
+
+  // 언어 변경 시 구글 번역기 트리거
+  const handleLanguageChange = (lang) => {
+    setCurrentLang(lang);
+    setIsLangOpen(false);
+    
+    const translateCombo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+    if (translateCombo) {
+      translateCombo.value = lang.code;
+      translateCombo.dispatchEvent(new Event('change'));
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      {/* 구글 번역 위젯 숨김 처리 */}
+      <div id="google_translate_element" style={{ display: 'none' }}></div>
+      <style jsx global>{`
+        .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon { display: none !important; }
+        body { top: 0px !important; }
+        .goog-tooltip { display: none !important; }
+        .goog-tooltip:hover { display: none !important; }
+        .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+      `}</style>
+
       <div className="mx-auto max-w-7xl px-4">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <Globe className="h-8 w-8 text-blue-600" />
             <span className="text-xl font-bold tracking-tight">GPNR</span>
           </Link>
 
-          {/* Desktop Navigation - 영문 이름 유지 */}
           <nav className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
               <Link
@@ -50,10 +96,7 @@ export function Header() {
             ))}
           </nav>
 
-          {/* Actions */}
           <div className="flex items-center gap-2">
-            
-            {/* 언어 선택 드롭다운 (번역 트리거) */}
             <div className="relative mr-1">
               <button
                 onClick={() => setIsLangOpen(!isLangOpen)}
@@ -71,13 +114,7 @@ export function Header() {
                     {languages.map((lang) => (
                       <button
                         key={lang.code}
-                        onClick={() => {
-                          setCurrentLang(lang);
-                          setIsLangOpen(false);
-                          // 로컬 스토리지 등에 저장하여 기사 컴포넌트가 이를 감지하게 함
-                          localStorage.setItem("gpnr-language", lang.code);
-                          window.dispatchEvent(new Event("languageChange"));
-                        }}
+                        onClick={() => handleLanguageChange(lang)}
                         className={cn(
                           "w-full text-left px-3 py-2 text-xs hover:bg-accent transition-colors",
                           currentLang.code === lang.code ? "font-bold text-blue-600" : "text-foreground"
