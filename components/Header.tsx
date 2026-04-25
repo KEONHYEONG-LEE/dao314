@@ -15,19 +15,16 @@ const navItems = [
   { name: "문화", href: "/culture" },
 ];
 
-// 5개 국어 리스트
+// 요청하신 대로 일단 2가지 언어(한국어, 영어)만 설정합니다.
 const languages = [
   { code: "ko", name: "한국어" },
   { code: "en", name: "English" },
-  { code: "zh", name: "中国" },
-  { code: "ja", name: "日本語" },
-  { code: "vi", name: "Tiếng Việt" },
 ];
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLangOpen, setIsLangOpen] = useState(false); // 언어 드롭다운 상태
-  const [currentLang, setCurrentLang] = useState(languages[0]); // 현재 선택된 언어
+  const [isLangOpen, setIsLangOpen] = useState(false); 
+  const [currentLang, setCurrentLang] = useState(languages[0]); 
   const { theme, setTheme } = useTheme();
 
   return (
@@ -55,42 +52,52 @@ export function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            {/* 언어 선택 드롭다운 추가 */}
-            <div className="relative mr-2">
+            
+            {/* 언어 선택 드롭다운 (Support/Search 좌측 배치) */}
+            <div className="relative mr-1">
               <button
                 onClick={() => setIsLangOpen(!isLangOpen)}
-                className="flex items-center gap-1.5 h-9 px-3 rounded-md hover:bg-secondary transition-colors text-xs font-medium"
+                className="flex items-center gap-1.5 h-9 px-2.5 rounded-md hover:bg-secondary transition-colors text-xs font-semibold border border-transparent hover:border-border"
               >
-                <Globe className="h-4 w-4" />
-                <span className="hidden sm:inline">{currentLang.name}</span>
-                <ChevronDown className={cn("h-3 w-3 transition-transform", isLangOpen && "rotate-180")} />
+                <Globe className="h-4 w-4 text-muted-foreground" />
+                <span className="hidden sm:inline uppercase">{currentLang.code}</span>
+                <ChevronDown className={cn("h-3 w-3 transition-transform text-muted-foreground", isLangOpen && "rotate-180")} />
               </button>
 
               {isLangOpen && (
-                <div className="absolute right-0 mt-2 w-32 bg-white dark:bg-slate-900 border border-border rounded-lg shadow-xl z-[60] overflow-hidden">
-                  {languages.map((lang) => (
-                    <button
-                      key={lang.code}
-                      onClick={() => {
-                        setCurrentLang(lang);
-                        setIsLangOpen(false);
-                        // 여기서 나중에 전역 언어 설정을 변경할 예정입니다.
-                      }}
-                      className="w-full text-left px-4 py-2.5 text-xs hover:bg-secondary transition-colors"
-                    >
-                      {lang.name}
-                    </button>
-                  ))}
-                </div>
+                <>
+                  {/* 드롭다운 바깥 클릭 시 닫히기 위한 투명 배경 */}
+                  <div className="fixed inset-0 z-[-1]" onClick={() => setIsLangOpen(false)} />
+                  <div className="absolute right-0 mt-2 w-28 bg-popover border border-border rounded-md shadow-lg z-[60] py-1 animate-in fade-in zoom-in duration-100">
+                    {languages.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          setCurrentLang(lang);
+                          setIsLangOpen(false);
+                          // TODO: i18n 라이브러리 연결 시 언어 변경 로직 삽입
+                        }}
+                        className={cn(
+                          "w-full text-left px-3 py-2 text-xs hover:bg-accent transition-colors",
+                          currentLang.code === lang.code ? "font-bold text-blue-600" : "text-foreground"
+                        )}
+                      >
+                        {lang.name}
+                      </button>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
 
+            {/* Support/Search 및 기타 버튼들 */}
             <button
-              className="hidden md:flex h-9 w-9 items-center justify-center rounded-md hover:bg-secondary transition-colors"
+              className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
               aria-label="검색"
             >
               <Search className="h-5 w-5" />
             </button>
+            
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className="h-9 w-9 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
@@ -99,6 +106,7 @@ export function Header() {
               <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             </button>
+
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="md:hidden h-9 w-9 flex items-center justify-center rounded-md hover:bg-secondary transition-colors"
