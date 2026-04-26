@@ -3,32 +3,23 @@
 import React, { useState, useEffect } from "react";
 import { Globe, ChevronUp } from "lucide-react";
 
-const languages = [
-  { code: "en", name: "English" },
-  { code: "ko", name: "한국어" },
-];
-
 export function FloatingLanguageSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentLang, setCurrentLang] = useState("en");
+  const [currentLang, setCurrentLang] = useState("ko");
 
   useEffect(() => {
-    // 알림창(alert) 없이 조용히 번역기를 찾는 로직
-    const silentTranslate = () => {
+    const autoTranslate = () => {
       const combo = document.querySelector(".goog-te-combo") as HTMLSelectElement;
       if (combo) {
         if (combo.value !== 'ko') {
           combo.value = 'ko';
           combo.dispatchEvent(new Event("change"));
-          setCurrentLang("ko");
         }
       } else {
-        // 찾을 때까지 반복 (알림창 띄우지 않음)
-        setTimeout(silentTranslate, 1000);
+        setTimeout(autoTranslate, 1000); // 뜰 때까지 조용히 대기
       }
     };
-
-    silentTranslate();
+    autoTranslate();
   }, []);
 
   const handleLanguageChange = (langCode: string) => {
@@ -42,26 +33,30 @@ export function FloatingLanguageSwitcher() {
   };
 
   return (
-    <>
-      <div id="google_translate_element" style={{ display: 'none', visibility: 'hidden' }}></div>
-      <div style={{ position: 'fixed', bottom: '24px', right: '20px', zIndex: 9999, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-        {isOpen && (
-          <div style={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '12px', padding: '4px', width: '120px', boxShadow: '0 10px 25px rgba(0,0,0,0.3)', marginBottom: '8px' }}>
-            {languages.map((lang) => (
-              <button key={lang.code} onClick={() => handleLanguageChange(lang.code)}
-                style={{ width: '100%', textAlign: 'left', padding: '10px 12px', fontSize: '13px', fontWeight: '600', borderRadius: '8px', color: currentLang === lang.code ? '#60a5fa' : '#f8fafc', backgroundColor: currentLang === lang.code ? '#334155' : 'transparent', border: 'none', cursor: 'pointer', display: 'block' }}>
-                {lang.name}
-              </button>
-            ))}
-          </div>
-        )}
-        <button onClick={() => setIsOpen(!isOpen)}
-          style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '40px', padding: '0 16px', borderRadius: '9999px', backgroundColor: '#2563eb', color: 'white', fontWeight: '600', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.4)', border: 'none', fontSize: '14px', cursor: 'pointer' }}>
-          <Globe size={18} />
-          <span>Language</span>
-          <ChevronUp size={16} style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s ease' }} />
-        </button>
-      </div>
-    </>
+    <div className="fixed bottom-6 right-5 z-[9999] flex flex-col items-end">
+      {isOpen && (
+        <div className="mb-2 w-32 overflow-hidden rounded-xl border border-white/10 bg-slate-900/90 p-1 shadow-2xl backdrop-blur-md">
+          {['en', 'ko'].map((lang) => (
+            <button
+              key={lang}
+              onClick={() => handleLanguageChange(lang)}
+              className={`w-full rounded-lg px-4 py-2 text-left text-sm font-semibold transition-colors ${
+                currentLang === lang ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-white/5'
+              }`}
+            >
+              {lang === 'ko' ? '한국어' : 'English'}
+            </button>
+          ))}
+        </div>
+      )}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex h-11 items-center gap-2 rounded-full bg-blue-600 px-5 text-sm font-bold text-white shadow-lg shadow-blue-900/20 transition-transform active:scale-95"
+      >
+        <Globe size={18} />
+        <span>Language</span>
+        <ChevronUp size={16} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+    </div>
   );
 }
