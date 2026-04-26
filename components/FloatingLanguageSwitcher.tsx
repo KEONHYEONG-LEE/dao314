@@ -13,49 +13,42 @@ export function FloatingLanguageSwitcher() {
   const [currentLang, setCurrentLang] = useState("en");
 
   useEffect(() => {
-    // 이미 스크립트가 있다면 초기화 함수만 연결
-    const initGoogleTranslate = () => {
-      if ((window as any).google && (window as any).google.translate) {
-        new (window as any).google.translate.TranslateElement(
-          { pageLanguage: "en", includedLanguages: "ko,en", autoDisplay: false },
-          "google_translate_element"
-        );
+    // 1. 페이지 로드 시 구글 번역기가 준비되었는지 확인하고 한국어로 자동 전환 시도
+    const autoTranslateToKo = () => {
+      const combo = document.querySelector(".goog-te-combo") as HTMLSelectElement;
+      if (combo) {
+        // 이미 한국어가 아니라면 한국어로 변경
+        if (combo.value !== 'ko') {
+          combo.value = 'ko';
+          combo.dispatchEvent(new Event("change"));
+          setCurrentLang("ko");
+        }
+      } else {
+        // 아직 로드가 안 되었다면 잠시 후 다시 시도 (최대 5초간)
+        setTimeout(autoTranslateToKo, 500);
       }
     };
 
-    if (!(window as any).googleTranslateElementInit) {
-      (window as any).googleTranslateElementInit = initGoogleTranslate;
-    }
-
-    const scriptId = "google-translate-script";
-    if (!document.getElementById(scriptId)) {
-      const s = document.createElement("script");
-      s.id = scriptId;
-      s.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-      s.async = true;
-      document.body.appendChild(s);
-    }
+    autoTranslateToKo();
   }, []);
 
   const handleLanguageChange = (langCode: string) => {
-    // 구글 번역 콤보박스 찾기 및 값 변경
     const combo = document.querySelector(".goog-te-combo") as HTMLSelectElement;
     if (combo) {
       combo.value = langCode;
       combo.dispatchEvent(new Event("change"));
       setCurrentLang(langCode);
     } else {
-      console.warn("구글 번역 위젯이 아직 로드되지 않았습니다.");
+      alert("번역 시스템이 준비 중입니다. 잠시 후 다시 시도해 주세요.");
     }
     setIsOpen(false);
   };
 
   return (
     <>
-      {/* 1. 구글 번역 숨김 요소: display none으로 공간 차지 0 */}
-      <div id="google_translate_element" style={{ display: 'none' }}></div>
+      {/* 구글 번역 위젯이 렌더링될 실제 위치 (보이지 않게 숨김) */}
+      <div id="google_translate_element" style={{ display: 'none', visibility: 'hidden' }}></div>
 
-      {/* 2. 플로팅 UI 컨테이너 */}
       <div style={{ 
         position: 'fixed', 
         bottom: '24px', 
@@ -66,17 +59,15 @@ export function FloatingLanguageSwitcher() {
         alignItems: 'flex-end' 
       }}>
         
-        {/* 드롭다운 메뉴: 배경색 및 텍스트 겹침 방지 */}
         {isOpen && (
           <div style={{ 
-            backgroundColor: '#1e293b', // 네이비 톤으로 통일
+            backgroundColor: '#1e293b', 
             border: '1px solid #334155', 
             borderRadius: '12px', 
             padding: '4px', 
             width: '120px', 
             boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
-            marginBottom: '8px',
-            overflow: 'hidden'
+            marginBottom: '8px'
           }}>
             {languages.map((lang) => (
               <button
@@ -93,7 +84,7 @@ export function FloatingLanguageSwitcher() {
                   backgroundColor: currentLang === lang.code ? '#334155' : 'transparent',
                   border: 'none',
                   cursor: 'pointer',
-                  display: 'block' // 텍스트 겹침 방지
+                  display: 'block'
                 }}
               >
                 {lang.name}
@@ -102,7 +93,6 @@ export function FloatingLanguageSwitcher() {
           </div>
         )}
 
-        {/* 메인 버튼 */}
         <button
           onClick={() => setIsOpen(!isOpen)}
           style={{
@@ -122,7 +112,7 @@ export function FloatingLanguageSwitcher() {
           }}
         >
           <Globe size={18} />
-          <span>Language</span>
+          <span>{currentLang === 'ko' ? '한국어' : 'Language'}</span>
           <ChevronUp 
             size={16} 
             style={{ 
