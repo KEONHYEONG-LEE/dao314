@@ -14,21 +14,15 @@ export default function Home() {
   const [articleStatus, setArticleStatus] = useState<Record<string, { read: boolean; star: boolean; heart: boolean }>>({});
 
   useEffect(() => {
-    // 1. 구글 번역 UI 정리 로직 (안내 문구 숨김 유지)
     const hideGoogleUI = () => {
       const banner = document.querySelector(".goog-te-banner-frame") as HTMLElement;
       if (banner) banner.style.display = "none";
-      
       const tooltip = document.getElementById("goog-gt-tt") as HTMLElement;
-      if (tooltip) {
-        tooltip.style.display = "none";
-        tooltip.style.visibility = "hidden";
-      }
+      if (tooltip) { tooltip.style.display = "none"; tooltip.style.visibility = "hidden"; }
       document.body.style.top = "0px";
     };
 
     const interval = setInterval(hideGoogleUI, 500);
-
     const savedStatus = localStorage.getItem('gpnr_article_status');
     if (savedStatus) setArticleStatus(JSON.parse(savedStatus));
 
@@ -37,18 +31,15 @@ export default function Home() {
       try {
         const query = activeCategory === 'all' ? '' : `?category=${activeCategory.toUpperCase()}`;
         const res = await fetch(`/api/fetch-news${query}`);
-        if (!res.ok) throw new Error('Network response was not ok');
         const data = await res.json();
         setNews(Array.isArray(data) ? data : (data.articles || []));
       } catch (error) {
-        console.error("Fetch error:", error);
         setNews([]);
       } finally {
         setLoading(false);
       }
     };
     fetchNews();
-
     return () => clearInterval(interval);
   }, [activeCategory]);
 
@@ -61,20 +52,13 @@ export default function Home() {
   };
 
   return (
-    // 'notranslate' 클래스를 제거하여 번역이 가능하게 변경했습니다.
-    <div className="flex flex-col min-h-screen bg-white">
-      {/* [수정 사항] 
-        _app.tsx에서 <Header />를 호출하므로, 
-        중복되는 <header> 태그 전체를 삭제했습니다. 
-      */}
-
-      {/* 카테고리 네비게이션 - 상단 고정 위치 조정 (Header 높이 56px 고려) */}
-      <nav className="flex gap-2 p-3 overflow-x-auto bg-white border-b no-scrollbar sticky top-0 z-40">
+    <div className="flex flex-col min-h-screen bg-slate-900">
+      <nav className="flex gap-2 p-3 overflow-x-auto bg-slate-900 border-b border-white/5 no-scrollbar sticky top-0 z-40">
         {CATEGORIES.map(cat => (
           <button 
             key={cat} onClick={() => setActiveCategory(cat)}
             className={`px-3 py-1.5 rounded-full text-[11px] font-bold transition-all flex-shrink-0 border ${
-              activeCategory === cat ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-400 border-gray-100'
+              activeCategory === cat ? 'bg-blue-600 text-white border-blue-600' : 'bg-slate-800 text-slate-400 border-slate-700'
             }`}
           >
             {cat.toUpperCase()}
@@ -82,8 +66,42 @@ export default function Home() {
         ))}
       </nav>
 
-      <main className="divide-y divide-gray-50">
+      <main className="divide-y divide-white/5">
         {loading ? (
-          <div className="p-20 text-center text-gray-400 text-sm font-medium animate-pulse">Loading GPNR News...</div>
+          <div className="p-20 text-center text-slate-500 text-sm animate-pulse">Loading GPNR News...</div>
         ) : news.length > 0 ? (
           news.map((item, idx) => {
+            const status = articleStatus[item.url] || { read: false, star: false, heart: false };
+            return (
+              <div key={idx} className="bg-slate-900">
+                <a href={item.url} target="_blank" rel="noopener noreferrer" className="flex gap-4 p-4 pb-0">
+                  <div className="flex-1">
+                    <h3 className={`font-bold text-[15px] line-clamp-2 leading-snug ${status.read ? 'text-slate-600' : 'text-slate-100'}`}>
+                      {status.star && <span className="mr-1">⭐</span>}
+                      {status.heart && <span className="mr-1">❤️</span>}
+                      {item.title}
+                    </h3>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-[10px] font-bold text-blue-400">{item.source}</span>
+                      <span className="text-[10px] text-slate-500">{item.date}</span>
+                    </div>
+                  </div>
+                  {item.imageUrl && (
+                    <img src={item.imageUrl} className="w-16 h-16 object-cover rounded-xl bg-slate-800 flex-shrink-0 mt-0.5" alt="" />
+                  )}
+                </a>
+                <div className="flex gap-7 px-4 pt-1 pb-3">
+                  <button onClick={(e) => toggleStatus(item.url, 'read', e)} className="text-lg opacity-80">{status.read ? '✔️' : '📖'}</button>
+                  <button onClick={(e) => toggleStatus(item.url, 'star', e)} className="text-lg opacity-80">{status.star ? '🌟' : '☆'}</button>
+                  <button onClick={(e) => toggleStatus(item.url, 'heart', e)} className="text-lg opacity-80">{status.heart ? '❤️' : '♡'}</button>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <div className="p-20 text-center text-slate-500 text-sm">No news available.</div>
+        )}
+      </main>
+    </div>
+  );
+}
