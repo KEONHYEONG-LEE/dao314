@@ -4,7 +4,6 @@ import Script from 'next/script';
 import { ThemeProvider } from 'next-themes';
 import '../globals.css';
 
-// 경로 에러를 방지하기 위해 상대 경로(../)로 설정했습니다.
 import { Header } from '../components/Header';
 import { FloatingLanguageSwitcher } from '../components/FloatingLanguageSwitcher';
 
@@ -15,57 +14,50 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <title>GPNR - Global Pi Newsroom</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
         
-        {/* 구글 번역 시 발생하는 레이아웃 틀어짐 및 팝업 방지를 위한 스타일 인라인 삽입 */}
+        {/* 구글 번역 UI 최적화 스타일 */}
         <style>{`
-          /* 구글 번역 상단 바 강제 숨김 */
-          .goog-te-banner-frame.skiptranslate,
-          .goog-te-banner-frame,
-          .skiptranslate {
-            display: none !important;
-          }
-          
-          /* 번역 시 body가 아래로 밀리는 현상 방지 */
-          body {
-            top: 0 !important;
-            position: static !important;
-          }
-
-          /* 마우스 오버 시 나타나는 원본 텍스트 팝업 차단 */
-          #goog-gt-tt, 
-          .goog-te-balloon-frame, 
-          .goog-tooltip, 
-          .goog-tooltip:hover {
-            display: none !important;
-            visibility: hidden !important;
-          }
-
-          /* 번역 강조 하이라이트 효과 제거 */
-          .goog-text-highlight {
-            background-color: transparent !important;
-            box-shadow: none !important;
-          }
+          .goog-te-banner-frame.skiptranslate, .goog-te-banner-frame { display: none !important; }
+          body { top: 0 !important; position: static !important; }
+          #goog-gt-tt, .goog-te-balloon-frame, .goog-tooltip { display: none !important; visibility: hidden !important; }
+          .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
         `}</style>
       </Head>
 
-      {/* Pi SDK 로드 최적화 */}
+      {/* 1. Pi SDK 로드 */}
       <Script 
         src="https://sdk.minepi.com/pi-sdk.js" 
         strategy="beforeInteractive" 
       />
 
-      {/* 전체 컨테이너에 'notranslate'를 넣지 않는 이유는 실제 번역은 되어야 하기 때문입니다. 
-         대신 UI 요소가 밀리지 않도록 relative 설정을 유지합니다.
-      */}
+      {/* 2. 구글 번역 API 로드 및 초기화 스크립트 추가 */}
+      <Script
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+        strategy="afterInteractive"
+      />
+      <Script id="google-translate-init" strategy="afterInteractive">
+        {`
+          function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+              pageLanguage: 'en', // 기본 언어가 영어일 경우 (기사 원문 위주라면 en)
+              includedLanguages: 'ko,en,zh-CN,ja', // 사용할 언어들
+              layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+              autoDisplay: true
+            }, 'google_translate_element');
+          }
+        `}
+      </Script>
+
       <div className="relative min-h-screen flex flex-col">
-        {/* 상단 헤더 */}
+        {/* 공통 헤더: index.tsx 파일 안에 있는 <Header />는 삭제해야 중복이 안 생깁니다. */}
         <Header />
 
-        {/* 페이지 본문 */}
         <main className="flex-grow">
           <Component {...pageProps} />
         </main>
 
-        {/* 하단 플로팅 번역 버튼 (고정 위치) */}
+        {/* 구글 번역기가 렌더링될 실제 요소 (숨김 처리 후 FloatingLanguageSwitcher에서 제어) */}
+        <div id="google_translate_element" style={{ display: 'none' }}></div>
+        
         <FloatingLanguageSwitcher />
       </div>
     </ThemeProvider>
