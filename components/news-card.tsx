@@ -1,11 +1,9 @@
-"use client"; 
+"use client";
 
 import { useState, useEffect } from "react";
-import { 
-  Share2, X, ExternalLink
-} from "lucide-react"; 
+import { Share2, X, ExternalLink, Bookmark, Heart } from "lucide-react";
 
-const cn = (...classes: any[]) => classes.filter(Boolean).join(" "); 
+const cn = (...classes: any[]) => classes.filter(Boolean).join(" ");
 
 export default function NewsCard({ category, title, content, date, source, image, url }: any) {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,11 +27,13 @@ export default function NewsCard({ category, title, content, date, source, image
         setIsTranslating(true);
         try {
           const cleanText = stripHtml(content);
+          // 제목 번역
           const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q=${encodeURIComponent(title)}`);
           const data = await res.json();
           setTranslatedTitle(data[0][0][0]);
 
-          const resContent = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q=${encodeURIComponent(cleanText.substring(0, 1000))}`); 
+          // 본문 번역
+          const resContent = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q=${encodeURIComponent(cleanText.substring(0, 1000))}`);
           const dataContent = await resContent.json();
           setTranslatedContent(dataContent[0].map((x: any) => x[0]).join(""));
         } catch (error) {
@@ -56,50 +56,69 @@ export default function NewsCard({ category, title, content, date, source, image
 
   return (
     <>
-      {/* 뉴스 카드 목록 영역: 다크 테마 적용 */}
-      <div 
-        onClick={() => setIsOpen(true)} 
-        className="bg-[#1e293b] rounded-2xl border border-slate-800 shadow-lg overflow-hidden mb-6 cursor-pointer hover:border-blue-500/50 transition-all group"
+      {/* 뉴스 리스트 아이템: 세 번째/네 번째 사진 스타일 */}
+      <div
+        onClick={() => setIsOpen(true)}
+        className="flex gap-4 p-4 border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors cursor-pointer group"
       >
-        <div className="p-4 border-b border-slate-800/50 flex justify-between items-center">
-          <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-500/10 text-blue-400 uppercase border border-blue-500/20">
-            {category || 'Mainnet'}
-          </span>
-          {isTranslating && <span className="text-[10px] text-slate-500 animate-pulse">Translating...</span>}
+        {/* 좌측 텍스트 영역 */}
+        <div className="flex-1 flex flex-col justify-between">
+          <div>
+            <h3 className="text-[16px] font-semibold text-slate-100 leading-snug line-clamp-2 group-hover:text-blue-400 transition-colors mb-1">
+              {translatedTitle}
+            </h3>
+            <div className="flex items-center gap-2 text-[12px] text-slate-500 font-medium">
+              <span className="text-blue-500">{source || "GPNR News"}</span>
+              <span>•</span>
+              <span>{date || "Just now"}</span>
+            </div>
+          </div>
+          
+          {/* 아이콘 버튼 영역 */}
+          <div className="flex gap-4 mt-3">
+            <button className="text-slate-500 hover:text-white transition-colors">
+              <Bookmark className="w-4 h-4" />
+            </button>
+            <button className="text-slate-500 hover:text-red-500 transition-colors">
+              <Heart className="w-4 h-4" />
+            </button>
+            {isTranslating && <span className="text-[10px] text-blue-500 animate-pulse">번역 중...</span>}
+          </div>
         </div>
-        <div className="p-4">
-          <h3 className="text-lg font-bold mb-2 leading-tight text-slate-100 group-hover:text-blue-400 transition-colors tracking-tight">
-            {translatedTitle}
-          </h3>
-          <p className="text-sm text-slate-400 line-clamp-2 leading-relaxed">
-            {stripHtml(translatedContent)}
-          </p>
-        </div>
-      </div> 
 
-      {/* 뉴스 상세 모달: 다크 테마 적용 */}
+        {/* 우측 이미지 영역 */}
+        {displayImage && (
+          <div className="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0">
+            <img
+              src={displayImage}
+              alt="news"
+              className="w-full h-full object-cover rounded-xl border border-slate-800"
+              onError={(e: any) => e.target.style.display = 'none'}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* 뉴스 상세 모달 (기존 기능 유지) */}
       {isOpen && (
         <div className="fixed inset-0 z-[100] bg-black/80 flex items-end sm:items-center justify-center backdrop-blur-md p-0 sm:p-4">
-          <div className="bg-[#0f172a] w-full max-w-lg rounded-t-[2rem] sm:rounded-3xl max-h-[95vh] overflow-y-auto relative border-t sm:border border-slate-800">
+          <div className="bg-[#0f172a] w-full max-w-lg rounded-t-[2rem] sm:rounded-3xl max-h-[95vh] overflow-y-auto relative border-t sm:border border-slate-800 shadow-2xl">
             <div className="sticky top-0 right-0 p-4 flex justify-end z-10">
-              <button 
-                onClick={() => setIsOpen(false)} 
-                className="p-2 bg-slate-800/50 backdrop-blur-md border border-slate-700 rounded-full hover:bg-slate-700 transition-colors"
+              <button
+                onClick={(e) => { e.stopPropagation(); setIsOpen(false); }}
+                className="p-2 bg-slate-800/80 backdrop-blur-md border border-slate-700 rounded-full hover:bg-slate-700 transition-colors"
               >
                 <X className="w-5 h-5 text-white" />
               </button>
             </div>
 
             <div className="px-6 pb-10">
-              {displayImage ? (
-                <img 
-                  src={displayImage} 
-                  alt="news" 
+              {displayImage && (
+                <img
+                  src={displayImage}
+                  alt="news"
                   className="w-full h-56 object-cover rounded-2xl mb-6 shadow-xl border border-slate-800"
-                  onError={(e: any) => e.target.style.display = 'none'} 
                 />
-              ) : (
-                <div className="w-full h-1 bg-slate-800 rounded-full mb-6" />
               )}
               
               <h2 className="text-2xl font-bold mb-6 leading-tight text-white tracking-tight">{translatedTitle}</h2>
@@ -109,14 +128,14 @@ export default function NewsCard({ category, title, content, date, source, image
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <button 
+                <button
                   onClick={() => window.open(url, '_blank')}
                   className="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 py-4 rounded-xl font-bold text-slate-200 text-sm transition-colors border border-slate-700"
                 >
                   <ExternalLink className="w-4 h-4" />
                   Source
                 </button>
-                <button className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 py-4 rounded-xl font-bold text-white text-sm transition-colors shadow-lg shadow-blue-900/20">
+                <button className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 py-4 rounded-xl font-bold text-white text-sm transition-colors shadow-lg">
                   <Share2 className="w-4 h-4" />
                   Share
                 </button>
