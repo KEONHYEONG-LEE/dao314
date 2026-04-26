@@ -14,8 +14,8 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
       </Head>
 
-      {/* 구글 번역 초기화 함수 정의 */}
-      <Script id="google-translate-config" strategy="beforeInteractive">
+      {/* 구글 번역 설정 스크립트 */}
+      <Script id="google-translate-config" strategy="afterInteractive">
         {`
           function googleTranslateElementInit() {
             new google.translate.TranslateElement({
@@ -31,12 +31,16 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         strategy="afterInteractive"
       />
 
-      <div className="relative min-h-screen flex flex-col bg-[#0f172a]">
+      <div className="min-h-screen bg-[#0f172a] text-slate-100 selection:bg-blue-500/30">
+        {/* 공통 헤더: 여기서 딱 한 번만 선언합니다. */}
         <Header />
-        <main className="flex-grow">
+        
+        {/* 본문 영역 */}
+        <main>
           <Component {...pageProps} />
         </main>
-        {/* 번역 위젯 숨김 요소 */}
+
+        {/* 번역 위젯 숨김 요소 및 플로팅 버튼 */}
         <div id="google_translate_element" style={{ display: 'none' }}></div>
         <FloatingLanguageSwitcher />
       </div>
