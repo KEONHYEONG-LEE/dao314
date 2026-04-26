@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-// [추가] 별도 파일로 만든 CategoryTabs를 불러옵니다.
 import { CategoryTabs } from "../components/category-tabs";
 
 export default function Home() {
@@ -10,7 +9,6 @@ export default function Home() {
   const [articleStatus, setArticleStatus] = useState<Record<string, { read: boolean; star: boolean; heart: boolean }>>({});
 
   useEffect(() => {
-    // 구글 번역 UI 정리 로직 (요청하신 번역 아이콘 삭제와 병행하여 UI를 깔끔하게 유지합니다)
     const hideGoogleUI = () => {
       const banner = document.querySelector(".goog-te-banner-frame") as HTMLElement;
       if (banner) banner.style.display = "none";
@@ -24,11 +22,9 @@ export default function Home() {
 
     const interval = setInterval(hideGoogleUI, 500);
     
-    // 로컬 스토리지에서 읽음/별/하트 상태 불러오기
     const savedStatus = localStorage.getItem('gpnr_article_status');
     if (savedStatus) setArticleStatus(JSON.parse(savedStatus));
 
-    // 뉴스 데이터 페칭
     const fetchNews = async () => {
       setLoading(true);
       try {
@@ -47,7 +43,6 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [activeCategory]);
 
-  // 끊겼던 toggleStatus 함수 완성
   const toggleStatus = (url: string, type: 'read' | 'star' | 'heart', e: React.MouseEvent) => {
     e.preventDefault(); 
     e.stopPropagation();
@@ -63,35 +58,39 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-background">
-      {/* 카테고리 탭 영역 */}
+    // 메인 배경을 아주 어두운 네이비(#0f172a)로 고정
+    <main className="min-h-screen bg-[#0f172a] text-slate-100">
       <CategoryTabs 
-        activeCategory={activeCategory} 
-        setActiveCategory={setActiveCategory} 
+        selectedCategory={activeCategory} 
+        onCategoryChange={setActiveCategory} 
       />
 
-      {/* 뉴스 리스트 영역 */}
       <div className="max-w-7xl mx-auto px-4 py-6">
         {loading ? (
-          <div className="flex justify-center py-20 text-muted-foreground">뉴스를 불러오는 중입니다...</div>
+          <div className="flex justify-center py-20 text-slate-500 animate-pulse">뉴스를 불러오는 중입니다...</div>
         ) : news.length > 0 ? (
           <div className="grid gap-4">
             {news.map((item, index) => (
               <div 
                 key={index} 
-                className={`p-4 rounded-xl border transition-all ${
-                  articleStatus[item.url]?.read ? 'bg-slate-50/50 opacity-60' : 'bg-card'
+                // 카드 배경을 #1e293b로 설정하고, 읽은 기사는 투명도를 줘서 구분
+                className={`p-5 rounded-2xl border border-slate-800 transition-all ${
+                  articleStatus[item.url]?.read 
+                    ? 'bg-slate-800/40 opacity-50' 
+                    : 'bg-[#1e293b] shadow-lg shadow-black/20'
                 }`}
               >
-                <h2 className="text-lg font-bold mb-2">{item.title}</h2>
-                <div className="flex gap-4 text-xl">
-                  <button onClick={(e) => toggleStatus(item.url, 'read', e)}>
+                <h2 className="text-lg font-bold mb-4 text-white leading-tight">
+                  {item.title}
+                </h2>
+                <div className="flex gap-6 text-2xl bg-black/20 w-fit px-4 py-2 rounded-xl border border-white/5">
+                  <button onClick={(e) => toggleStatus(item.url, 'read', e)} className="hover:scale-110 transition-transform">
                     {articleStatus[item.url]?.read ? '📖' : '📕'}
                   </button>
-                  <button onClick={(e) => toggleStatus(item.url, 'star', e)}>
+                  <button onClick={(e) => toggleStatus(item.url, 'star', e)} className="hover:scale-110 transition-transform">
                     {articleStatus[item.url]?.star ? '⭐' : '☆'}
                   </button>
-                  <button onClick={(e) => toggleStatus(item.url, 'heart', e)}>
+                  <button onClick={(e) => toggleStatus(item.url, 'heart', e)} className="hover:scale-110 transition-transform">
                     {articleStatus[item.url]?.heart ? '❤️' : '🤍'}
                   </button>
                 </div>
@@ -99,7 +98,7 @@ export default function Home() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 text-muted-foreground">표시할 뉴스가 없습니다.</div>
+          <div className="text-center py-20 text-slate-500">표시할 뉴스가 없습니다.</div>
         )}
       </div>
     </main>
