@@ -9,18 +9,19 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
   const [news, setNews] = useState<any[]>([]); 
 
   useEffect(() => {
-    // 2. NEWS_DATA를 화면 구조에 맞게 변환 (한국어 우선 적용)
+    // 2. NEWS_DATA를 화면 구조에 맞게 변환 (데이터 누락 방지)
     const formattedNews = NEWS_DATA.map(item => ({
       id: item.id,
       category: item.category.toLowerCase(),
-      // 한국어 제목이 있으면 사용, 없으면 영어 사용
-      title: item.title.ko || item.title.en, 
-      // 지저분한 태그가 제거된 한국어 내용 사용
-      content: item.content.ko || item.content.en, 
-      author: item.author,
-      date: item.date.split('T')[0], // 날짜만 깔끔하게 출력
-      image: item.imageUrl, // 이제 실제 추출된 이미지 경로 연결
-      url: item.url
+      // 제목: 한국어 우선, 없으면 영어
+      title: (item.title as any).ko || (item.title as any).en || "No Title", 
+      // 내용: 한국어 우선, 없으면 영어
+      content: (item.content as any).ko || (item.content as any).en || "", 
+      author: item.author || "GPNR News",
+      date: item.date ? item.date.split('T')[0] : "Just now", 
+      image: item.imageUrl, 
+      // *** 중요: url이 정확히 매핑되는지 확인 ***
+      url: item.url 
     })); 
 
     // 3. 카테고리 필터링 로직
@@ -34,29 +35,32 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
   return (
     <section className="mt-8 px-4 pb-10">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold capitalize">
+        <h2 className="text-2xl font-bold capitalize text-slate-100">
           {selectedCategory === 'all' ? '최신 뉴스' : `${selectedCategory} 소식`}
         </h2>
-        <span className="text-xs text-gray-400">Total {news.length}</span>
+        <span className="text-[10px] font-bold text-blue-500 bg-blue-500/10 px-2 py-1 rounded-full">
+          TOTAL {news.length}
+        </span>
       </div>
 
-      <div className="space-y-6">
+      <div className="flex flex-col gap-2"> {/* 간격을 더 콤팩트하게 조정 */}
         {news.length > 0 ? (
           news.map((item) => (
             <NewsCard 
               key={item.id} 
               category={item.category}
               title={item.title}
-              content={item.content} // 정제된 텍스트 전달
+              content={item.content}
               date={item.date}
               source={item.author}
               image={item.image}
+              // NewsCard로 url을 확실하게 전달합니다.
               url={item.url}
             />
           ))
         ) : (
           <div className="text-center py-20">
-            <p className="text-gray-400">해당 카테고리의 뉴스가 없습니다.</p>
+            <p className="text-slate-500 font-medium">해당 카테고리의 뉴스가 없습니다.</p>
           </div>
         )}
       </div>
