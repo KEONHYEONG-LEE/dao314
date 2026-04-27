@@ -14,7 +14,7 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
       return item.category.toLowerCase() === selectedCategory.toLowerCase();
     });
     
-    // 2. 최신순 정렬
+    // 2. 최신순 정렬 (publishedAt 기준)
     const sorted = [...filtered].sort((a, b) => 
       new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     ); 
@@ -30,13 +30,10 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
             <NewsCard 
               key={item.id} 
               title={item.title}
-              // 데이터의 publishedAt을 date로 전달
               date={item.publishedAt} 
-              // 데이터의 author를 source로 전달
               source={item.author}
               imageUrl={item.imageUrl}
-              // 데이터 파일에 따라 link일수도, sourceUrl일수도 있으므로 둘 다 체크
-              url={item.sourceUrl || (item as any).link || (item as any).url} 
+              url={item.sourceUrl} // NewsItem 인터페이스의 sourceUrl과 일치시킴
             />
           ))
         ) : (
