@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import NewsCard from "./news-card"; 
-import { NEWS_DATA, NewsItem } from "@/lib/news-data"; 
+import { NEWS_DATA, NewsItem } from "@/lib/pi-news-v2"; 
 
 export default function NewsFeed({ selectedCategory }: { selectedCategory: string }) {
   const [news, setNews] = useState<NewsItem[]>([]); 
