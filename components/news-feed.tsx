@@ -8,14 +8,16 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
   const [news, setNews] = useState<NewsItem[]>([]); 
 
   useEffect(() => {
-    // 1. 카테고리 필터링 로직 최적화
+    // 1. 카테고리 필터링 로직
     const filtered = NEWS_DATA.filter((item: NewsItem) => {
       if (selectedCategory.toLowerCase() === "all") return true;
       return item.category.toLowerCase() === selectedCategory.toLowerCase();
     });
     
-    // 2. 최신순 정렬 (데이터에 date가 있으므로 최신 뉴스가 위로 오게)
-    const sorted = [...filtered].reverse(); 
+    // 2. 최신순 정렬 (publishedAt 기준 정렬)
+    const sorted = [...filtered].sort((a, b) => 
+      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+    ); 
     
     setNews(sorted);
   }, [selectedCategory]); 
@@ -28,10 +30,11 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
             <NewsCard 
               key={item.id} 
               title={item.title}
-              date={item.date}
-              source={item.source}
+              // [중요] 데이터의 필드명(publishedAt, sourceUrl)과 전달하는 이름을 일치시켰습니다.
+              date={item.publishedAt} 
+              source={item.author}
               imageUrl={item.imageUrl}
-              url={item.url} // 이 url이 NewsCard로 확실히 전달되어야 클릭이 작동합니다!
+              url={item.sourceUrl} 
             />
           ))
         ) : (
