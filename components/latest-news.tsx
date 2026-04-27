@@ -1,7 +1,7 @@
 "use client";
 
 import { Zap, Clock, ArrowRight, ExternalLink } from "lucide-react";
-import { NEWS_DATA } from "@/lib/news-data"; // 아까 수정한 진짜 데이터를 불러옵니다.
+import { NEWS_DATA } from "@/lib/pi-news-v2"; // 아까 수정한 진짜 데이터를 불러옵니다.
 
 const getCategoryColor = (category: string) => {
   const colors: Record<string, string> = {
