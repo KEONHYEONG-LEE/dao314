@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bookmark, Heart, Star, BookOpen } from "lucide-react";
+import { Star, Heart, BookOpen } from "lucide-react";
 
-export default function NewsCard({ title, date, source, image, url }: any) {
+// props 타입을 NewsItem 구조에 맞게 수정 (imageUrl 사용)
+export default function NewsCard({ title, date, source, imageUrl, url }: any) {
   const [translatedTitle, setTranslatedTitle] = useState(title);
   const [isTranslating, setIsTranslating] = useState(false);
 
-  // 1. 한국어 번역 로직 (기존 로직 유지)
   useEffect(() => {
     const handleTranslation = async () => {
       const targetLang = localStorage.getItem("gpnr-language");
@@ -34,24 +34,19 @@ export default function NewsCard({ title, date, source, image, url }: any) {
     return () => window.removeEventListener("languageChange", handleTranslation);
   }, [title]);
 
-  // 2. 클릭 시 이동 함수 (e.stopPropagation이 없는 버튼 제외하고 카드 전체 클릭 가능)
   const handleCardClick = () => {
     if (url) {
       window.open(url, '_blank', 'noopener,noreferrer');
-    } else {
-      console.warn("URL이 없습니다. 데이터를 확인해주세요.");
     }
   };
 
   return (
     <div
       onClick={handleCardClick}
-      className="flex gap-4 p-4 mb-3 rounded-2xl bg-[#1e263e]/50 border border-white/[0.05] hover:bg-[#2a3454] transition-all cursor-pointer group active:scale-[0.98]"
+      className="flex gap-4 p-4 mb-3 rounded-2xl bg-[#1e263e]/60 border border-white/[0.05] hover:bg-[#2a3454] transition-all cursor-pointer group active:scale-[0.98]"
     >
-      {/* 좌측 텍스트 영역 */}
       <div className="flex-1 flex flex-col justify-between min-w-0">
         <div>
-          {/* 제목: 6~7번 이미지처럼 굵고 깔끔하게 */}
           <h3 className="text-[15px] font-bold text-white leading-[1.5] line-clamp-2 group-hover:text-blue-400 transition-colors mb-2">
             {translatedTitle}
           </h3>
@@ -70,36 +65,21 @@ export default function NewsCard({ title, date, source, image, url }: any) {
           </div>
         </div>
         
-        {/* 하단 아이콘 영역: 6~7번 이미지의 아이콘 느낌 재현 */}
+        {/* 아이콘 영역 (6~7번 이미지 스타일) */}
         <div className="flex items-center gap-4 mt-3">
-          <div className="flex items-center gap-3 px-3 py-1.5 bg-black/20 rounded-lg">
-            <button 
-              onClick={(e) => { e.stopPropagation(); /* 북마크 로직 */ }} 
-              className="text-slate-400 hover:text-red-400 transition-colors"
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-            </button>
-            <button 
-              onClick={(e) => { e.stopPropagation(); /* 별점 로직 */ }} 
-              className="text-slate-400 hover:text-yellow-400 transition-colors"
-            >
-              <Star className="w-3.5 h-3.5" />
-            </button>
-            <button 
-              onClick={(e) => { e.stopPropagation(); /* 좋아요 로직 */ }} 
-              className="text-slate-400 hover:text-pink-500 transition-colors"
-            >
-              <Heart className="w-3.5 h-3.5" />
-            </button>
+          <div className="flex items-center gap-3 px-3 py-1.5 bg-black/30 rounded-lg">
+            <BookOpen className="w-3.5 h-3.5 text-slate-400" />
+            <Star className="w-3.5 h-3.5 text-slate-400" />
+            <Heart className="w-3.5 h-3.5 text-slate-400" />
           </div>
         </div>
       </div>
 
-      {/* 우측 이미지 영역: 6~7번 이미지처럼 둥근 사각형 */}
-      {image && (
-        <div className="w-[80px] h-[80px] flex-shrink-0 relative overflow-hidden rounded-xl border border-white/[0.1]">
+      {/* 우측 이미지: imageUrl로 변경 */}
+      {imageUrl && (
+        <div className="w-[85px] h-[85px] flex-shrink-0 relative overflow-hidden rounded-xl border border-white/[0.1]">
           <img
-            src={image}
+            src={imageUrl}
             alt="news"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
