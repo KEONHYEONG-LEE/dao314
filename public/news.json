@@ -1,14 +1,24 @@
 [
   {
+    "id": "1",
+    "category": "NOTICE",
     "title": "GPNR 서비스 시작",
-    "description": "글로벌 파이 뉴스룸(GPNR)이 공식적으로 서비스를 시작했습니다. 실시간 뉴스를 확인하세요.",
-    "image": "https://picsum.photos/id/1/300/200",
-    "url": "https://pinetwork.com/news/gpnr-service-start" 
+    "content": "글로벌 파이 뉴스룸(GPNR)이 공식적으로 서비스를 시작했습니다. 실시간 뉴스를 확인하세요.",
+    "imageUrl": "https://picsum.photos/id/1/300/200",
+    "sourceUrl": "https://pinetwork.com/news/gpnr-service-start",
+    "author": "GPNR Editor",
+    "publishedAt": "2024-03-27T09:00:00Z",
+    "tags": ["GPNR", "Service", "Start"]
   },
   {
+    "id": "2",
+    "category": "UPDATE",
     "title": "파이 네트워크 업데이트",
-    "description": "새로운 메인넷 전환 소식을 확인하세요.",
-    "image": "https://picsum.photos/id/2/300/200",
-    "url": "https://pinetwork.com/news/mainnet-update"
+    "content": "새로운 메인넷 전환 소식을 확인하세요.",
+    "imageUrl": "https://picsum.photos/id/2/300/200",
+    "sourceUrl": "https://pinetwork.com/news/mainnet-update",
+    "author": "Pi Core Team",
+    "publishedAt": "2024-03-27T10:30:00Z",
+    "tags": ["Mainnet", "Update"]
   }
 ]
