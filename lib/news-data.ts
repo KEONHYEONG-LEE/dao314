@@ -1,38 +1,38 @@
-// 1. 인터페이스 정의 (첫 글자 export는 소문자로!)
+// 1. 인터페이스 정의 (lib/types.ts와 일치시킴)
 export interface NewsItem {
   id: string;
-  date: string;
-  author: string;
+  category: string;
   title: string;      
   content: string;    
-  category: string;
+  author: string;
+  publishedAt: string; // date -> publishedAt으로 변경!
   imageUrl?: string;  
-  source?: string;
-  url?: string;       
+  sourceUrl: string;   // url -> sourceUrl으로 변경! (필수값)
+  tags: string[];
 }
 
-// 2. 실제 데이터 (이미지와 링크가 확실한 샘플로 교체)
+// 2. 실제 데이터 (설계도 규격에 100% 맞춤)
 export const NEWS_DATA: NewsItem[] = [
   {
     id: "1",
-    date: "Sat, 25 Apr 2026", // 날짜도 최신으로 업데이트!
-    author: "GPNR Reporter",
+    category: "MAINNET",
     title: "Pi Network Mainnet Upgrade to Protocol 22",
     content: "Critical Deadline for Node Operators Approaches. Ensure your software is updated.",
-    category: "MAINNET",
+    author: "GPNR Reporter",
+    publishedAt: "2026-04-25T12:00:00Z", // 규격에 맞는 시간 형식
     imageUrl: "https://cryptopotato.com/wp-content/uploads/2024/03/PiNetwork.jpg", 
-    source: "MEXC",
-    url: "https://www.google.com/search?q=Pi+Network+Protocol+22" 
+    sourceUrl: "https://www.google.com/search?q=Pi+Network+Protocol+22",
+    tags: ["MAINNET", "UPGRADE"]
   },
   {
     id: "2",
-    date: "Sat, 25 Apr 2026",
-    author: "GPNR Reporter",
+    category: "COMMUNITY",
     title: "Pi Network Enforces New PiRC1 Rules",
     content: "Shaping Real Utility Standards for the ecosystem.",
-    category: "COMMUNITY",
+    author: "GPNR Reporter",
+    publishedAt: "2026-04-25T15:30:00Z",
     imageUrl: "https://cryptopotato.com/wp-content/uploads/2024/01/Pi-Network-Roadmap.jpg", 
-    source: "Coinmania",
-    url: "https://minepi.com/blog/pirc1-standards/" // 예시 실제 주소
+    sourceUrl: "https://minepi.com/blog/pirc1-standards/",
+    tags: ["COMMUNITY", "UTILITY"]
   }
 ];
