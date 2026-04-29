@@ -10,7 +10,8 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
   useEffect(() => {
     // 1. 카테고리 필터링
     const filtered = NEWS_DATA.filter((item: NewsItem) => {
-      if (selectedCategory.toLowerCase() === "all") return true;
+      // 카테고리 값이 없을 경우를 대비해 '모두' 또는 'all' 처리
+      if (!selectedCategory || selectedCategory.toLowerCase() === "all" || selectedCategory === "모두") return true;
       return item.category.toLowerCase() === selectedCategory.toLowerCase();
     });
     
@@ -23,17 +24,18 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
   }, [selectedCategory]); 
 
   return (
-    <section className="mt-4 px-4 pb-20">
-      <div className="flex flex-col gap-3">
+    <section className="mt-2 px-3 pb-24"> {/* 상단 여백 조정 및 하단 여백 확보 */}
+      <div className="flex flex-col">
         {news.length > 0 ? (
           news.map((item) => (
             <NewsCard 
               key={item.id} 
+              category={item.category} // 추가: 카테고리 정보 전달
               title={item.title}
               date={item.publishedAt} 
-              source={item.author}
+              source={item.author} // author를 출처로 사용
               imageUrl={item.imageUrl}
-              url={item.sourceUrl} // NewsItem 인터페이스의 sourceUrl과 일치시킴
+              url={item.sourceUrl} 
             />
           ))
         ) : (
