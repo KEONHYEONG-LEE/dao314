@@ -2,14 +2,15 @@
 
 import { useState, useEffect } from "react";
 
+// API가 내보내는 실제 필드명과 100% 일치하도록 정의했습니다.
 export interface NewsItem {
   id: string;
   category: string;
   title: string;      
   imageUrl?: string;  
-  url: string;        // API의 url 필드와 매칭
-  sourceName: string; // API의 sourceName 필드와 매칭
-  date: string;       // API의 date 필드와 매칭
+  url: string;        // API의 url 필드
+  source: string;     // API의 source 필드
+  date: string;       // API의 date 필드
 }
 
 const CATEGORY_MAP: Record<string, string> = {
@@ -30,8 +31,9 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
 
     const fetchLatestNews = async () => {
       try {
-        // 실제 파일명인 fetch-news로 경로를 정확히 수정했습니다.
+        // 실제 API 파일명인 fetch-news로 경로를 정확히 맞췄습니다.
         const response = await fetch(`/api/fetch-news?category=${selectedCategory}`); 
+        if (!response.ok) throw new Error('Network response was not ok');
         const allData = await response.json();
         setNews(allData);
       } catch (error) {
@@ -63,8 +65,8 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
                 <h3 className="text-[15px] font-semibold text-slate-100 line-clamp-2 leading-snug mt-1">{item.title}</h3>
               </div>
               <div className="flex items-center gap-2 mt-3 text-[11px] text-slate-400">
-                <span className="truncate max-w-[60px]">{item.sourceName}</span>
-                <span>{item.date ? new Date(item.date).toLocaleDateString() : ""}</span>
+                <span className="truncate max-w-[60px]">{item.source || "GPNR"}</span>
+                <span>{item.date ? new Date(item.date).toLocaleDateString().replace(/\. /g, '.').replace(/\.$/, '') : ""}</span>
                 <div className="flex items-center gap-3 ml-auto text-sm">
                   <button onClick={(e)=>toggle(item.id,'read',e)}>
                     {status[item.id]?.read ? <span className="text-green-500">✔️</span> : "○"}
