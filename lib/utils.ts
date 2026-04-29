@@ -50,3 +50,17 @@ export function isValidUrl(url: string) {
     return false;
   }
 }
+
+/**
+ * 4. [추가] HTML 태그 제거 함수
+ * 스크린샷의 <a href...> 태그 등을 깨끗하게 지우고 텍스트만 남깁니다.
+ */
+export function stripHtml(html: string) {
+  if (!html) return "";
+  // 태그 제거 및 특수문자(&nbsp; 등) 공백 처리
+  return html
+    .replace(/<\/?[^>]+(>|$)/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .trim();
+}
