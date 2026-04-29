@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { NEWS_DATA } from '../../lib/pi-news-v2';
+
+// 1. 에러의 원인이었던 import 문을 삭제했습니다.
 
 const CATEGORY_IMAGE_IDS: { [key: string]: number[] } = {
   ALL: [1, 10, 16], MAINNET: [0, 201, 160], COMMUNITY: [129, 238, 447],
@@ -20,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const currentCat = (category as string).toUpperCase();
 
   try {
-    // 1. 구글 RSS 뉴스 페칭
+    // 1. 구글 RSS 뉴스 페칭 (실시간 엔진)
     const searchQuery = currentCat === 'ALL' ? 'Pi Network' : `Pi Network ${currentCat}`;
     const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery)}&hl=en-US&gl=US&ceid=US:en`;
     const response = await fetch(rssUrl);
@@ -42,35 +43,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         id: `google-${index}`,
         title: titleParts.join(' - '),
         content: cleanText(rawDesc),
-        source: source,
-        date: pubDate,
-        url: link,
+        sourceName: source, // news-feed.tsx와 필드명 통일
+        publishedAt: pubDate, // news-feed.tsx와 필드명 통일
+        sourceUrl: link, // news-feed.tsx와 필드명 통일
         category: currentCat,
         imageUrl: `https://picsum.photos/id/${selectedId}/400/300`
       };
     });
 
-    // 2. lib/pi-news-v2.ts에서 수동 데이터 합치기
-    const manualNews = NEWS_DATA.filter(item => 
-      currentCat === 'ALL' || item.category === currentCat
-    ).map(item => ({
-      id: item.id,
-      title: `[GPNR] ${item.title}`,
-      content: item.content,
-      source: item.author,
-      date: item.publishedAt,
-      url: item.sourceUrl,
-      category: item.category,
-      imageUrl: item.imageUrl
-    }));
+    // 2. 수동 데이터 합치기 로직 제거 (삭제된 파일 참조 제거)
 
-    // 3. 합치기 및 정렬 (최신순)
-    const combined = [...manualNews, ...googleNews].sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    // 3. 최신순 정렬 (이미 구글 뉴스가 최신순이지만 다시 한 번 확인)
+    const sortedNews = googleNews.sort(
+      (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
     );
 
-    return res.status(200).json(combined.slice(0, 20));
+    return res.status(200).json(sortedNews.slice(0, 20));
   } catch (error) {
-    return res.status(500).json({ error: "Failed" });
+    return res.status(500).json({ error: "Failed to fetch news" });
   }
 }
