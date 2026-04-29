@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { CategoryTabs } from "../components/category-tabs";
-import { stripHtml, formatTimeAgo } from "@/lib/utils"; // 🛠 세탁기 및 시간 포맷 함수 추가
+import { stripHtml, formatTimeAgo } from "@/lib/utils";
 
 export default function Home() {
   const [news, setNews] = useState<any[]>([]); 
@@ -63,7 +63,16 @@ export default function Home() {
         onCategoryChange={setActiveCategory} 
       />
 
-      <div className="max-w-3xl mx-auto px-4 py-4"> {/* 너비를 줄여 가독성 확보 */}
+      <div className="max-w-3xl mx-auto px-4 py-4 space-y-4">
         {loading ? (
           <div className="flex justify-center py-20 text-slate-500 animate-pulse font-bold">GPNR 데이터를 불러오는 중...</div>
         ) : (news && news.length > 0) ? (
+          news.map((item) => {
+            const status = articleStatus[item.sourceUrl] || { read: false, star: false, heart: false };
+            return (
+              <a 
+                key={item.id || item.sourceUrl} 
+                href={item.sourceUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="
