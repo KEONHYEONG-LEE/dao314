@@ -3,26 +3,26 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// 18개 카테고리 구성
+// 사용자 요청에 따른 18개 카테고리 한글화 적용
 const categories = [
-  { id: "all", label: "ALL" },
-  { id: "mainnet", label: "MAINNET" },
-  { id: "community", label: "COMMUNITY" },
-  { id: "commerce", label: "COMMERCE" },
-  { id: "node", label: "NODE" },
-  { id: "mining", label: "MINING" },
-  { id: "wallet", label: "WALLET" },
-  { id: "browser", label: "BROWSER" },
+  { id: "all", label: "주요이슈" },
+  { id: "mainnet", label: "메인넷" },
+  { id: "community", label: "커뮤니티" },
+  { id: "commerce", label: "커머스" },
+  { id: "node", label: "노드" },
+  { id: "mining", label: "채굴" },
+  { id: "wallet", label: "지갑" },
+  { id: "browser", label: "브라우저" },
   { id: "kyc", label: "KYC" },
-  { id: "developer", label: "DEVELOPER" },
-  { id: "ecosystem", label: "ECOSYSTEM" },
-  { id: "listing", label: "LISTING" },
-  { id: "price", label: "PRICE" },
-  { id: "security", label: "SECURITY" },
-  { id: "event", label: "EVENT" },
-  { id: "roadmap", label: "ROADMAP" },
-  { id: "whitepaper", label: "WHITEPAPER" },
-  { id: "legal", label: "LEGAL" }
+  { id: "developer", label: "개발자" },
+  { id: "ecosystem", label: "생태계" },
+  { id: "listing", label: "전망시세" },
+  { id: "price", label: "가격" },
+  { id: "security", label: "보안" },
+  { id: "event", label: "주요행사" },
+  { id: "roadmap", label: "로드맵" },
+  { id: "whitepaper", label: "백서" },
+  { id: "legal", label: "관련법규" }
 ];
 
 interface CategoryTabsProps {
@@ -87,10 +87,10 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
             <button
               key={category.id}
               onClick={() => onCategoryChange(category.id)}
-              className={`px-4 py-1.5 rounded-full text-[10px] font-black tracking-tighter whitespace-nowrap transition-all duration-300 border uppercase ${
+              className={`px-4 py-1.5 rounded-full text-[10px] font-black tracking-tighter whitespace-nowrap transition-all duration-300 border ${
                 selectedCategory === category.id
                   ? "bg-blue-600 text-white border-blue-400 shadow-[0_0_12px_rgba(37,99,235,0.4)]"
-                  : "bg-slate-800/40 text-slate-500 border-white/[0.05] hover:border-slate-600 hover:text-slate-200 hover:bg-slate-800/80"
+                  : "bg-slate-800/40 text-slate-400 border-white/[0.05] hover:border-slate-600 hover:text-slate-200 hover:bg-slate-800/80"
               }`}
             >
               {category.label}
