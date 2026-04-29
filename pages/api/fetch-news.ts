@@ -1,4 +1,13 @@
-// ... (상단 CATEGORY_IMAGE_IDS 및 cleanText 함수는 유지)
+import { NextApiRequest, NextApiResponse } from 'next';
+
+const CATEGORY_IMAGE_IDS: { [key: string]: number[] } = {
+  ALL: [1, 10, 16], MAINNET: [0, 201, 160], COMMUNITY: [129, 238, 447],
+  COMMERCE: [2, 3, 4], NODE: [48, 160, 532], MINING: [180, 192, 225],
+  WALLET: [431, 442, 555], BROWSER: [367, 370, 396], KYC: [558, 628, 984],
+  DEVELOPER: [4, 5, 6], ECOSYSTEM: [10, 11, 12], LISTING: [20, 26, 39],
+  PRICE: [513, 520, 521], SECURITY: [445, 529, 611], EVENT: [68, 69, 70],
+  ROADMAP: [141, 142, 145], WHITEPAPER: [24, 25, 26], LEGAL: [175, 176, 177]
+};
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { category = 'all' } = req.query;
@@ -22,9 +31,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return {
         id: `google-${index}`,
         title: titleParts.join(' - '),
-        url: link,           // 'url'로 통일
-        source: sourceName,  // 'source'로 통일
-        date: pubDate,       // 'date'로 통일
+        url: link,
+        source: sourceName,
+        date: pubDate,
         category: currentCat,
         imageUrl: `https://picsum.photos/id/${idPool[index % idPool.length]}/400/300`
       };
