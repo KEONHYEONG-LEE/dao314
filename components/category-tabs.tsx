@@ -34,7 +34,6 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
 
-  // 스와이프나 클릭으로 카테고리가 변경될 때, 활성화된 버튼을 중앙으로 자동 스크롤
   useEffect(() => {
     if (scrollRef.current) {
       const activeTab = scrollRef.current.querySelector(`[data-id="${selectedCategory}"]`) as HTMLElement;
@@ -86,43 +85,11 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
           </div>
         )}
 
+        {/* 1. 컨테이너에 'notranslate' 클래스 추가하여 번역 방지 */}
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex gap-1.5 py-3.5 px-1 overflow-x-auto no-scrollbar scroll-smooth"
+          className="flex gap-1.5 py-3.5 px-1 overflow-x-auto no-scrollbar scroll-smooth notranslate"
         >
           {categories.map((category) => (
             <button
-              key={category.id}
-              data-id={category.id} // 자동 스크롤을 위한 식별자
-              onClick={() => onCategoryChange(category.id)}
-              className={`px-4 py-1.5 rounded-full text-[11px] font-bold whitespace-nowrap transition-all duration-300 border ${
-                selectedCategory === category.id
-                  ? "bg-blue-600 text-white border-blue-400 shadow-[0_0_12px_rgba(37,99,235,0.4)]"
-                  : "bg-slate-800/40 text-slate-400 border-white/[0.05] hover:border-slate-600"
-              }`}
-            >
-              {category.label}
-            </button>
-          ))}
-        </div>
-
-        {showRightArrow && (
-          <div className="absolute right-0 top-0 bottom-0 w-14 z-10 flex items-center justify-end bg-gradient-to-l from-[#0f172a] via-[#0f172a]/80 to-transparent pointer-events-none">
-            <button
-              onClick={() => scroll("right")}
-              className="pointer-events-auto mr-1 w-7 h-7 flex items-center justify-center bg-slate-800/90 border border-slate-700/50 rounded-full text-white shadow-xl"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        )}
-      </div>
-
-      <style jsx global>{`
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      `}</style>
-    </div>
-  );
-}
