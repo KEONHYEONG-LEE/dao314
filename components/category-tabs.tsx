@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// 사용자 요청에 따른 18개 카테고리 한글화 적용
 const categories = [
   { id: "all", label: "주요이슈" },
   { id: "mainnet", label: "메인넷" },
@@ -35,7 +34,19 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
 
-  // 스크롤 감지 및 화살표 표시 제어
+  // 스와이프나 클릭으로 카테고리가 변경될 때, 활성화된 버튼을 중앙으로 자동 스크롤
+  useEffect(() => {
+    if (scrollRef.current) {
+      const activeTab = scrollRef.current.querySelector(`[data-id="${selectedCategory}"]`) as HTMLElement;
+      if (activeTab) {
+        const container = scrollRef.current;
+        const scrollLeft = activeTab.offsetLeft - container.offsetWidth / 2 + activeTab.offsetWidth / 2;
+        container.scrollTo({ left: scrollLeft, behavior: "smooth" });
+      }
+    }
+    handleScroll();
+  }, [selectedCategory]);
+
   const handleScroll = () => {
     if (scrollRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
@@ -44,7 +55,6 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
     }
   };
 
-  // 화살표 클릭 시 스크롤 이동
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
       const scrollAmount = 240;
@@ -62,35 +72,34 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
   }, []);
 
   return (
-    <div className="sticky top-[56px] z-40 bg-[#0f172a]/95 backdrop-blur-xl border-b border-white/[0.05] shadow-2xl">
+    <div className="sticky top-0 z-40 bg-[#0f172a]/95 backdrop-blur-xl border-b border-white/[0.05] shadow-2xl">
       <div className="mx-auto max-w-7xl relative px-2">
         
-        {/* 왼쪽 화살표 및 그라데이션 커버 */}
         {showLeftArrow && (
           <div className="absolute left-0 top-0 bottom-0 w-14 z-10 flex items-center justify-start bg-gradient-to-r from-[#0f172a] via-[#0f172a]/80 to-transparent pointer-events-none">
             <button
               onClick={() => scroll("left")}
-              className="pointer-events-auto ml-1 w-7 h-7 flex items-center justify-center bg-slate-800/90 border border-slate-700/50 rounded-full text-white shadow-xl hover:bg-slate-700 transition-all active:scale-90"
+              className="pointer-events-auto ml-1 w-7 h-7 flex items-center justify-center bg-slate-800/90 border border-slate-700/50 rounded-full text-white shadow-xl"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
           </div>
         )}
 
-        {/* 카테고리 버튼 컨테이너 */}
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex gap-1.5 py-3.5 px-1 overflow-x-auto no-scrollbar scroll-smooth scrollbar-hide"
+          className="flex gap-1.5 py-3.5 px-1 overflow-x-auto no-scrollbar scroll-smooth"
         >
           {categories.map((category) => (
             <button
               key={category.id}
+              data-id={category.id} // 자동 스크롤을 위한 식별자
               onClick={() => onCategoryChange(category.id)}
-              className={`px-4 py-1.5 rounded-full text-[10px] font-black tracking-tighter whitespace-nowrap transition-all duration-300 border ${
+              className={`px-4 py-1.5 rounded-full text-[11px] font-bold whitespace-nowrap transition-all duration-300 border ${
                 selectedCategory === category.id
                   ? "bg-blue-600 text-white border-blue-400 shadow-[0_0_12px_rgba(37,99,235,0.4)]"
-                  : "bg-slate-800/40 text-slate-400 border-white/[0.05] hover:border-slate-600 hover:text-slate-200 hover:bg-slate-800/80"
+                  : "bg-slate-800/40 text-slate-400 border-white/[0.05] hover:border-slate-600"
               }`}
             >
               {category.label}
@@ -98,12 +107,11 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
           ))}
         </div>
 
-        {/* 오른쪽 화살표 및 그라데이션 커버 */}
         {showRightArrow && (
           <div className="absolute right-0 top-0 bottom-0 w-14 z-10 flex items-center justify-end bg-gradient-to-l from-[#0f172a] via-[#0f172a]/80 to-transparent pointer-events-none">
             <button
               onClick={() => scroll("right")}
-              className="pointer-events-auto mr-1 w-7 h-7 flex items-center justify-center bg-slate-800/90 border border-slate-700/50 rounded-full text-white shadow-xl hover:bg-slate-700 transition-all active:scale-90"
+              className="pointer-events-auto mr-1 w-7 h-7 flex items-center justify-center bg-slate-800/90 border border-slate-700/50 rounded-full text-white shadow-xl"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
