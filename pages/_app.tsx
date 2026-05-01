@@ -4,6 +4,7 @@ import Script from 'next/script';
 import { ThemeProvider } from 'next-themes';
 import '../globals.css';
 import { Header } from '../components/Header';
+import { FloatingLanguageSwitcher } from '../components/FloatingLanguageSwitcher'; // 다시 추가
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -11,35 +12,38 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>GPNR - Global Pi Newsroom</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-        {/* 브라우저가 강제로 띄우는 구글 번역 바를 CSS로 한 번 더 차단 */}
+        {/* 우측 상단 구글 번역기 바(프레임)만 정밀하게 숨기기 */}
         <style>{`
-          .goog-te-banner-frame { display: none !important; }
-          #goog-gt-tt, .goog-te-balloon-frame { display: none !important; visibility: hidden !important; }
+          .goog-te-banner-frame, 
+          .goog-te-banner,
+          .skiptranslate[style*="top: 0"] { 
+            display: none !important; 
+            visibility: hidden !important;
+          }
           body { top: 0 !important; }
-          font { background-color: transparent !important; box-shadow: none !important; }
+          /* 마우스 오버 시 나오는 툴팁 방해 금지 */
+          #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
         `}</style>
       </Head>
 
-      {/* Pi Network SDK 스크립트 */}
+      {/* Pi Network SDK */}
       <Script 
         src="https://sdk.minepi.com/pi-sdk.js" 
         strategy="afterInteractive"
         onLoad={() => {
           if (typeof window !== "undefined" && (window as any).Pi) {
             (window as any).Pi.init({ version: "2.0" });
-            console.log("Pi SDK Initialized");
           }
         }}
       />
 
-      {/* 구글 번역 설정 스크립트 */}
+      {/* 구글 번역 설정 */}
       <Script id="google-translate-config" strategy="afterInteractive">
         {`
           function googleTranslateElementInit() {
             new google.translate.TranslateElement({
               pageLanguage: 'en',
               includedLanguages: 'ko,en',
-              layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
               autoDisplay: false
             }, 'google_translate_element');
           }
@@ -57,13 +61,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </main>
 
-        {/* 1. UI에 걸쳐있던 FloatingLanguageSwitcher를 제거했습니다. 
-          2. 구글 번역 엘리먼트가 공간을 차지하지 않도록 absolute로 숨겼습니다.
-        */}
-        <div 
-          id="google_translate_element" 
-          className="fixed -top-[9999px] -left-[9999px] invisible opacity-0 pointer-events-none"
-        ></div>
+        {/* 1. 번역 기능을 위한 엘리먼트는 숨겨서 유지 */}
+        <div id="google_translate_element" className="hidden"></div>
+        
+        {/* 2. 우측 하단 필수 버튼 다시 살림! */}
+        <FloatingLanguageSwitcher />
       </div>
     </ThemeProvider>
   );
