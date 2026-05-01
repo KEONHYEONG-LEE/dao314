@@ -14,25 +14,23 @@ export default function Home() {
   const touchEndX = useRef<number | null>(null);
 
   useEffect(() => {
-    // 브라우저 강제 레이아웃 수정(상단 여백) 방지
+    // [보안관 로직] 구글 번역기가 상단 여백(top: 40px 등)을 강제로 주입하는지 감시
     const fixLayout = () => {
-      if (typeof document !== "undefined") {
+      if (typeof document !== "undefined" && document.body) {
         if (document.body.style.top !== "0px") {
           document.body.style.top = "0px";
         }
       }
     };
 
-    // 실시간 감시 (번역 바가 억지로 밀어내는 것 차단)
+    // 0.5초마다 체크하여 상단 바가 끼어들 틈을 주지 않음
     const interval = setInterval(fixLayout, 500);
-    
-    // 초기 실행
-    fixLayout();
+    fixLayout(); // 초기 실행
 
     return () => clearInterval(interval);
   }, []);
 
-  // --- 좌우 스와이프 핸들러 ---
+  // --- 스와이프 로직 (변화 없음) ---
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
   };
@@ -43,16 +41,12 @@ export default function Home() {
 
   const handleTouchEnd = () => {
     if (touchStartX.current === null || touchEndX.current === null) return;
-    
     const distance = touchStartX.current - touchEndX.current;
-    const isLeftSwipe = distance > 75;  // 감도 조절
-    const isRightSwipe = distance < -75;
-    
     const currentIndex = CATEGORIES.indexOf(activeCategory);
 
-    if (isLeftSwipe && currentIndex < CATEGORIES.length - 1) {
+    if (distance > 75 && currentIndex < CATEGORIES.length - 1) {
       setActiveCategory(CATEGORIES[currentIndex + 1]);
-    } else if (isRightSwipe && currentIndex > 0) {
+    } else if (distance < -75 && currentIndex > 0) {
       setActiveCategory(CATEGORIES[currentIndex - 1]);
     }
 
@@ -67,7 +61,6 @@ export default function Home() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* 카테고리 탭 (상단 고정) */}
       <div className="sticky top-0 z-50 bg-[#0f172a]/95 backdrop-blur-sm">
         <CategoryTabs 
           selectedCategory={activeCategory} 
@@ -75,7 +68,6 @@ export default function Home() {
         />
       </div>
 
-      {/* 뉴스 피드 본문 */}
       <div className="max-w-3xl mx-auto px-4 transition-opacity duration-300">
         <NewsFeed selectedCategory={activeCategory} />
       </div>
