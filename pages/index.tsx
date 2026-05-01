@@ -14,33 +14,25 @@ export default function Home() {
   const touchEndX = useRef<number | null>(null);
 
   useEffect(() => {
-    // 1. 구글 UI 강제 숨기기 (더 강력한 선택자 추가)
-    const style = document.createElement("style");
-    style.innerHTML = `
-      .goog-te-banner-frame, .VIpgJd-Zvi9m-OR9h3-zh99gd, .goog-te-banner { 
-        display: none !important; 
-        visibility: hidden !important; 
-      }
-      #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
-      body { top: 0 !important; position: static !important; }
-    `;
-    document.head.appendChild(style);
-
-    // 2. 브라우저가 강제로 top 값을 수정할 경우 실시간 원복 스크립트
-    const fixBodyLayout = () => {
-      if (document.body.style.top !== '0px') {
-        document.body.style.top = '0px';
+    // 브라우저 강제 레이아웃 수정(상단 여백) 방지
+    const fixLayout = () => {
+      if (typeof document !== "undefined") {
+        if (document.body.style.top !== "0px") {
+          document.body.style.top = "0px";
+        }
       }
     };
 
-    const interval = setInterval(fixBodyLayout, 500);
+    // 실시간 감시 (번역 바가 억지로 밀어내는 것 차단)
+    const interval = setInterval(fixLayout, 500);
+    
+    // 초기 실행
+    fixLayout();
 
-    return () => {
-      document.head.removeChild(style);
-      clearInterval(interval);
-    };
+    return () => clearInterval(interval);
   }, []);
 
+  // --- 좌우 스와이프 핸들러 ---
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
   };
@@ -51,9 +43,11 @@ export default function Home() {
 
   const handleTouchEnd = () => {
     if (touchStartX.current === null || touchEndX.current === null) return;
+    
     const distance = touchStartX.current - touchEndX.current;
-    const isLeftSwipe = distance > 70;
-    const isRightSwipe = distance < -70;
+    const isLeftSwipe = distance > 75;  // 감도 조절
+    const isRightSwipe = distance < -75;
+    
     const currentIndex = CATEGORIES.indexOf(activeCategory);
 
     if (isLeftSwipe && currentIndex < CATEGORIES.length - 1) {
@@ -73,6 +67,7 @@ export default function Home() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
+      {/* 카테고리 탭 (상단 고정) */}
       <div className="sticky top-0 z-50 bg-[#0f172a]/95 backdrop-blur-sm">
         <CategoryTabs 
           selectedCategory={activeCategory} 
@@ -80,7 +75,8 @@ export default function Home() {
         />
       </div>
 
-      <div className="max-w-3xl mx-auto transition-opacity duration-300">
+      {/* 뉴스 피드 본문 */}
+      <div className="max-w-3xl mx-auto px-4 transition-opacity duration-300">
         <NewsFeed selectedCategory={activeCategory} />
       </div>
     </main>
