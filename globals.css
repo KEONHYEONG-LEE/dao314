@@ -1,66 +1,53 @@
-/* 문법 에러 방지를 위해 표준 방식으로 변경 */
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+/* ... 기존 base, components, utilities 유지 ... */
 
-:root {
-  /* 라이트 모드 변수를 다크 모드 값으로 고정 */
-  --background: #0f172a;
-  --foreground: #f8fafc;
-}
+/* [핵심] 구글 번역 UI 및 안내 문구 2중/3중 차단 */
 
-/* 다크 모드 배경색 강제 지정 (GPNR 메인 테마) */
-body {
-  background-color: #0f172a !important; 
-  color: #f8fafc !important;
-  margin: 0;
-  padding: 0;
-  /* 구글 번역 시 상단 여백 생기는 것 방지 */
-  top: 0 !important;
-  position: static !important;
-}
-
-/* --- 구글 번역 UI 및 안내 문구 완전 차단 (잔상 제거 핵심) --- */
-
-/* 1. 상단 번역 툴바 및 모든 구글 위젯 제거 */
+/* 1. 상단 프레임 및 모든 구글 위젯 (최신 클래스명 포함) */
 .skiptranslate,
 .goog-te-banner-frame,
+.goog-te-banner,
 .goog-te-gadget,
 .goog-te-gadget-simple,
-iframe.goog-te-menu-frame {
+iframe.goog-te-menu-frame,
+.VIpgJd-Zvi9m-OR9h3-zh99gd, /* 최신 구글 번역 바 클래스 */
+.VIpgJd-y6oGPe-OR9h3-p69hS /* 최신 구글 번역 로고 관련 */ {
   display: none !important;
   visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  position: absolute !important;
+  top: -9999px !important;
 }
 
-/* 2. 원본 텍스트 팝업(풍선 도움말) 및 로고 잔상 제거 */
+/* 2. 번역 바 때문에 본문이 억지로 내려가는 현상(top: 40px 등) 완전 차단 */
+html, body {
+  top: 0 !important;
+  position: relative !important; /* static 대신 relative가 인라인 스타일 방어에 유리할 때가 있음 */
+}
+
+/* 3. 툴팁 및 팝업 안내문구 완전 제거 */
 #goog-gt-tt, 
 .goog-te-balloon-frame, 
-.goog-tooltip, 
-.goog-tooltip:hover,
-.VIpgJd-y6oGPe-vk9N9b-OR9h3-t91vWb {
+.goog-tooltip,
+.VIpgJd-y6oGPe-vk9N9b-OR9h3-t91vWb,
+.VIpgJd-y6oGPe-vk9N9b-OR9h3 {
   display: none !important;
   visibility: hidden !important;
 }
 
-/* 3. 번역 후 텍스트 하이라이트(강조색) 제거 */
+/* 4. 번역 로딩 시 발생하는 스피너나 여백 제거 */
+.goog-te-spinner-pos, .goog-te-spinner {
+  display: none !important;
+}
+
+/* 5. 텍스트 하이라이트 제거 */
 .goog-text-highlight {
   background-color: transparent !important;
   box-shadow: none !important;
-  border: none !important;
 }
 
-/* 4. 번역 위젯이 차지하는 레이아웃 공간 제거 */
+/* [추가] 번역 위젯 엘리먼트 자체도 보이지 않게 처리 */
 #google_translate_element {
   display: none !important;
-}
-
-/* 모바일 스크롤바 숨김 (깔끔한 UI용) */
-@layer utilities {
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
 }
