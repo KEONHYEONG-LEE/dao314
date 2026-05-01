@@ -22,7 +22,7 @@ const CATEGORY_MAP: Record<string, string> = {
 
 export default function NewsFeed({ selectedCategory }: { selectedCategory: string }) {
   const [news, setNews] = useState<NewsItem[]>([]); 
-  const [loading, setLoading] = useState(true); // 로딩 상태 추가
+  const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<Record<string, { read: boolean; star: boolean; heart: boolean }>>({});
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
     if (saved) setStatus(JSON.parse(saved));
 
     const fetchLatestNews = async () => {
-      setLoading(true); // 카테고리 변경 시 로딩 시작
+      setLoading(true);
       try {
         const response = await fetch(`/api/fetch-news?category=${selectedCategory}`); 
         const allData = await response.json();
@@ -38,7 +38,7 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
       } catch (error) {
         console.error("데이터 로드 실패:", error);
       } finally {
-        setLoading(false); // 로딩 완료
+        setLoading(false);
       }
     };
 
@@ -66,7 +66,11 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
             <div className="flex gap-4">
               <div className="flex-1 flex flex-col justify-between min-w-0">
                 <div>
-                  <span className="text-[10px] font-bold text-amber-500 uppercase">
+                  {/* 카테고리 텍스트 번역 방지 추가 */}
+                  <span 
+                    className="text-[10px] font-bold text-amber-500 uppercase notranslate" 
+                    translate="no"
+                  >
                     {CATEGORY_MAP[item.category.toUpperCase()] || item.category}
                   </span>
                   <h3 className="text-[15px] font-semibold text-slate-100 line-clamp-2 leading-snug mt-1">{item.title}</h3>
