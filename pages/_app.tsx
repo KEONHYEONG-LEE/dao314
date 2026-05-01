@@ -4,7 +4,6 @@ import Script from 'next/script';
 import { ThemeProvider } from 'next-themes';
 import '../globals.css';
 import { Header } from '../components/Header';
-import { FloatingLanguageSwitcher } from '../components/FloatingLanguageSwitcher';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -12,9 +11,16 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>GPNR - Global Pi Newsroom</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+        {/* 브라우저가 강제로 띄우는 구글 번역 바를 CSS로 한 번 더 차단 */}
+        <style>{`
+          .goog-te-banner-frame { display: none !important; }
+          #goog-gt-tt, .goog-te-balloon-frame { display: none !important; visibility: hidden !important; }
+          body { top: 0 !important; }
+          font { background-color: transparent !important; box-shadow: none !important; }
+        `}</style>
       </Head>
 
-      {/* Pi Network SDK 스크립트 추가 */}
+      {/* Pi Network SDK 스크립트 */}
       <Script 
         src="https://sdk.minepi.com/pi-sdk.js" 
         strategy="afterInteractive"
@@ -33,6 +39,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             new google.translate.TranslateElement({
               pageLanguage: 'en',
               includedLanguages: 'ko,en',
+              layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
               autoDisplay: false
             }, 'google_translate_element');
           }
@@ -50,8 +57,13 @@ export default function MyApp({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </main>
 
-        <div id="google_translate_element" style={{ display: 'none', visibility: 'hidden' }}></div>
-        <FloatingLanguageSwitcher />
+        {/* 1. UI에 걸쳐있던 FloatingLanguageSwitcher를 제거했습니다. 
+          2. 구글 번역 엘리먼트가 공간을 차지하지 않도록 absolute로 숨겼습니다.
+        */}
+        <div 
+          id="google_translate_element" 
+          className="fixed -top-[9999px] -left-[9999px] invisible opacity-0 pointer-events-none"
+        ></div>
       </div>
     </ThemeProvider>
   );
