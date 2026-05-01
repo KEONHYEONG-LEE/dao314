@@ -34,6 +34,14 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
 
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      setShowLeftArrow(scrollLeft > 10);
+      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
   useEffect(() => {
     if (scrollRef.current) {
       const activeTab = scrollRef.current.querySelector(`[data-id="${selectedCategory}"]`) as HTMLElement;
@@ -45,14 +53,6 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
     }
     handleScroll();
   }, [selectedCategory]);
-
-  const handleScroll = () => {
-    if (scrollRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-      setShowLeftArrow(scrollLeft > 10);
-      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10);
-    }
-  };
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -85,7 +85,6 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
           </div>
         )}
 
-        {/* 1. 컨테이너에 'notranslate' 클래스 추가하여 번역 방지 */}
         <div
           ref={scrollRef}
           onScroll={handleScroll}
@@ -93,3 +92,37 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
         >
           {categories.map((category) => (
             <button
+              key={category.id}
+              data-id={category.id}
+              onClick={() => onCategoryChange(category.id)}
+              translate="no"
+              className={`px-4 py-1.5 rounded-full text-[11px] font-bold whitespace-nowrap transition-all duration-300 border ${
+                selectedCategory === category.id
+                  ? "bg-blue-600 text-white border-blue-400 shadow-[0_0_12px_rgba(37,99,235,0.4)]"
+                  : "bg-slate-800/40 text-slate-400 border-white/[0.05] hover:border-slate-600"
+              }`}
+            >
+              {category.label}
+            </button>
+          ))}
+        </div>
+
+        {showRightArrow && (
+          <div className="absolute right-0 top-0 bottom-0 w-14 z-10 flex items-center justify-end bg-gradient-to-l from-[#0f172a] via-[#0f172a]/80 to-transparent pointer-events-none">
+            <button
+              onClick={() => scroll("right")}
+              className="pointer-events-auto mr-1 w-7 h-7 flex items-center justify-center bg-slate-800/90 border border-slate-700/50 rounded-full text-white shadow-xl"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+      </div>
+
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
+    </div>
+  );
+}
