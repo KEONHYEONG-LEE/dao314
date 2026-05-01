@@ -4,7 +4,7 @@ import Script from 'next/script';
 import { ThemeProvider } from 'next-themes';
 import '../globals.css';
 import { Header } from '../components/Header';
-import { FloatingLanguageSwitcher } from '../components/FloatingLanguageSwitcher'; // 다시 추가
+import { FloatingLanguageSwitcher } from '../components/FloatingLanguageSwitcher';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -12,21 +12,20 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>GPNR - Global Pi Newsroom</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-        {/* 우측 상단 구글 번역기 바(프레임)만 정밀하게 숨기기 */}
-        <style>{`
+        {/* 우측 상단 거슬리는 번역 바만 정밀 타격해서 삭제 */}
+        <style dangerouslySetInnerHTML={{ __html: `
           .goog-te-banner-frame, 
           .goog-te-banner,
-          .skiptranslate[style*="top: 0"] { 
+          .skiptranslate[style*="top: 0"],
+          .VIpgJd-Zvi9m-OR9h3-zh99gd { 
             display: none !important; 
             visibility: hidden !important;
           }
-          body { top: 0 !important; }
-          /* 마우스 오버 시 나오는 툴팁 방해 금지 */
+          body { top: 0 !important; position: static !important; }
           #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
-        `}</style>
+        `}} />
       </Head>
 
-      {/* Pi Network SDK */}
       <Script 
         src="https://sdk.minepi.com/pi-sdk.js" 
         strategy="afterInteractive"
@@ -37,7 +36,6 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         }}
       />
 
-      {/* 구글 번역 설정 */}
       <Script id="google-translate-config" strategy="afterInteractive">
         {`
           function googleTranslateElementInit() {
@@ -56,15 +54,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
       <div className="min-h-screen bg-[#0f172a] text-slate-100 selection:bg-blue-500/30">
         <Header />
-        
         <main>
           <Component {...pageProps} />
         </main>
-
-        {/* 1. 번역 기능을 위한 엘리먼트는 숨겨서 유지 */}
-        <div id="google_translate_element" className="hidden"></div>
-        
-        {/* 2. 우측 하단 필수 버튼 다시 살림! */}
+        {/* 번역 기능은 작동하되 UI는 숨김 */}
+        <div id="google_translate_element" style={{ display: 'none' }}></div>
+        {/* 우측 하단 필수 버튼 살림 */}
         <FloatingLanguageSwitcher />
       </div>
     </ThemeProvider>
