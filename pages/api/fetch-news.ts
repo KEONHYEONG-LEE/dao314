@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const xmlData = await response.text();
     const items = xmlData.match(/<item>([\s\S]*?)<\/item>/g) || [];
     
-    const googleNews = items.map((item, index) => {
+    let googleNews = items.map((item, index) => {
       const titleRaw = item.match(/<title>([\s\S]*?)<\/title>/)?.[1] || "";
       const link = item.match(/<link>([\s\S]*?)<\/link>/)?.[1] || "";
       const pubDate = item.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1] || "";
@@ -33,11 +33,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         title: titleParts.join(' - '),
         url: link,
         source: sourceName,
-        date: pubDate,
+        date: pubDate, // 원본 날짜 문자열
         category: currentCat,
         imageUrl: `https://picsum.photos/id/${idPool[index % idPool.length]}/400/300`
       };
     });
+
+    // --- 최신순 정렬 로직 추가 ---
+    googleNews.sort((a, b) => {
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+    // -------------------------
 
     return res.status(200).json(googleNews.slice(0, 20));
   } catch (error) {
