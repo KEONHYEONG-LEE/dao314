@@ -4,26 +4,28 @@
 @import "tailwindcss/utilities";
 
 :root {
+  /* 다크 테마 변수 고정 */
   --background: #0f172a;
   --foreground: #f8fafc;
 }
 
 /* 1. 배경색 및 레이아웃 복구 (화면 깨짐 방지) */
 body {
-  background-color: #0f172a !important; /* 다크 테마 배경색 고정 */
+  background-color: #0f172a !important; /* GPNR 전용 다크 배경색 */
   color: #f8fafc !important;
   margin: 0;
   padding: 0;
-  top: 0 !important; /* 구글 번역바가 밀어내는 것 방지 */
+  top: 0 !important; /* 구글 번역바가 레이아웃을 밀어내는 것 방어 */
 }
 
 /* 2. [정밀 타격] 상단 번역 바 및 최신 위젯만 제거 */
-/* 하단 FloatingLanguageSwitcher는 버튼의 고유 ID가 다르므로 영향을 받지 않습니다. */
+/* 하단 FloatingLanguageSwitcher는 별도 컴포넌트이므로 이 설정의 영향을 받지 않고 정상 노출됩니다. */
 .goog-te-banner-frame,
 .goog-te-banner,
 .VIpgJd-Zvi9m-OR9h3-zh99gd, 
 .VIpgJd-y6oGPe-OR9h3-p69hS,
-iframe.goog-te-menu-frame {
+iframe.goog-te-menu-frame,
+.skiptranslate {
   display: none !important;
   visibility: hidden !important;
   height: 0 !important;
@@ -32,7 +34,7 @@ iframe.goog-te-menu-frame {
   top: -9999px !important;
 }
 
-/* 3. 툴팁 및 풍선 도움말 차단 (텍스트 강조 방지) */
+/* 3. 툴팁 및 풍선 도움말 차단 (원본 보기 팝업 등 제거) */
 #goog-gt-tt, 
 .goog-te-balloon-frame, 
 .goog-tooltip,
@@ -41,19 +43,19 @@ iframe.goog-te-menu-frame {
   visibility: hidden !important;
 }
 
-/* 4. 번역 후 텍스트에 생기는 하이라이트 배경 제거 */
+/* 4. 번역 후 텍스트에 생기는 하이라이트(노란 배경) 제거 */
 .goog-text-highlight {
   background-color: transparent !important;
   box-shadow: none !important;
   border: none !important;
 }
 
-/* 5. 브라우저 강제 삽입 스타일 방어 */
+/* 5. 브라우저가 강제로 삽입하는 상단 여백 스타일 방어 */
 html {
   padding-top: 0 !important;
 }
 
-/* 모바일 스크롤바 숨김 */
+/* 모바일 스크롤바 숨김 (깔끔한 UI 유지) */
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
