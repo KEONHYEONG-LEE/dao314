@@ -2,8 +2,12 @@ import { useState, useEffect, useRef } from "react";
 import { CategoryTabs } from "../components/category-tabs";
 import NewsFeed from "../components/news-feed";
 
-// 프로젝트에서 사용하는 실제 카테고리 리스트로 순서를 맞추세요.
-const CATEGORIES = ['all', 'economy', 'tech', 'world', 'science'];
+// GPNR 실제 카테고리 ID 순서 (스와이프 연동용)
+const CATEGORIES = [
+  "all", "mainnet", "community", "commerce", "node", "mining", 
+  "wallet", "browser", "kyc", "developer", "ecosystem", "listing", 
+  "price", "security", "event", "roadmap", "whitepaper", "legal"
+];
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -11,7 +15,7 @@ export default function Home() {
   const touchEndX = useRef<number | null>(null);
 
   useEffect(() => {
-    // 구글 번역 UI 숨기기
+    // 구글 UI 강제 숨기기
     const style = document.createElement("style");
     style.innerHTML = `
       .goog-te-banner-frame { display: none !important; }
@@ -22,7 +26,7 @@ export default function Home() {
     return () => { document.head.removeChild(style); };
   }, []);
 
-  // 좌우 스와이프 로직
+  // --- 좌우 스와이프 핸들러 ---
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
   };
@@ -32,11 +36,11 @@ export default function Home() {
   };
 
   const handleTouchEnd = () => {
-    if (!touchStartX.current || !touchEndX.current) return;
+    if (touchStartX.current === null || touchEndX.current === null) return;
 
     const distance = touchStartX.current - touchEndX.current;
-    const isLeftSwipe = distance > 70;  // 왼쪽으로 밀기 -> 다음 카테고리
-    const isRightSwipe = distance < -70; // 오른쪽으로 밀기 -> 이전 카테고리
+    const isLeftSwipe = distance > 70;  // 왼쪽으로 밀기 (다음 카테고리)
+    const isRightSwipe = distance < -70; // 오른쪽으로 밀기 (이전 카테고리)
 
     const currentIndex = CATEGORIES.indexOf(activeCategory);
 
@@ -46,6 +50,7 @@ export default function Home() {
       setActiveCategory(CATEGORIES[currentIndex - 1]);
     }
 
+    // 값 초기화
     touchStartX.current = null;
     touchEndX.current = null;
   };
@@ -57,13 +62,16 @@ export default function Home() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
+      {/* 카테고리 탭 (상단 고정) */}
       <div className="sticky top-0 z-50 bg-[#0f172a]/95 backdrop-blur-sm">
         <CategoryTabs 
           selectedCategory={activeCategory} 
           onCategoryChange={setActiveCategory} 
         />
       </div>
-      <div className="max-w-3xl mx-auto px-4">
+
+      {/* 뉴스 피드 본문 */}
+      <div className="max-w-3xl mx-auto transition-opacity duration-300">
         <NewsFeed selectedCategory={activeCategory} />
       </div>
     </main>
