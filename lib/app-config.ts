@@ -31,7 +31,7 @@ export const APP_CONFIG = {
   categories: ["General", "GCV", "Tech", "Market", "Community", "Ecosystem", "Nodes"],
   links: {
     github: "https://github.com/KEONHYEONG-LEE/dao314",
-    domain: "https://gpnr2489.pinet.com",
+    domain: "https://gpnr4036.pinet.com",
     supportEmail: "kh1253.lee@gmail.com",
   },
 };
