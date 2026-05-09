@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
-import { NEWS_DATA } from "@/lib/pi-news-v2";
+import { NEWS_DATA } from "@/lib/pi-news-v2.ts";
 
 export function LatestNews() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
