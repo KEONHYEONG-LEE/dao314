@@ -10,6 +10,7 @@ export interface NewsItem {
   url: string;
   source: string;
   date: string;
+  content?: string; // 상세 본문을 담을 필드 추가
 }
 
 const CATEGORY_MAP: Record<string, string> = {
@@ -24,6 +25,9 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
   const [news, setNews] = useState<NewsItem[]>([]); 
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<Record<string, { read: boolean; star: boolean; heart: boolean }>>({});
+  
+  // 현재 확장(풀다운)된 뉴스 ID 상태
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem('gpnr_status');
@@ -45,56 +49,82 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
     fetchLatestNews();
   }, [selectedCategory]); 
 
-  const toggle = (id: string, type: 'read' | 'star' | 'heart', e: React.MouseEvent) => {
+  const toggleStatus = (id: string, type: 'read' | 'star' | 'heart', e: React.MouseEvent) => {
     e.preventDefault(); e.stopPropagation();
     const newStatus = { ...status, [id]: { ...(status[id] || {read:false, star:false, heart:false}), [type]: !(status[id]?.[type]) } };
     setStatus(newStatus);
     localStorage.setItem('gpnr_status', JSON.stringify(newStatus));
   };
 
+  // 뉴스 클릭 시 확장/축소 토글 함수
+  const handleToggleExpand = (id: string) => {
+    setExpandedId(expandedId === id ? null : id);
+  };
+
   return (
     <section className={`pb-24 space-y-3 mt-4 transition-opacity duration-300 ${loading ? 'opacity-50' : 'opacity-100'}`}>
       {news.length > 0 ? (
         news.map((item) => (
-          <a 
+          <div 
             key={item.id} 
-            href={item.url} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="block bg-[#1e293b] rounded-xl p-4 border border-slate-700/50 shadow-md active:scale-[0.98] transition-transform"
+            className="block bg-[#1e293b] rounded-xl border border-slate-700/50 shadow-md transition-all overflow-hidden"
           >
-            <div className="flex gap-4">
-              <div className="flex-1 flex flex-col justify-between min-w-0">
-                <div>
-                  {/* 카테고리 텍스트 번역 방지 추가 */}
-                  <span 
-                    className="text-[10px] font-bold text-amber-500 uppercase notranslate" 
-                    translate="no"
-                  >
-                    {CATEGORY_MAP[item.category.toUpperCase()] || item.category}
-                  </span>
-                  <h3 className="text-[15px] font-semibold text-slate-100 line-clamp-2 leading-snug mt-1">{item.title}</h3>
-                </div>
-                <div className="flex items-center gap-2 mt-3 text-[11px] text-slate-400">
-                  <span className="truncate max-w-[100px]">{item.source}</span>
-                  <span>•</span>
-                  <span>{item.date ? new Date(item.date).toLocaleDateString() : ""}</span>
-                  <div className="flex items-center gap-3 ml-auto text-sm">
-                    <button onClick={(e)=>toggle(item.id,'read',e)}>
-                      {status[item.id]?.read ? <span className="text-green-500">✔️</span> : "○"}
-                    </button>
-                    <button onClick={(e)=>toggle(item.id,'star',e)} className={status[item.id]?.star ? "text-yellow-400":"text-slate-500"}>★</button>
-                    <button onClick={(e)=>toggle(item.id,'heart',e)} className={status[item.id]?.heart ? "text-red-500":"text-slate-500"}>♥</button>
+            {/* 상단 클릭 영역 (제목 및 이미지) */}
+            <div 
+              onClick={() => handleToggleExpand(item.id)}
+              className="p-4 cursor-pointer active:bg-slate-800 transition-colors"
+            >
+              <div className="flex gap-4">
+                <div className="flex-1 flex flex-col justify-between min-w-0">
+                  <div>
+                    <span 
+                      className="text-[10px] font-bold text-amber-500 uppercase notranslate" 
+                      translate="no"
+                    >
+                      {CATEGORY_MAP[item.category.toUpperCase()] || item.category}
+                    </span>
+                    <h3 className="text-[15px] font-semibold text-slate-100 line-clamp-2 leading-snug mt-1">{item.title}</h3>
+                  </div>
+                  <div className="flex items-center gap-2 mt-3 text-[11px] text-slate-400">
+                    <span className="truncate max-w-[100px]">{item.source}</span>
+                    <span>•</span>
+                    <span>{item.date ? new Date(item.date).toLocaleDateString() : ""}</span>
+                    <div className="flex items-center gap-3 ml-auto text-sm">
+                      <button onClick={(e)=>toggleStatus(item.id,'read',e)}>
+                        {status[item.id]?.read ? <span className="text-green-500">✔️</span> : "○"}
+                      </button>
+                      <button onClick={(e)=>toggleStatus(item.id,'star',e)} className={status[item.id]?.star ? "text-yellow-400":"text-slate-500"}>★</button>
+                      <button onClick={(e)=>toggleStatus(item.id,'heart',e)} className={status[item.id]?.heart ? "text-red-500":"text-slate-500"}>♥</button>
+                    </div>
                   </div>
                 </div>
+                {item.imageUrl && (
+                  <div className="w-20 h-20 flex-shrink-0">
+                    <img src={item.imageUrl} alt="" className="w-full h-full object-cover rounded-lg bg-slate-800" />
+                  </div>
+                )}
               </div>
-              {item.imageUrl && (
-                <div className="w-20 h-20 flex-shrink-0">
-                  <img src={item.imageUrl} alt="" className="w-full h-full object-cover rounded-lg bg-slate-800" />
-                </div>
-              )}
             </div>
-          </a>
+
+            {/* 풀다운 상세 본문 영역 */}
+            <div 
+              className={`transition-all duration-300 ease-in-out ${expandedId === item.id ? 'max-h-[1000px] opacity-100 border-t border-slate-700/50' : 'max-h-0 opacity-0 overflow-hidden'}`}
+            >
+              <div className="p-4 bg-slate-900/50">
+                <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap mb-4">
+                  {item.content || "상세 내용을 불러올 수 없습니다."}
+                </div>
+                <a 
+                  href={item.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-[12px] text-amber-500 font-medium hover:underline"
+                >
+                  출처에서 원문 보기 →
+                </a>
+              </div>
+            </div>
+          </div>
         ))
       ) : (
         <div className="text-center py-20 text-slate-500 text-sm">
