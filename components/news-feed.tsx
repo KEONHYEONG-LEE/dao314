@@ -10,7 +10,7 @@ export interface NewsItem {
   url: string;
   source: string;
   date: string;
-  content?: string; // 상세 본문을 담을 필드 추가
+  content?: string; 
 }
 
 const CATEGORY_MAP: Record<string, string> = {
@@ -21,12 +21,22 @@ const CATEGORY_MAP: Record<string, string> = {
   WHITEPAPER: "백서", LEGAL: "관련법규"
 };
 
+/**
+ * HTML 태그를 제거하고 순수 텍스트만 추출하는 함수
+ */
+const stripHtml = (html: string) => {
+  if (!html) return "";
+  // 1. HTML 태그 제거
+  let cleanText = html.replace(/<\/?[^>]+(>|$)/g, "");
+  // 2. 특수 문자 엔티티 변환 (&quot;, &lt; 등)
+  const doc = new DOMParser().parseFromString(cleanText, 'text/html');
+  return doc.body.textContent || cleanText;
+};
+
 export default function NewsFeed({ selectedCategory }: { selectedCategory: string }) {
   const [news, setNews] = useState<NewsItem[]>([]); 
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<Record<string, { read: boolean; star: boolean; heart: boolean }>>({});
-  
-  // 현재 확장(풀다운)된 뉴스 ID 상태
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -56,7 +66,6 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
     localStorage.setItem('gpnr_status', JSON.stringify(newStatus));
   };
 
-  // 뉴스 클릭 시 확장/축소 토글 함수
   const handleToggleExpand = (id: string) => {
     setExpandedId(expandedId === id ? null : id);
   };
@@ -69,7 +78,6 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
             key={item.id} 
             className="block bg-[#1e293b] rounded-xl border border-slate-700/50 shadow-md transition-all overflow-hidden"
           >
-            {/* 상단 클릭 영역 (제목 및 이미지) */}
             <div 
               onClick={() => handleToggleExpand(item.id)}
               className="p-4 cursor-pointer active:bg-slate-800 transition-colors"
@@ -77,13 +85,13 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
               <div className="flex gap-4">
                 <div className="flex-1 flex flex-col justify-between min-w-0">
                   <div>
-                    <span 
-                      className="text-[10px] font-bold text-amber-500 uppercase notranslate" 
-                      translate="no"
-                    >
+                    <span className="text-[10px] font-bold text-amber-500 uppercase notranslate" translate="no">
                       {CATEGORY_MAP[item.category.toUpperCase()] || item.category}
                     </span>
-                    <h3 className="text-[15px] font-semibold text-slate-100 line-clamp-2 leading-snug mt-1">{item.title}</h3>
+                    {/* 제목도 HTML 태그가 섞여 들어올 수 있으므로 처리 */}
+                    <h3 className="text-[15px] font-semibold text-slate-100 line-clamp-2 leading-snug mt-1">
+                      {stripHtml(item.title)}
+                    </h3>
                   </div>
                   <div className="flex items-center gap-2 mt-3 text-[11px] text-slate-400">
                     <span className="truncate max-w-[100px]">{item.source}</span>
@@ -106,13 +114,13 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
               </div>
             </div>
 
-            {/* 풀다운 상세 본문 영역 */}
             <div 
-              className={`transition-all duration-300 ease-in-out ${expandedId === item.id ? 'max-h-[1000px] opacity-100 border-t border-slate-700/50' : 'max-h-0 opacity-0 overflow-hidden'}`}
+              className={`transition-all duration-300 ease-in-out ${expandedId === item.id ? 'max-h-[2000px] opacity-100 border-t border-slate-700/50' : 'max-h-0 opacity-0 overflow-hidden'}`}
             >
               <div className="p-4 bg-slate-900/50">
                 <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap mb-4">
-                  {item.content || "상세 내용을 불러올 수 없습니다."}
+                  {/* stripHtml 함수를 적용하여 태그 없이 텍스트만 출력 */}
+                  {item.content ? stripHtml(item.content) : "상세 내용을 불러올 수 없습니다."}
                 </div>
                 <a 
                   href={item.url} 
