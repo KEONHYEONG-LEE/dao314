@@ -22,15 +22,26 @@ const CATEGORY_MAP: Record<string, string> = {
 };
 
 /**
- * HTML 태그를 제거하고 순수 텍스트만 추출하는 함수
+ * 뉴스 본문에서 HTML 태그와 특수 엔티티(&lt; 등)를 완벽히 제거하는 함수
  */
 const stripHtml = (html: string) => {
   if (!html) return "";
-  // 1. HTML 태그 제거
-  let cleanText = html.replace(/<\/?[^>]+(>|$)/g, "");
-  // 2. 특수 문자 엔티티 변환 (&quot;, &lt; 등)
-  const doc = new DOMParser().parseFromString(cleanText, 'text/html');
-  return doc.body.textContent || cleanText;
+  
+  try {
+    // 1. HTML 엔티티(&lt;, &gt;, &nbsp; 등)를 실제 기호(<, >, 공백)로 변환
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const decodedText = doc.body.textContent || "";
+
+    // 2. 변환된 텍스트에서 <a>, <font> 등 남아있는 모든 HTML 태그 제거
+    return decodedText.replace(/<\/?[^>]+(>|$)/g, "").trim();
+  } catch (e) {
+    // 만약 브라우저 환경이 아닐 경우를 대비한 대체 정규식 처리
+    return html
+      .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"').replace(/&nbsp;/g, ' ')
+      .replace(/<\/?[^>]+(>|$)/g, "").trim();
+  }
 };
 
 export default function NewsFeed({ selectedCategory }: { selectedCategory: string }) {
@@ -88,7 +99,6 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
                     <span className="text-[10px] font-bold text-amber-500 uppercase notranslate" translate="no">
                       {CATEGORY_MAP[item.category.toUpperCase()] || item.category}
                     </span>
-                    {/* 제목도 HTML 태그가 섞여 들어올 수 있으므로 처리 */}
                     <h3 className="text-[15px] font-semibold text-slate-100 line-clamp-2 leading-snug mt-1">
                       {stripHtml(item.title)}
                     </h3>
@@ -119,7 +129,7 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
             >
               <div className="p-4 bg-slate-900/50">
                 <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap mb-4">
-                  {/* stripHtml 함수를 적용하여 태그 없이 텍스트만 출력 */}
+                  {/* 정제된 원문 텍스트만 출력 */}
                   {item.content ? stripHtml(item.content) : "상세 내용을 불러올 수 없습니다."}
                 </div>
                 <a 
