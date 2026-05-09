@@ -14,9 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const currentCat = (category as string).toUpperCase();
 
   try {
-    // 검색 쿼리를 더 정교하게 수정 (Pi Network와 해당 카테고리 조합)
     const searchQuery = currentCat === 'ALL' ? 'Pi Network crypto' : `Pi Network ${currentCat}`;
-    // 한글 뉴스도 포함될 수 있도록 hl=ko-KR 옵션을 고려할 수 있으나, 현재는 en-US 유지
     const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery)}&hl=en-US&gl=US&ceid=US:en`;
     
     const response = await fetch(rssUrl);
@@ -30,27 +28,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const link = item.match(/<link>([\s\S]*?)<\/link>/)?.[1] || "";
       const pubDate = item.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1] || "";
       
+      // [중요] 상세 본문(description) 추출 및 HTML 태그 제거
+      const descRaw = item.match(/<description>([\s\S]*?)<\/description>/)?.[1] || "";
+      const cleanDesc = descRaw.replace(/<[^>]*>?/gm, '').split('&nbsp;')[0]; // HTML 태그 및 불필요 문구 제거
+      
       const titleParts = titleRaw.split(' - ');
       const sourceName = titleParts.length > 1 ? titleParts.pop() : "GPNR News";
       const idPool = CATEGORY_IMAGE_IDS[currentCat] || CATEGORY_IMAGE_IDS["ALL"];
       
       return {
-        id: `google-${currentCat}-${index}`, // ID에 카테고리 포함하여 고유성 확보
+        id: `google-${currentCat}-${index}`,
         title: titleParts.join(' - '),
         url: link,
         source: sourceName,
         date: pubDate,
         category: currentCat,
+        // UI에서 사용할 content 필드 추가
+        content: cleanDesc || `${titleParts.join(' - ')}에 대한 자세한 내용을 확인하려면 아래 출처 링크를 클릭하세요.`,
         imageUrl: `https://picsum.photos/id/${idPool[index % idPool.length]}/400/300`
       };
     });
 
-    // 최신순 정렬
     googleNews.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-    // 캐시 설정 (Vercel/Browser 캐시 5분) - 잦은 API 호출 방지
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
-    
     return res.status(200).json(googleNews.slice(0, 20));
   } catch (error) {
     console.error("News API Error:", error);
