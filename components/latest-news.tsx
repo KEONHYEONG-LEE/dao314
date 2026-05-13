@@ -1,17 +1,29 @@
 "use client";
 
-import { useState } from "react";
-import { ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
-import { NEWS_DATA } from "@/lib/pi-news-v2.ts";
+import { useState, useEffect } from "react";
+import { ExternalLink, ChevronDown, ChevronUp, Lock } from "lucide-react";
+import { NEWS_DATA } from "@/lib/pi-news-v2";
 
 export function LatestNews() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // 다국어 및 문자열 데이터 통합 처리 (안정성 강화)
+  // 컴포넌트 마운트 시 로그인 상태 확인
+  useEffect(() => {
+    const checkLogin = () => {
+      const savedId = localStorage.getItem('pi_user_id');
+      setIsLoggedIn(!!savedId);
+    };
+    
+    checkLogin();
+    // 로그인 상태 변경 감지를 위해 이벤트 리스너 추가 (옵션)
+    window.addEventListener('storage', checkLogin);
+    return () => window.removeEventListener('storage', checkLogin);
+  }, []);
+
   const getText = (field: any) => {
     if (!field) return ""; 
     if (typeof field === "string") return field;
-    // 사용자의 언어 설정에 맞게 ko 우선, 없으면 en 반환
     return field.ko || field.en || ""; 
   };
 
@@ -21,12 +33,27 @@ export function LatestNews() {
     return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
   };
 
+  // [수정] 뉴스 확장 토글 로직: 로그인 체크 추가
   const handleToggleExpand = (id: string) => {
+    if (!isLoggedIn) {
+      alert("로그인 후 이용해 주세요."); // 미로그인 시 팝업창
+      return;
+    }
     setExpandedId(expandedId === id ? null : id);
   };
 
+  // [수정] 원문 링크 클릭 로직: 로그인 체크 추가
+  const handleExternalClick = (e: React.MouseEvent, url: string) => {
+    e.stopPropagation();
+    if (!isLoggedIn) {
+      alert("로그인 후 이용해 주세요.");
+      return;
+    }
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
   return (
-    <section className="py-6 px-1 bg-[#0a0a0a]"> {/* 배경색 명확히 지정 */}
+    <section className="py-6 px-1 bg-[#0a0a0a]">
       <div className="flex flex-col">
         {NEWS_DATA.map((news) => (
           <div key={news.id} className="border-b border-white/[0.08]">
@@ -41,6 +68,7 @@ export function LatestNews() {
                   <span className="text-[10px] bg-orange-500/20 text-orange-500 px-1.5 py-0.5 rounded font-bold uppercase">
                     {news.category}
                   </span>
+                  {!isLoggedIn && <Lock className="w-3 h-3 text-slate-500" />} {/* 미로그인 표시 */}
                 </div>
                 <h3 className={`text-[15px] font-semibold leading-[1.5] mb-2 transition-colors ${
                   expandedId === news.id ? "text-blue-400" : "text-slate-200"
@@ -54,7 +82,6 @@ export function LatestNews() {
                 </div>
               </div>
               
-              {/* 이미지가 있고, 리스트 상태일 때만 작게 표시 */}
               {news.imageUrl && expandedId !== news.id && (
                 <div className="w-[70px] h-[70px] rounded-lg overflow-hidden bg-slate-800 flex-shrink-0">
                   <img src={news.imageUrl} alt="news" className="w-full h-full object-cover" />
@@ -62,34 +89,30 @@ export function LatestNews() {
               )}
             </article>
 
-            {/* 전문 보기 영역: 애니메이션과 여백 최적화 */}
+            {/* 로그인 상태에서만 렌더링되거나 확장되는 상세 영역 */}
             <div className={`transition-all duration-500 ease-in-out overflow-hidden ${
-              expandedId === news.id ? 'max-h-[5000px] opacity-100 border-t border-white/[0.05]' : 'max-h-0 opacity-0'
+              expandedId === news.id && isLoggedIn ? 'max-h-[5000px] opacity-100 border-t border-white/[0.05]' : 'max-h-0 opacity-0'
             }`}>
               <div className="p-5 bg-white/[0.02]">
-                {/* 기사 상단 큰 이미지 (전문 보기 시 확장) */}
                 {news.imageUrl && (
                   <div className="w-full h-48 rounded-xl overflow-hidden mb-5">
                     <img src={news.imageUrl} alt="full-content" className="w-full h-full object-cover" />
                   </div>
                 )}
 
-                {/* [핵심] 전문 출력 영역 */}
                 <div className="text-slate-300 text-[15px] underline-offset-4 leading-[1.9] whitespace-pre-wrap break-words">
                   {getText(news.content)}
                 </div>
                 
                 <div className="mt-8 pt-4 border-t border-white/[0.05] flex justify-between items-center">
-                  <a 
-                    href={news.sourceUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
+                  {/* [수정] 원문 출처 하이퍼링크 활성화 제어 */}
+                  <button 
+                    onClick={(e) => handleExternalClick(e, news.sourceUrl)}
                     className="text-[13px] text-blue-400 flex items-center gap-1.5 hover:text-blue-300 transition-colors"
-                    onClick={(e) => e.stopPropagation()}
                   >
                     <ExternalLink className="w-3.5 h-3.5" /> 
                     <span>원문 출처 이동</span>
-                  </a>
+                  </button>
                   
                   <button 
                     onClick={(e) => {
