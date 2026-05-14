@@ -12,11 +12,11 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "frame-ancestors 'self' https://*.pinet.com https://*.minepi.com;"
+          "value": "frame-ancestors 'self' https://*.pinet.com https://*.minepi.com https://pinet.com https://minepi.com;"
         },
         {
           "key": "X-Frame-Options",
-          "value": "ALLOW-FROM https://*.pinet.com"
+          "value": "ALLOWALL"
         }
       ]
     }
