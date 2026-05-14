@@ -5,10 +5,14 @@ import { Globe, ChevronUp } from "lucide-react";
 
 export function FloatingLanguageSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentLang, setCurrentLang] = useState("ko");
+  const [currentLang, setCurrentLang] = useState("en");
 
   useEffect(() => {
-    // 1. 번역 UI 숨기기 스타일
+    // 1. 초기 언어 설정 확인 (로컬 스토리지 우선)
+    const savedLang = localStorage.getItem("gpnr_lang") || "ko";
+    setCurrentLang(savedLang);
+
+    // 2. 구글 번역 UI 숨기기 스타일
     const style = document.createElement("style");
     style.innerHTML = `
       .goog-te-banner-frame, .skiptranslate, #goog-gt-tt, .goog-te-balloon-frame { 
@@ -19,29 +23,38 @@ export function FloatingLanguageSwitcher() {
     `;
     document.head.appendChild(style);
 
-    // 2. 현재 상태 확인 (쿠키 기반)
-    const isKorean = document.cookie.includes('/en/ko');
-    setCurrentLang(isKorean ? "ko" : "en");
+    // 3. 한국어일 때만 구글 엔진 작동 유도
+    if (savedLang === "ko") {
+      const timer = setTimeout(() => {
+        const combo = document.querySelector(".goog-te-combo") as HTMLSelectElement;
+        if (combo) {
+          combo.value = "ko";
+          combo.dispatchEvent(new Event("change"));
+        }
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   const handleLanguageChange = (langCode: string) => {
+    // 로컬 스토리지에 저장 (새로고침 후에도 유지하기 위함)
+    localStorage.setItem("gpnr_lang", langCode);
+    
     if (langCode === 'en') {
-      // [영어 선택 시]: 쿠키를 만료시키고, 구글 번역 매개변수를 제거한 상태로 페이지를 새로고침합니다.
-      // 모바일 크롬에서 가장 확실하게 번역을 끄는 방법입니다.
+      // 영어 선택 시: 쿠키 삭제 후 페이지를 깨끗하게 새로고침
       document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
-      
-      // URL 뒤에 강제로 파라미터를 붙여 브라우저가 새 페이지로 인식하게 합니다.
-      const url = new URL(window.location.href);
-      url.searchParams.set('translate', 'off');
-      window.location.href = url.toString();
+      window.location.href = window.location.pathname; // 쿼리 스트링 없이 깔끔하게 이동
     } else {
-      // [한국어 선택 시]: 구글 번역 콤보박스를 직접 조작
+      // 한국어 선택 시: 엔진 작동
       const combo = document.querySelector(".goog-te-combo") as HTMLSelectElement;
       if (combo) {
         combo.value = "ko";
         combo.dispatchEvent(new Event("change"));
         setCurrentLang("ko");
+      } else {
+        // 엔진이 로드 전이면 새로고침하여 적용
+        window.location.reload();
       }
     }
     setIsOpen(false);
