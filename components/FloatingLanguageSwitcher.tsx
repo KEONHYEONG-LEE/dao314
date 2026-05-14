@@ -15,32 +15,35 @@ export function FloatingLanguageSwitcher() {
     `;
     document.head.appendChild(style);
 
-    // 초기 실행 시 한국어 설정
-    const timer = setTimeout(() => {
-      handleLanguageChange("ko");
-    }, 1000);
-    return () => clearTimeout(timer);
+    // 쿠키를 확인해서 현재 언어 상태를 유지합니다.
+    const getCookie = (name: string) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(';').shift();
+    };
+
+    const googTrans = getCookie('googtrans');
+    if (googTrans?.includes('/en/ko')) {
+      setCurrentLang("ko");
+    } else {
+      setCurrentLang("en");
+    }
   }, []);
 
   const handleLanguageChange = (langCode: string) => {
-    const combo = document.querySelector(".goog-te-combo") as HTMLSelectElement;
-    if (combo) {
-      if (langCode === 'en') {
-        // 영어를 선택하면 번역을 초기화(원본 보기)하는 가장 확실한 방법입니다.
-        const iframe = document.querySelector('.goog-te-banner-frame') as HTMLIFrameElement;
-        if (iframe && iframe.contentWindow) {
-          // 구글 번역 바 내부의 '원본 보기' 버튼을 강제로 클릭합니다.
-          const restoreBtn = iframe.contentWindow.document.getElementById(':1.restore') as HTMLElement;
-          if (restoreBtn) restoreBtn.click();
-        }
-        // 콤보박스 값도 기본값으로 되돌립니다.
-        combo.value = ""; 
-      } else {
-        // 한국어 등 다른 언어 선택 시
+    if (langCode === 'en') {
+      // 1. 영어 선택 시: 번역 쿠키를 삭제하고 페이지를 새로고침하여 원본(영어)을 보여줍니다.
+      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+      window.location.reload(); 
+    } else {
+      // 2. 한국어 선택 시: 구글 번역 기능을 실행합니다.
+      const combo = document.querySelector(".goog-te-combo") as HTMLSelectElement;
+      if (combo) {
         combo.value = langCode;
+        combo.dispatchEvent(new Event("change"));
+        setCurrentLang(langCode);
       }
-      combo.dispatchEvent(new Event("change"));
-      setCurrentLang(langCode);
     }
     setIsOpen(false);
   };
