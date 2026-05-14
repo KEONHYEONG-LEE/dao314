@@ -6,9 +6,28 @@
       "schedule": "0 * * * *"
     }
   ],
-  "rewrites": [
+  "headers": [
     {
       "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'self' https://*.pinet.com https://*.minepi.com;"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "ALLOW-FROM https://*.pinet.com"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/((?!api/).*)",
       "destination": "/"
     }
   ]
