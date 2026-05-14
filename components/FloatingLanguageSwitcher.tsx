@@ -8,33 +8,34 @@ export function FloatingLanguageSwitcher() {
   const [currentLang, setCurrentLang] = useState("ko");
 
   useEffect(() => {
-    // 1. 스타일 주입: 구글 번역 UI만 "투명하게" 숨깁니다. (삭제 X)
+    // 1. 스타일 주입: 구글 번역 UI는 숨기되, 기능은 유지
     const style = document.createElement("style");
     style.innerHTML = `
-      /* 구글 번역 바와 팝업 숨기기 */
       .goog-te-banner-frame, .goog-te-banner, .skiptranslate, 
       iframe.goog-te-menu-frame, #goog-gt-tt, .VIpgJd-Zvi9m-OR9h3-zh99gd { 
         display: none !important; 
         visibility: hidden !important; 
       }
-      /* body가 밀리는 현상 방지 */
       body { top: 0 !important; position: static !important; }
       html { padding-top: 0 !important; }
     `;
     document.head.appendChild(style);
 
-    // 2. 초기 언어 설정 (선택 사항: 접속 시 자동 한국어 번역)
+    // 2. 초기 로드 시 한국어로 설정 시도 (최대 5초간 반복 확인)
+    let retryCount = 0;
     const initTranslate = () => {
       const combo = document.querySelector(".goog-te-combo") as HTMLSelectElement;
-      if (combo && combo.value !== 'ko') {
-        combo.value = 'ko';
-        combo.dispatchEvent(new Event("change"));
+      if (combo) {
+        if (combo.value !== 'ko') {
+          combo.value = 'ko';
+          combo.dispatchEvent(new Event("change"));
+        }
+      } else if (retryCount < 10) {
+        retryCount++;
+        setTimeout(initTranslate, 500);
       }
     };
-
-    // 구글 스크립트 로드 대기
-    const timer = setTimeout(initTranslate, 2000);
-    return () => clearTimeout(timer);
+    initTranslate();
   }, []);
 
   const handleLanguageChange = (langCode: string) => {
@@ -44,7 +45,8 @@ export function FloatingLanguageSwitcher() {
       combo.dispatchEvent(new Event("change"));
       setCurrentLang(langCode);
     } else {
-      alert("번역 엔진이 아직 준비되지 않았습니다. 잠시 후 다시 시도해주세요.");
+      // 콤보박스가 없으면 구글 스크립트를 다시 호출하거나 대기 (알림창 제거)
+      console.log("Translation engine not ready yet.");
     }
     setIsOpen(false);
   };
