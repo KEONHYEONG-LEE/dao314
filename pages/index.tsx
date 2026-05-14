@@ -14,23 +14,50 @@ export default function Home() {
   const touchEndX = useRef<number | null>(null);
 
   useEffect(() => {
-    // [보안관 로직] 구글 번역기가 상단 여백(top: 40px 등)을 강제로 주입하는지 감시
-    const fixLayout = () => {
-      if (typeof document !== "undefined" && document.body) {
-        if (document.body.style.top !== "0px") {
-          document.body.style.top = "0px";
-        }
+    // [완전 박멸 보안관] 구글 번역기가 화면을 밀어내는 모든 시도를 차단
+    const purgeGoogleBar = () => {
+      if (typeof document === "undefined") return;
+
+      // 1. body의 top 마진 강제 리셋
+      if (document.body && document.body.style.top !== "0px") {
+        document.body.style.top = "0px !important";
+        document.body.style.setProperty("top", "0px", "important");
       }
+
+      // 2. html 태그에 강제로 붙는 패딩/마진 제거
+      const html = document.documentElement;
+      if (html.style.paddingTop !== "0px" || html.classList.contains('translated-ltr')) {
+        html.style.setProperty("padding-top", "0px", "important");
+        html.style.setProperty("margin-top", "0px", "important");
+      }
+
+      // 3. 상단에 생성된 구글 번역 iframe 및 관련 요소 즉각 삭제
+      const googleElements = document.querySelectorAll(
+        '.goog-te-banner-frame, .goog-te-banner, .skiptranslate, iframe[id*="goog"]'
+      );
+      googleElements.forEach(el => {
+        if (el && el.parentNode) {
+          (el as HTMLElement).style.display = 'none'; // 일단 숨기고
+          el.remove(); // 아예 제거
+        }
+      });
     };
 
-    // 0.5초마다 체크하여 상단 바가 끼어들 틈을 주지 않음
-    const interval = setInterval(fixLayout, 500);
-    fixLayout(); // 초기 실행
+    // 처음 5초 동안은 구글이 나타날 확률이 높으므로 아주 빠르게(100ms) 감시
+    const fastInterval = setInterval(purgeGoogleBar, 100);
+    
+    // 그 이후에도 혹시 모르니 1초마다 계속 체크
+    const slowInterval = setInterval(purgeGoogleBar, 1000);
 
-    return () => clearInterval(interval);
+    purgeGoogleBar(); // 즉시 실행
+
+    return () => {
+      clearInterval(fastInterval);
+      clearInterval(slowInterval);
+    };
   }, []);
 
-  // --- 스와이프 로직 (변화 없음) ---
+  // --- 스와이프 로직 ---
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
   };
