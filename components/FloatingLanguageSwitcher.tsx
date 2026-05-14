@@ -8,6 +8,15 @@ export function FloatingLanguageSwitcher() {
   const [currentLang, setCurrentLang] = useState("ko");
 
   useEffect(() => {
+    // [핵심] 구글 번역 위젯의 기본 UI를 숨기는 스타일 주입
+    const style = document.createElement("style");
+    style.innerHTML = `
+      .goog-te-banner-frame, .goog-te-balloon-frame, #goog-gt-tt, .goog-te-balloon-wrapper { display: none !important; }
+      body { top: 0 !important; }
+      .skiptranslate { display: none !important; }
+    `;
+    document.head.appendChild(style);
+
     const autoTranslate = () => {
       const combo = document.querySelector(".goog-te-combo") as HTMLSelectElement;
       if (combo) {
@@ -16,7 +25,7 @@ export function FloatingLanguageSwitcher() {
           combo.dispatchEvent(new Event("change"));
         }
       } else {
-        setTimeout(autoTranslate, 1000); // 뜰 때까지 조용히 대기
+        setTimeout(autoTranslate, 1000);
       }
     };
     autoTranslate();
@@ -54,7 +63,8 @@ export function FloatingLanguageSwitcher() {
         className="flex h-11 items-center gap-2 rounded-full bg-blue-600 px-5 text-sm font-bold text-white shadow-lg shadow-blue-900/20 transition-transform active:scale-95"
       >
         <Globe size={18} />
-        <span>Language</span>
+        {/* 버튼 텍스트를 '언어'로 수정하여 18784.jpg 이미지와 통일감을 줬습니다 */}
+        <span>언어</span>
         <ChevronUp size={16} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
     </div>
