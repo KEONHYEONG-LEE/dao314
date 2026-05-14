@@ -8,15 +8,48 @@ export function FloatingLanguageSwitcher() {
   const [currentLang, setCurrentLang] = useState("ko");
 
   useEffect(() => {
-    // [핵심] 구글 번역 위젯의 기본 UI를 숨기는 스타일 주입
+    // 1. 초기 스타일 주입 (상단 바 공간 차단 및 기본 UI 숨김)
     const style = document.createElement("style");
     style.innerHTML = `
-      .goog-te-banner-frame, .goog-te-balloon-frame, #goog-gt-tt, .goog-te-balloon-wrapper { display: none !important; }
-      body { top: 0 !important; }
-      .skiptranslate { display: none !important; }
+      /* 구글 번역 바와 관련된 모든 요소를 투명화하고 상호작용 차단 */
+      .goog-te-banner-frame, .goog-te-banner, .skiptranslate, 
+      iframe.goog-te-menu-frame, #goog-gt-tt, .VIpgJd-Zvi9m-OR9h3-zh99gd { 
+        display: none !important; 
+        visibility: hidden !important; 
+        height: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+      /* 구글이 body를 아래로 밀어버리는 현상 방어 */
+      body { top: 0 !important; position: static !important; }
+      html { padding-top: 0 !important; }
     `;
     document.head.appendChild(style);
 
+    // 2. 실시간 감시자(MutationObserver) 작동
+    // 구글 스크립트가 동적으로 버튼을 생성하면 즉시 감지해서 삭제(remove)합니다.
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach(() => {
+        const targets = document.querySelectorAll(
+          '.goog-te-banner-frame, .skiptranslate, [class*="goog-te"], [id*="goog-gt"], [class*="VIpgJd"]'
+        );
+        targets.forEach(el => {
+          // 우측 하단 우리가 만든 버튼은 제외하고 구글이 만든 것만 삭제
+          if (!el.contains(document.querySelector('.fixed.bottom-6'))) {
+            el.remove(); 
+          }
+        });
+        
+        // body의 top 값이 변하면 즉시 0으로 리셋
+        if (document.body.style.top !== '0px' && document.body.style.top !== '') {
+          document.body.style.top = '0px';
+        }
+      });
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // 3. 자동 번역 로직 (한국어 고정)
     const autoTranslate = () => {
       const combo = document.querySelector(".goog-te-combo") as HTMLSelectElement;
       if (combo) {
@@ -29,6 +62,8 @@ export function FloatingLanguageSwitcher() {
       }
     };
     autoTranslate();
+
+    return () => observer.disconnect(); // 언마운트 시 감시 종료
   }, []);
 
   const handleLanguageChange = (langCode: string) => {
@@ -63,7 +98,6 @@ export function FloatingLanguageSwitcher() {
         className="flex h-11 items-center gap-2 rounded-full bg-blue-600 px-5 text-sm font-bold text-white shadow-lg shadow-blue-900/20 transition-transform active:scale-95"
       >
         <Globe size={18} />
-        {/* 버튼 텍스트를 '언어'로 수정하여 18784.jpg 이미지와 통일감을 줬습니다 */}
         <span>언어</span>
         <ChevronUp size={16} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
