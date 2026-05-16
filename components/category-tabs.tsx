@@ -3,24 +3,24 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+// [수정] 달력(event) 완전 삭제 및 9개 점 메뉴판 아이콘 배치 순서/한글 제목과 100% 일치화
 const categories = [
-  { id: "all", label: "주요이슈" },
+  { id: "all", label: "주요뉴스" },
   { id: "mainnet", label: "메인넷" },
-  { id: "community", label: "커뮤니티" },
-  { id: "commerce", label: "커머스" },
   { id: "node", label: "노드" },
   { id: "mining", label: "채굴" },
   { id: "wallet", label: "지갑" },
   { id: "browser", label: "브라우저" },
-  { id: "kyc", label: "KYC" },
-  { id: "developer", label: "개발자" },
-  { id: "ecosystem", label: "생태계" },
-  { id: "listing", label: "전망시세" },
-  { id: "price", label: "가격" },
-  { id: "security", label: "보안" },
-  { id: "event", label: "주요행사" },
   { id: "roadmap", label: "로드맵" },
   { id: "whitepaper", label: "백서" },
+  { id: "community", label: "커뮤니티" },
+  { id: "commerce", label: "커머스" },
+  { id: "kyc", label: "KYC" },
+  { id: "developer", label: "개발자" },
+  { id: "ecosystem", label: "부동산" },     // [매핑 통일] 9개 점 메뉴의 '부동산'
+  { id: "outlook", label: "전망시세" },     // [매핑 통일] 기존 listing -> index.tsx의 outlook과 싱크 맞춤
+  { id: "price", label: "가격" },
+  { id: "security", label: "보안" },
   { id: "legal", label: "관련법규" }
 ];
 
@@ -71,7 +71,7 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
   }, []);
 
   return (
-    <div className="sticky top-0 z-40 bg-[#0f172a]/95 backdrop-blur-xl border-b border-white/[0.05] shadow-2xl">
+    <div className="w-full bg-[#0f172a]/95 backdrop-blur-xl border-b border-white/[0.05] shadow-2xl">
       <div className="mx-auto max-w-7xl relative px-2">
         
         {showLeftArrow && (
