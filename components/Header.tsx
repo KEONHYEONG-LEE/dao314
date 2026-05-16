@@ -22,15 +22,10 @@ export function Header({
 
   if (!mounted) return null;
 
-  // [수정] NEWS_CATEGORIES 배열에서 달력(calendar) 항목 필터링 제거
-  const filteredCategories = NEWS_CATEGORIES.filter(
-    (category) => category.id !== "calendar" && category.id !== "events"
-  );
-
   return (
     <>
-      {/* 본체 헤더 영역 (레이아웃 겹침 방지 및 z-index 최적화) */}
-      <header className="sticky top-0 z-[60] w-full bg-[#0f172a]/90 border-b border-slate-800 backdrop-blur-xl transition-colors">
+      {/* 본체 헤더 영역 (notranslate 추가로 로고 직역 방지) */}
+      <header className="sticky top-0 z-[60] w-full bg-[#0f172a]/90 border-b border-slate-800 backdrop-blur-xl transition-colors notranslate">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex h-[60px] items-center justify-between">
             {/* 로고 */}
@@ -61,8 +56,13 @@ export function Header({
       {/* 9개 점 (Grid Launcher) 메뉴 */}
       {isLauncherOpen && (
         <div className="fixed top-[65px] right-4 z-[70] w-[320px] max-h-[80vh] overflow-y-auto bg-slate-900/95 border border-slate-800 rounded-2xl p-4 shadow-2xl backdrop-blur-xl">
-          <div className="grid gap-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
-            {filteredCategories.map((category) => {
+          {/* [구글 번역 방어] 전체 컨테이너에 클래스와 번역 금지 속성 주입 */}
+          <div 
+            className="grid gap-3 notranslate" 
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}
+            translate="no"
+          >
+            {NEWS_CATEGORIES.map((category) => {
               const isSelected = currentCategory === category.id;
               
               return (
@@ -77,6 +77,7 @@ export function Header({
                     setIsLauncherOpen(false);
                   }}
                   className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all group ${isSelected ? 'bg-slate-800 border-slate-600 font-bold' : 'bg-slate-800/40 border-transparent hover:bg-slate-800 hover:border-slate-700'}`}
+                  translate="no"
                 >
                   <span className="text-2xl mb-1 group-hover:scale-110 transition-transform">{category.icon}</span>
                   <span className="text-[11px] text-slate-300 text-center font-medium truncate w-full">
