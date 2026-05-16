@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Header } from "../components/Header"; 
 import { CategoryTabs } from "../components/category-tabs";
 import NewsFeed from "../components/news-feed";
@@ -13,20 +13,47 @@ const CATEGORIES = [
   "legal"
 ];
 
-// 실시간 파이 생태계 데이터 (흐르는 배너용 데이터)
-const PI_STATS = [
-  "🔥 오픈 메인넷 카운트다운 진행 중",
-  "🖥️ 글로벌 활성 노드 수: 250,000+ 돌파",
-  "🆔 KYC 마이그레이션 누적 1,200만 명 통과",
-  "👛 파이 지갑 총 생성 수: 3,500만 개 이상",
-  "🛒 글로벌 GCV 커머스 생태계 결제 매장 확대 중",
-  "🛡️ 파이 네트워크 V24 코어 보안 프로토콜 업데이트 완료"
-];
-
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState('all');
+  
+  // [개선] 실시간 가장 핫한 소식을 담을 스테이트 (초기에는 멋진 기본 문구를 보여줌)
+  const [tickerStats, setTickerStats] = useState<string[]>([
+    "🔥 실시간 글로벌 파이 뉴스룸 헤드라인 동기화 중...",
+    "🖥️ 글로벌 활성 노드 및 KYC 마이그레이션 모니터링 가동"
+  ]);
 
-  // --- 스와이프 로직 최적화 ---
+  // --- [신규] 실시간 가장 핫한 소식(주요 뉴스) API 자동 연동 로직 ---
+  useEffect(() => {
+    const loadHotNewsForTicker = async () => {
+      try {
+        // 실시간 가장 핫한 '주요뉴스(all)' 카테고리의 최신 데이터를 호출
+        const response = await fetch("/api/fetch-news?category=all");
+        const allNews = await response.json();
+        
+        if (allNews && allNews.length > 0) {
+          // 뉴스 본문 HTML 태그 정제용 임시 함수
+          const cleanText = (text: string) => text.replace(/<\/?[^>]+(>|$)/g, "").trim();
+          
+          // 상위 가장 최신 뉴스 5개의 제목 추출 후 전광판 포맷으로 가공
+          const hotHeadlines = allNews.slice(0, 5).map((item: any, idx: number) => {
+            return `🔥 [HOT ISSUE ${idx + 1}] ${cleanText(item.title)}`;
+          });
+          
+          setTickerStats(hotHeadlines);
+        }
+      } catch (error) {
+        console.error("전광판 실시간 뉴스 연동 실패:", error);
+      }
+    };
+
+    loadHotNewsForTicker();
+    
+    // 10분마다 자동으로 실시간 가장 핫한 뉴스 다시 갱신 (백그라운드 실시간 동기화)
+    const interval = setInterval(loadHotNewsForTicker, 10 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // --- 스와이프 로직 ---
   const sXRef = useRef<number | null>(null);
   const eXRef = useRef<number | null>(null);
 
@@ -68,25 +95,28 @@ export default function Home() {
         onCategoryChange={setActiveCategory}
       />
 
-      {/* 2. 실시간 글로벌 파이 통계 전광판 (Tailwind 애니메이션 대체 연동) */}
-      <div className="w-full bg-blue-950/40 border-b border-blue-900/40 py-1.5 overflow-hidden sticky top-[60px] z-[55] backdrop-blur-md notranslate" translate="no">
-        <div className="flex whitespace-nowrap gap-12 text-[11px] font-bold text-blue-300/90 tracking-wide compliance-marquee">
-          {/* 무한 루프 롤링 구현 레이아웃 */}
-          <div className="flex gap-12 shrink-0 justify-around min-w-full">
-            {PI_STATS.map((stat, idx) => (
-              <span key={`stat-1-${idx}`}>{stat}</span>
+      {/* 2. [디자인 리뉴얼] 세련되고 시인성 높은 사이버 펑크 스타일 전광판 */}
+      <div 
+        className="w-full bg-gradient-to-r from-slate-950 via-[#131c31] to-slate-950 border-b border-amber-500/20 py-2.5 overflow-hidden sticky top-[60px] z-[55] backdrop-blur-md shadow-lg shadow-black/40 notranslate" 
+        translate="no"
+      >
+        <div className="flex whitespace-nowrap gap-16 text-[12px] font-semibold text-amber-400 tracking-wider compliance-marquee">
+          {/* 무한 루프 롤링 레이아웃 */}
+          <div className="flex gap-16 shrink-0 justify-around min-w-full">
+            {tickerStats.map((stat, idx) => (
+              <span key={`stat-1-${idx}`} className="hover:text-white transition-colors">{stat}</span>
             ))}
           </div>
-          <div className="flex gap-12 shrink-0 justify-around min-w-full">
-            {PI_STATS.map((stat, idx) => (
-              <span key={`stat-2-${idx}`}>{stat}</span>
+          <div className="flex gap-16 shrink-0 justify-around min-w-full">
+            {tickerStats.map((stat, idx) => (
+              <span key={`stat-2-${idx}`} className="hover:text-white transition-colors">{stat}</span>
             ))}
           </div>
         </div>
       </div>
 
       {/* 3. 카테고리 가로 스크롤 탭 바 */}
-      <div className="sticky top-[88px] z-50 bg-[#0f172a]/95 backdrop-blur-sm">
+      <div className="sticky top-[92px] z-50 bg-[#0f172a]/95 backdrop-blur-sm">
         <CategoryTabs 
           selectedCategory={activeCategory} 
           onCategoryChange={setActiveCategory} 
@@ -98,7 +128,7 @@ export default function Home() {
         <NewsFeed selectedCategory={activeCategory} />
       </div>
 
-      {/* 빌드 에러를 일으키던 <style jsx> 태그를 제거하고 안전한 표준 인라인 인젝션으로 대체 */}
+      {/* 전광판 애니메이션 주입 */}
       <span dangerouslySetInnerHTML={{ __html: `
         <style>
           @keyframes gpnrMarquee {
@@ -106,7 +136,7 @@ export default function Home() {
             100% { transform: translateX(-100%); }
           }
           .compliance-marquee {
-            animation: gpnrMarquee 35s linear infinite !important;
+            animation: gpnrMarquee 40s linear infinite !important;
           }
           .compliance-marquee:active, .compliance-marquee:hover {
             animation-play-state: paused !important;
