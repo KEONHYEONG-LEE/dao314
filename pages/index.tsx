@@ -16,27 +16,25 @@ const CATEGORIES = [
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState('all');
   
-  // [개선] 실시간 가장 핫한 소식을 담을 스테이트 (초기에는 멋진 기본 문구를 보여줌)
+  // 한국어 버전 전광판 기본 메시지 세팅
   const [tickerStats, setTickerStats] = useState<string[]>([
-    "🔥 실시간 글로벌 파이 뉴스룸 헤드라인 동기화 중...",
-    "🖥️ 글로벌 활성 노드 및 KYC 마이그레이션 모니터링 가동"
+    "📢 실시간 글로벌 파이 뉴스룸 핫이슈 동기화 중입니다...",
+    "📢 최신 생태계 핵심 소식 및 마이그레이션 모니터링 가동"
   ]);
 
-  // --- [신규] 실시간 가장 핫한 소식(주요 뉴스) API 자동 연동 로직 ---
+  // --- 실시간 핫이슈 소식 API 자동 연동 로직 ---
   useEffect(() => {
     const loadHotNewsForTicker = async () => {
       try {
-        // 실시간 가장 핫한 '주요뉴스(all)' 카테고리의 최신 데이터를 호출
         const response = await fetch("/api/fetch-news?category=all");
         const allNews = await response.json();
         
         if (allNews && allNews.length > 0) {
-          // 뉴스 본문 HTML 태그 정제용 임시 함수
           const cleanText = (text: string) => text.replace(/<\/?[^>]+(>|$)/g, "").trim();
           
-          // 상위 가장 최신 뉴스 5개의 제목 추출 후 전광판 포맷으로 가공
+          // [수정] 100% 우리말 포맷으로 헤드라인 넘버링 구성
           const hotHeadlines = allNews.slice(0, 5).map((item: any, idx: number) => {
-            return `🔥 [HOT ISSUE ${idx + 1}] ${cleanText(item.title)}`;
+            return `🔥 [실시간 핫이슈 ${idx + 1}] ${cleanText(item.title)}`;
           });
           
           setTickerStats(hotHeadlines);
@@ -48,7 +46,7 @@ export default function Home() {
 
     loadHotNewsForTicker();
     
-    // 10분마다 자동으로 실시간 가장 핫한 뉴스 다시 갱신 (백그라운드 실시간 동기화)
+    // 10분마다 데이터 자동 리로드
     const interval = setInterval(loadHotNewsForTicker, 10 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
@@ -95,28 +93,27 @@ export default function Home() {
         onCategoryChange={setActiveCategory}
       />
 
-      {/* 2. [디자인 리뉴얼] 세련되고 시인성 높은 사이버 펑크 스타일 전광판 */}
+      {/* 2. [디자인 리뉴얼] 눈에 확 띄는 화이트 계열 백라이트 스타일 전광판 */}
       <div 
-        className="w-full bg-gradient-to-r from-slate-950 via-[#131c31] to-slate-950 border-b border-amber-500/20 py-2.5 overflow-hidden sticky top-[60px] z-[55] backdrop-blur-md shadow-lg shadow-black/40 notranslate" 
-        translate="no"
+        className="w-full bg-gradient-to-r from-slate-100 via-white to-slate-100 border-b border-slate-300 py-2.5 overflow-hidden sticky top-[60px] z-[55] shadow-md shadow-black/20"
       >
-        <div className="flex whitespace-nowrap gap-16 text-[12px] font-semibold text-amber-400 tracking-wider compliance-marquee">
+        <div className="flex whitespace-nowrap gap-16 text-[12px] font-bold text-slate-900 tracking-wide compliance-marquee">
           {/* 무한 루프 롤링 레이아웃 */}
           <div className="flex gap-16 shrink-0 justify-around min-w-full">
             {tickerStats.map((stat, idx) => (
-              <span key={`stat-1-${idx}`} className="hover:text-white transition-colors">{stat}</span>
+              <span key={`stat-1-${idx}`} className="hover:text-blue-600 transition-colors">{stat}</span>
             ))}
           </div>
           <div className="flex gap-16 shrink-0 justify-around min-w-full">
             {tickerStats.map((stat, idx) => (
-              <span key={`stat-2-${idx}`} className="hover:text-white transition-colors">{stat}</span>
+              <span key={`stat-2-${idx}`} className="hover:text-blue-600 transition-colors">{stat}</span>
             ))}
           </div>
         </div>
       </div>
 
-      {/* 3. 카테고리 가로 스크롤 탭 바 */}
-      <div className="sticky top-[92px] z-50 bg-[#0f172a]/95 backdrop-blur-sm">
+      {/* 3. 카테고리 가로 스크롤 탭 바 (전광판 높이에 맞춰 sticky top 정밀 보정) */}
+      <div className="sticky top-[93px] z-50 bg-[#0f172a]/95 backdrop-blur-sm">
         <CategoryTabs 
           selectedCategory={activeCategory} 
           onCategoryChange={setActiveCategory} 
