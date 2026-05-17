@@ -30,7 +30,9 @@ export function Header({
           <div className="flex h-[60px] items-center justify-between">
             {/* 로고 */}
             <div className="flex items-center gap-2">
-              <span className="text-white font-black text-2xl tracking-tighter">GPNR</span>
+              <span className="font-black text-2xl tracking-tighter bg-gradient-to-r from-[#FF416C] to-[#FF4B2B] bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(255,65,108,0.3)]">
+                GPNR
+              </span>
               <span className="hidden sm:block text-[10px] text-slate-400 uppercase tracking-widest ml-2">
                 Global Pi Newsroom
               </span>
