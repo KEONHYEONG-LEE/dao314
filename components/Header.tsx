@@ -28,9 +28,9 @@ export function Header({
       <header className="sticky top-0 z-[60] w-full bg-[#0f172a]/90 border-b border-slate-800 backdrop-blur-xl transition-colors notranslate">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex h-[60px] items-center justify-between">
-            {/* 로고 */}
+            {/* 로고 (선명하고 밝은 파이 보라색 그라데이션 적용) */}
             <div className="flex items-center gap-2">
-              <span className="font-black text-2xl tracking-tighter bg-gradient-to-r from-purple-600 via-indigo-500 to-purple-800 bg-clip-text text-transparent animate-pulse drop-shadow-[0_2px_8px_rgba(147,51,234,0.3)]">
+              <span className="font-black text-2xl tracking-tighter bg-gradient-to-r from-purple-400 via-fuchsia-500 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(168,85,247,0.55)]">
                 GPNR
               </span>
               <span className="hidden sm:block text-[10px] text-slate-400 uppercase tracking-widest ml-2">
@@ -57,40 +57,4 @@ export function Header({
 
       {/* 9개 점 (Grid Launcher) 메뉴 */}
       {isLauncherOpen && (
-        <div className="fixed top-[65px] right-4 z-[70] w-[320px] max-h-[80vh] overflow-y-auto bg-slate-900/95 border border-slate-800 rounded-2xl p-4 shadow-2xl backdrop-blur-xl">
-          {/* [구글 번역 방어] 전체 컨테이너에 클래스와 번역 금지 속성 주입 */}
-          <div 
-            className="grid gap-3 notranslate" 
-            style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}
-            translate="no"
-          >
-            {NEWS_CATEGORIES.map((category) => {
-              const isSelected = currentCategory === category.id;
-              
-              return (
-                <button
-                  key={category.id}
-                  onClick={() => {
-                    if (onCategoryChange) {
-                      onCategoryChange(category.id);
-                    } else {
-                      window.location.href = `/?category=${category.id}`;
-                    }
-                    setIsLauncherOpen(false);
-                  }}
-                  className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all group ${isSelected ? 'bg-slate-800 border-slate-600 font-bold' : 'bg-slate-800/40 border-transparent hover:bg-slate-800 hover:border-slate-700'}`}
-                  translate="no"
-                >
-                  <span className="text-2xl mb-1 group-hover:scale-110 transition-transform">{category.icon}</span>
-                  <span className="text-[11px] text-slate-300 text-center font-medium truncate w-full">
-                    {category.name}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
+        <div className="fixed top-[65px] right-4 z-[70] w-[320px] max-h-
