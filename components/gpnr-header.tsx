@@ -127,13 +127,15 @@ export function GpnrHeader({
 
   return (
     <>
-      {/* 1. 상단 단일 헤더 (두 줄 겹침 완벽 제거) */}
-      <header className="sticky top-0 z-[60] w-full bg-[#0f172a]/80 border-b border-slate-800 backdrop-blur-xl transition-colors">
+      {/* 1. 상단 단일 헤더 (두 줄 겹침 완벽 제거 / notranslate 추가로 로고 직역 방지) */}
+      <header className="sticky top-0 z-[60] w-full bg-[#0f172a]/80 border-b border-slate-800 backdrop-blur-xl transition-colors notranslate">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex h-[60px] items-center justify-between">
-            {/* 로고 */}
+            {/* 로고 (원하셨던 선명한 파이 보라색 테마 완벽 동기화) */}
             <div className="flex items-center gap-2">
-              <span className="text-white font-black text-2xl tracking-tighter">GPNR</span>
+              <span className="font-black text-2xl tracking-tighter bg-gradient-to-r from-purple-500 via-fuchsia-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(147,51,234,0.6)]">
+                GPNR
+              </span>
               <span className="hidden sm:block text-[10px] text-slate-400 uppercase tracking-widest ml-2">
                 Global Pi Newsroom
               </span>
