@@ -61,7 +61,7 @@ export function GpnrHeader({
       setCalendarYear(calendarYear + 1);
       setCalendarMonth(0);
     } else {
-      setCalendarMonth(calendarMonth - 1);
+      setCalendarMonth(calendarMonth + 1);
     }
   };
 
@@ -131,7 +131,7 @@ export function GpnrHeader({
       <header className="sticky top-0 z-[60] w-full bg-[#0f172a]/80 border-b border-slate-800 backdrop-blur-xl transition-colors notranslate">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex h-[60px] items-center justify-between">
-            {/* [변경 적용] 무지개 점등 시퀀스가 구현된 브랜드 로고 영역 */}
+            {/* 무지개 점등 시퀀스가 구현된 브랜드 로고 영역 */}
             <div className="flex items-center gap-2">
               <span 
                 className="font-black text-2xl tracking-tighter" 
