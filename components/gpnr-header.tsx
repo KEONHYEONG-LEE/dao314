@@ -115,15 +115,15 @@ export function GpnrHeader({
 
   return (
     <>
-      {/* 1. 상단 헤더: 기존 h-[60px]에서 h-[48px]로 줄여 상단 높이를 최소화 */}
+      {/* 상단 헤더 높이를 h-[44px]로 완전 슬림하게 줄이고 패딩 최적화 */}
       <header className="sticky top-0 z-[60] w-full bg-[#0f172a]/80 border-b border-slate-800 backdrop-blur-xl transition-colors notranslate">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="flex h-[48px] items-center justify-between">
+        <div className="mx-auto max-w-7xl px-3">
+          <div className="flex h-[44px] items-center justify-between">
             
-            {/* 로고 영역 (기존 주황색 계열 속성 유지) */}
+            {/* 로고 영역 (원래 주황/빨강 조명 효과 100% 유지) */}
             <div className="flex items-center gap-2">
               <span 
-                className="font-black text-xl tracking-tighter" 
+                className="font-black text-lg tracking-tighter" 
                 style={{ animation: 'gpnr-lighting 14s steps(1) infinite' }}
               >
                 GPNR
@@ -139,32 +139,29 @@ export function GpnrHeader({
                   }
                 `}</style>
               </span>
-              <span className="hidden sm:block text-[9px] text-slate-400 uppercase tracking-widest ml-2">
-                Global Pi Newsroom
-              </span>
             </div>
             
             {/* 우측 컨트롤러 영역 */}
-            <div className="flex items-center gap-3">
-              {/* 후원하기 버튼 */}
+            <div className="flex items-center gap-2">
+              {/* 후원하기 버튼 컴팩트화 */}
               <button 
                 onClick={handleDonation} 
-                className="flex items-center gap-1 bg-[#f7a145]/20 text-[#f7a145] px-2 py-0.5 rounded-full border border-[#f7a145]/30 hover:bg-[#f7a145]/30 transition-colors text-[11px] font-bold"
+                className="flex items-center gap-0.5 bg-[#f7a145]/20 text-[#f7a145] px-2 py-0.5 rounded-full border border-[#f7a145]/30 hover:bg-[#f7a145]/30 transition-colors text-[10px] font-bold"
               >
                 <span>π</span>
                 <span>0.001</span>
               </button>
 
-              {/* 9개 점 앱 런처 버튼: rotate-90 추가하여 90도 회전 및 높이 맞춤 축소 */}
+              {/* 메뉴 버튼: 9개 점을 90도 돌린 형태인 '☰' 기호로 직접 교체하여 완벽하게 가로 정렬 */}
               <button
                 onClick={() => setIsLauncherOpen(!isLauncherOpen)}
-                className={`p-1.5 rounded-xl text-xl font-bold transition-all transform rotate-90 inline-block leading-none ${isLauncherOpen ? 'bg-slate-800 text-[#deff9a]' : 'text-slate-300 hover:bg-slate-800/60'}`}
+                className={`px-2 py-1 rounded-lg text-lg font-bold transition-all ${isLauncherOpen ? 'bg-slate-800 text-[#deff9a]' : 'text-slate-300 hover:bg-slate-800/60'}`}
               >
-                ⣿
+                ☰
               </button>
 
               {/* 로그인 영역 */}
-              <div className="flex items-center scale-95 origin-right">
+              <div className="flex items-center scale-90 origin-right">
                 <PiLogin />
               </div>
             </div>
@@ -173,9 +170,9 @@ export function GpnrHeader({
         </div>
       </header>
 
-      {/* 2. 9개 점 드롭다운 메뉴 (기존 기능 그대로) */}
+      {/* 2. 9개 점 드롭다운 메뉴 (기존 위치 최적화) */}
       {isLauncherOpen && (
-        <div className="fixed top-[53px] right-4 z-[70] w-[320px] max-h-[80vh] overflow-y-auto bg-slate-900/95 border border-slate-800 rounded-2xl p-4 shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-top-3 duration-200">
+        <div className="fixed top-[49px] right-4 z-[70] w-[320px] max-h-[80vh] overflow-y-auto bg-slate-900/95 border border-slate-800 rounded-2xl p-4 shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-top-3 duration-200">
           <div className="grid gap-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
             {FIXED_LAUNCHER_ITEMS.map((item) => {
               const isSelected = currentCategory === item.id;
@@ -198,7 +195,7 @@ export function GpnrHeader({
         </div>
       )}
 
-      {/* 3. 달력 모달 팝업 (기존 기능 그대로) */}
+      {/* 3. 달력 모달 팝업 (기존 기능 유지) */}
       {isCalendarOpen && (
         <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
