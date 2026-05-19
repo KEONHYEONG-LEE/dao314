@@ -106,7 +106,7 @@ export function GpnrHeader({
     }
   }, []);
 
-  // 구글 번역 완벽 대응 정적 카테고리 리스트
+  // 구글 번역 완벽 대응 정적 카테고리 리스트 (9개 점 기능)
   const FIXED_LAUNCHER_ITEMS: LauncherItem[] = [
     { id: "all", icon: "📱", label: "전체" },
     { id: "mainnet", icon: "⚡", label: "메인넷" },
@@ -133,13 +133,14 @@ export function GpnrHeader({
 
   return (
     <>
-      {/* 1. 상단 단일 헤더 */}
+      {/* 1. 상단 헤더 */}
       <header className="sticky top-0 z-[60] w-full bg-[#0f172a]/80 border-b border-slate-800 backdrop-blur-xl transition-colors notranslate">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex h-[60px] items-center justify-between">
-            {/* 로고 영역 (안전하고 직관적인 파이 보라색 테마 단색 적용) */}
+            
+            {/* 로고 영역: 기존 빨간색 그라데이션을 빼고 깔끔한 파이 보라색(#e2b6ff) 단색으로 교체 */}
             <div className="flex items-center gap-2">
-              <span className="font-black text-2xl tracking-tighter text-[#e2b6ff] drop-shadow-[0_0_10px_rgba(168,85,247,0.6)]">
+              <span className="font-black text-2xl tracking-tighter text-[#e2b6ff]">
                 GPNR
               </span>
               <span className="hidden sm:block text-[10px] text-slate-400 uppercase tracking-widest ml-2">
@@ -147,7 +148,7 @@ export function GpnrHeader({
               </span>
             </div>
             
-            {/* 우측 레이아웃 컨트롤러 */}
+            {/* 우측 레이아웃 컨트롤러 (기존 기능 그대로 유지) */}
             <div className="flex items-center gap-3">
               {/* 후원하기 */}
               <button 
@@ -158,7 +159,7 @@ export function GpnrHeader({
                 <span>0.001</span>
               </button>
 
-              {/* 9개 점 앱 런처 버튼 */}
+              {/* 9개 점 앱 런처 버튼 (그대로 유지) */}
               <button
                 onClick={() => setIsLauncherOpen(!isLauncherOpen)}
                 className={`p-2 rounded-xl text-2xl font-bold transition-all ${isLauncherOpen ? 'bg-slate-800 text-[#deff9a]' : 'text-slate-300 hover:bg-slate-800/60'}`}
@@ -175,7 +176,7 @@ export function GpnrHeader({
         </div>
       </header>
 
-      {/* 2. 9개 점 드롭다운 메뉴 */}
+      {/* 2. 9개 점 드롭다운 메뉴 (그대로 유지) */}
       {isLauncherOpen && (
         <div className="fixed top-[65px] right-4 z-[70] w-[320px] max-h-[80vh] overflow-y-auto bg-slate-900/95 border border-slate-800 rounded-2xl p-4 shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-top-3 duration-200">
           <div className="grid gap-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
@@ -208,7 +209,7 @@ export function GpnrHeader({
         </div>
       )}
 
-      {/* 3. 달력 모달 팝업 */}
+      {/* 3. 달력 모달 팝업 (그대로 유지) */}
       {isCalendarOpen && (
         <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
@@ -238,3 +239,43 @@ export function GpnrHeader({
               <div className="grid grid-cols-7 text-center text-[11px] font-bold text-slate-500 mb-2">
                 <div className="text-red-400">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div className="text-blue-400">토</div>
               </div>
+              
+              <div className="grid grid-cols-7 text-center gap-y-2 text-xs text-slate-300">
+                {startBlankDays.map((_, index) => (
+                  <div key={`blank-${index}`} className="text-slate-700"></div>
+                ))}
+                
+                {daysArray.map((day) => {
+                  const isToday = 
+                    localToday.getDate() === day && 
+                    localToday.getMonth() === calendarMonth && 
+                    localToday.getFullYear() === calendarYear;
+
+                  return (
+                    <div key={`day-${day}`} className="flex items-center justify-center">
+                      {isToday ? (
+                        <div className="bg-[#f7a145] text-slate-950 font-black rounded-full w-6 h-6 flex items-center justify-center shadow-md">
+                          {day}
+                        </div>
+                      ) : (
+                        <span className="w-6 h-6 flex items-center justify-center">{day}</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              
+              <div className="mt-4 pt-3 border-t border-slate-800/60 text-[11px] text-slate-400">
+                <div className="flex items-center gap-2 text-[#f7a145] font-semibold mb-1">
+                  <span className="w-1.5 h-1.5 bg-[#f7a145] rounded-full"></span>
+                  <span>[안내]</span>
+                </div>
+                <p className="pl-3.5">· 파이 네트워크 글로벌 에코시스템 뉴스 카운트다운 연동 중</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
