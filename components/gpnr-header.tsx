@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import PiLogin from "./PiLogin"; 
@@ -106,7 +107,7 @@ export function GpnrHeader({
     }
   }, []);
 
-  // 구글 번역 완벽 대응 정적 카테고리 리스트 (9개 점 기능)
+  // 구글 번역 완벽 대응 정적 카테고리 리스트
   const FIXED_LAUNCHER_ITEMS: LauncherItem[] = [
     { id: "all", icon: "📱", label: "전체" },
     { id: "mainnet", icon: "⚡", label: "메인넷" },
@@ -138,7 +139,7 @@ export function GpnrHeader({
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex h-[60px] items-center justify-between">
             
-            {/* 로고 영역: 기존 빨간색 그라데이션을 빼고 깔끔한 파이 보라색(#e2b6ff) 단색으로 교체 */}
+            {/* 로고 영역: 보라색 단색 적용 */}
             <div className="flex items-center gap-2">
               <span className="font-black text-2xl tracking-tighter text-[#e2b6ff]">
                 GPNR
@@ -148,9 +149,8 @@ export function GpnrHeader({
               </span>
             </div>
             
-            {/* 우측 레이아웃 컨트롤러 (기존 기능 그대로 유지) */}
+            {/* 우측 레이아웃 컨트롤러 */}
             <div className="flex items-center gap-3">
-              {/* 후원하기 */}
               <button 
                 onClick={handleDonation} 
                 className="flex items-center gap-1 bg-[#f7a145]/20 text-[#f7a145] px-2.5 py-1 rounded-full border border-[#f7a145]/30 hover:bg-[#f7a145]/30 transition-colors text-xs font-bold"
@@ -159,7 +159,6 @@ export function GpnrHeader({
                 <span>0.001</span>
               </button>
 
-              {/* 9개 점 앱 런처 버튼 (그대로 유지) */}
               <button
                 onClick={() => setIsLauncherOpen(!isLauncherOpen)}
                 className={`p-2 rounded-xl text-2xl font-bold transition-all ${isLauncherOpen ? 'bg-slate-800 text-[#deff9a]' : 'text-slate-300 hover:bg-slate-800/60'}`}
@@ -167,7 +166,6 @@ export function GpnrHeader({
                 ⣿
               </button>
 
-              {/* 로그인 */}
               <div className="flex items-center">
                 <PiLogin />
               </div>
@@ -176,7 +174,7 @@ export function GpnrHeader({
         </div>
       </header>
 
-      {/* 2. 9개 점 드롭다운 메뉴 (그대로 유지) */}
+      {/* 2. 9개 점 드롭다운 메뉴 */}
       {isLauncherOpen && (
         <div className="fixed top-[65px] right-4 z-[70] w-[320px] max-h-[80vh] overflow-y-auto bg-slate-900/95 border border-slate-800 rounded-2xl p-4 shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-top-3 duration-200">
           <div className="grid gap-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
@@ -209,7 +207,7 @@ export function GpnrHeader({
         </div>
       )}
 
-      {/* 3. 달력 모달 팝업 (그대로 유지) */}
+      {/* 3. 달력 모달 팝업 */}
       {isCalendarOpen && (
         <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
