@@ -21,7 +21,7 @@ export function GpnrHeader({
   // 로컬 기준 오늘 날짜 인스턴스 고정
   const localToday = useMemo(() => new Date(), []);
   
-  // [수정] 달력 연도와 월을 개별 상태로 분리하여 화면 강제 동기화 리렌더링 보장
+  // 달력 연도와 월을 개별 상태로 분리하여 화면 강제 동기화 리렌더링 보장
   const [calendarYear, setCalendarYear] = useState(2026);
   const [calendarMonth, setCalendarMonth] = useState(4); // 4 = 5월
 
@@ -46,7 +46,7 @@ export function GpnrHeader({
     };
   }, [calendarYear, calendarMonth]);
 
-  // [수정] 달력 좌우 커서 클릭 시 '월'과 '일자 그리드'가 동시 변환되도록 원천 제어
+  // 달력 좌우 커서 클릭 시 '월'과 '일자 그리드'가 동시 변환되도록 원천 제어
   const handlePrevMonth = () => {
     if (calendarMonth === 0) {
       setCalendarYear(calendarYear - 1);
@@ -61,7 +61,7 @@ export function GpnrHeader({
       setCalendarYear(calendarYear + 1);
       setCalendarMonth(0);
     } else {
-      setCalendarMonth(calendarMonth + 1);
+      setCalendarMonth(calendarMonth - 1);
     }
   };
 
@@ -102,7 +102,7 @@ export function GpnrHeader({
 
   if (!mounted) return null;
 
-  // [구글 번역 완벽 대응] 번역기가 100% 긁어갈 수 있도록 메인 카테고리와 완벽 결합된 정적 리스트 선언
+  // 구글 번역 완벽 대응 정적 카테고리 리스트
   const FIXED_LAUNCHER_ITEMS = [
     { id: "all", icon: "📱", label: "전체" },
     { id: "mainnet", icon: "⚡", label: "메인넷" },
@@ -122,19 +122,33 @@ export function GpnrHeader({
     { id: "security", icon: "🛡️", label: "보안" },
     { id: "events", icon: "🎁", label: "이벤트" },
     { id: "legal", icon: "⚖️", label: "법률" },
-    { id: "calendar", icon: "📅", label: "달력" } // 마지막 고정 탭
+    { id: "calendar", icon: "📅", label: "달력" }
   ];
 
   return (
     <>
-      {/* 1. 상단 단일 헤더 (두 줄 겹침 완벽 제거 / notranslate 추가로 로고 직역 방지) */}
+      {/* 1. 상단 단일 헤더 */}
       <header className="sticky top-0 z-[60] w-full bg-[#0f172a]/80 border-b border-slate-800 backdrop-blur-xl transition-colors notranslate">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex h-[60px] items-center justify-between">
-            {/* 로고 (원하셨던 선명한 파이 보라색 테마 완벽 동기화) */}
+            {/* [변경 적용] 무지개 점등 시퀀스가 구현된 브랜드 로고 영역 */}
             <div className="flex items-center gap-2">
-              <span className="font-black text-2xl tracking-tighter bg-gradient-to-r from-purple-500 via-fuchsia-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(147,51,234,0.6)]">
+              <span 
+                className="font-black text-2xl tracking-tighter" 
+                style={{ animation: 'gpnr-lighting 14s steps(1) infinite' }}
+              >
                 GPNR
+                <style>{`
+                  @keyframes gpnr-lighting {
+                    0%, 100% { color: #6b0b8c; text-shadow: 0 0 12px rgba(107, 11, 140, 0.5); }
+                    14.2% { color: #ef4444; text-shadow: none; }
+                    28.4% { color: #f59e0b; text-shadow: none; }
+                    42.6% { color: #eab308; text-shadow: none; }
+                    56.8% { color: #22c55e; text-shadow: none; }
+                    71.0% { color: #3b82f6; text-shadow: none; }
+                    85.2% { color: #a855f7; text-shadow: none; }
+                  }
+                `}</style>
               </span>
               <span className="hidden sm:block text-[10px] text-slate-400 uppercase tracking-widest ml-2">
                 Global Pi Newsroom
@@ -169,7 +183,7 @@ export function GpnrHeader({
         </div>
       </header>
 
-      {/* 2. 9개 점 (Grid Launcher) 드롭다운 메뉴 (구글 자동 번역 100% 보장 구조) */}
+      {/* 2. 9개 점 드롭다운 메뉴 */}
       {isLauncherOpen && (
         <div className="fixed top-[65px] right-4 z-[70] w-[320px] max-h-[80vh] overflow-y-auto bg-slate-900/95 border border-slate-800 rounded-2xl p-4 shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-top-3 duration-200">
           <div className="grid gap-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
@@ -183,7 +197,6 @@ export function GpnrHeader({
                     if (item.id === "calendar") {
                       setIsCalendarOpen(true);
                     } else {
-                      // [기능 원천 복구] 클릭 시 메인 화면의 카테고리를 강제 스위칭
                       if (onCategoryChange) {
                         onCategoryChange(item.id);
                       }
@@ -193,7 +206,6 @@ export function GpnrHeader({
                   className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all group ${isSelected ? 'bg-slate-800 border-slate-600 font-bold' : 'bg-slate-800/40 border-transparent hover:bg-slate-800 hover:border-slate-700'}`}
                 >
                   <span className="text-2xl mb-1 group-hover:scale-110 transition-transform">{item.icon}</span>
-                  {/* 정적 텍스트로 박아두어 구글 번역기가 17개국어로 즉시 변환하도록 마크업 */}
                   <span className="text-[11px] text-slate-300 text-center font-medium truncate w-full whitespace-nowrap">
                     {item.label}
                   </span>
@@ -204,11 +216,10 @@ export function GpnrHeader({
         </div>
       )}
 
-      {/* 3. 달력 모달 팝업 (좌측 상단 연도/월 자동 연동 완전 해결) */}
+      {/* 3. 달력 모달 팝업 */}
       {isCalendarOpen && (
         <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
-            {/* 상단 바 타이틀 명칭 고정 */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-950">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
                 <span>📅</span> <span>달력 (Calendar)</span>
@@ -221,26 +232,21 @@ export function GpnrHeader({
               </button>
             </div>
             
-            {/* 달력 본체 내부 */}
             <div className="p-4">
               <div className="flex justify-between items-center mb-3">
-                {/* [버그 수정 완료] 좌측 상단 년/월이 다음달 버튼 클릭 시 무조건 동시 리렌더링되는 마크업 구조 */}
                 <div className="text-sm font-black text-[#deff9a] flex items-center gap-1">
                   <span>{calendarYear}</span>년 <span>{calendarMonth + 1}</span>월
                 </div>
-                {/* 작동 연동 완료된 스위칭 핸들러 */}
                 <div className="flex gap-3 text-sm text-slate-400">
                   <button onClick={handlePrevMonth} className="hover:text-white px-2 py-0.5 bg-slate-800 rounded transition-colors">◀</button>
                   <button onClick={handleNextMonth} className="hover:text-white px-2 py-0.5 bg-slate-800 rounded transition-colors">▶</button>
                 </div>
               </div>
               
-              {/* 요일 헤더 */}
               <div className="grid grid-cols-7 text-center text-[11px] font-bold text-slate-500 mb-2">
                 <div className="text-red-400">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div className="text-blue-400">토</div>
               </div>
               
-              {/* 일자 출력 데이터 영역 */}
               <div className="grid grid-cols-7 text-center gap-y-2 text-xs text-slate-300">
                 {startBlankDays.map((_, index) => (
                   <div key={`blank-${index}`} className="text-slate-700"></div>
@@ -266,7 +272,6 @@ export function GpnrHeader({
                 })}
               </div>
               
-              {/* 하단 캘린더 안내 영역 */}
               <div className="mt-4 pt-3 border-t border-slate-800/60 text-[11px] text-slate-400">
                 <div className="flex items-center gap-2 text-[#f7a145] font-semibold mb-1">
                   <span className="w-1.5 h-1.5 bg-[#f7a145] rounded-full"></span>
