@@ -9,21 +9,27 @@ interface GpnrHeaderProps {
   currentLanguage?: string;                     
 }
 
+interface LauncherItem {
+  id: string;
+  icon: string;
+  label: string;
+}
+
 export function GpnrHeader({ 
   currentCategory = "all", 
   onCategoryChange,
   currentLanguage = "ko" 
 }: GpnrHeaderProps) {
-  const [mounted, setMounted] = useState(false);
-  const [isLauncherOpen, setIsLauncherOpen] = useState(false); 
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false); 
+  const [mounted, setMounted] = useState<boolean>(false);
+  const [isLauncherOpen, setIsLauncherOpen] = useState<boolean>(false); 
+  const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false); 
 
   // 로컬 기준 오늘 날짜 인스턴스 고정
   const localToday = useMemo(() => new Date(), []);
   
-  // 달력 연도와 월을 개별 상태로 분리하여 화면 강제 동기화 리렌더링 보장
-  const [calendarYear, setCalendarYear] = useState(2026);
-  const [calendarMonth, setCalendarMonth] = useState(4); // 4 = 5월
+  // 달력 연도와 월 상태
+  const [calendarYear, setCalendarYear] = useState<number>(2026);
+  const [calendarMonth, setCalendarMonth] = useState<number>(4); // 4 = 5월
 
   useEffect(() => {
     setMounted(true);
@@ -31,7 +37,7 @@ export function GpnrHeader({
     setCalendarMonth(localToday.getMonth());
   }, [localToday]);
 
-  // 달력 동적 일자 그리드 연산 (연, 월 바뀔 때 무조건 재계산)
+  // 달력 동적 일자 그리드 연산
   const { daysArray, startBlankDays } = useMemo(() => {
     const firstDayInstance = new Date(calendarYear, calendarMonth, 1);
     const startDayOfWeek = firstDayInstance.getDay(); 
@@ -46,8 +52,8 @@ export function GpnrHeader({
     };
   }, [calendarYear, calendarMonth]);
 
-  // 달력 좌우 커서 클릭 시 '월'과 '일자 그리드'가 동시 변환되도록 원천 제어
-  const handlePrevMonth = () => {
+  // 달력 핸들러
+  const handlePrevMonth = (): void => {
     if (calendarMonth === 0) {
       setCalendarYear(calendarYear - 1);
       setCalendarMonth(11);
@@ -56,7 +62,7 @@ export function GpnrHeader({
     }
   };
 
-  const handleNextMonth = () => {
+  const handleNextMonth = (): void => {
     if (calendarMonth === 11) {
       setCalendarYear(calendarYear + 1);
       setCalendarMonth(0);
@@ -100,10 +106,8 @@ export function GpnrHeader({
     }
   }, []);
 
-  if (!mounted) return null;
-
   // 구글 번역 완벽 대응 정적 카테고리 리스트
-  const FIXED_LAUNCHER_ITEMS = [
+  const FIXED_LAUNCHER_ITEMS: LauncherItem[] = [
     { id: "all", icon: "📱", label: "전체" },
     { id: "mainnet", icon: "⚡", label: "메인넷" },
     { id: "node", icon: "💻", label: "노드" },
@@ -125,37 +129,25 @@ export function GpnrHeader({
     { id: "calendar", icon: "📅", label: "달력" }
   ];
 
+  if (!mounted) return null;
+
   return (
     <>
       {/* 1. 상단 단일 헤더 */}
       <header className="sticky top-0 z-[60] w-full bg-[#0f172a]/80 border-b border-slate-800 backdrop-blur-xl transition-colors notranslate">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex h-[60px] items-center justify-between">
-            {/* 무지개 점등 시퀀스가 구현된 브랜드 로고 영역 */}
+            {/* 로고 영역 (안전하고 직관적인 파이 보라색 테마 단색 적용) */}
             <div className="flex items-center gap-2">
-              <span 
-                className="font-black text-2xl tracking-tighter" 
-                style={{ animation: 'gpnr-lighting 14s steps(1) infinite' }}
-              >
+              <span className="font-black text-2xl tracking-tighter text-[#e2b6ff] drop-shadow-[0_0_10px_rgba(168,85,247,0.6)]">
                 GPNR
-                <style>{`
-                  @keyframes gpnr-lighting {
-                    0%, 100% { color: #6b0b8c; text-shadow: 0 0 12px rgba(107, 11, 140, 0.5); }
-                    14.2% { color: #ef4444; text-shadow: none; }
-                    28.4% { color: #f59e0b; text-shadow: none; }
-                    42.6% { color: #eab308; text-shadow: none; }
-                    56.8% { color: #22c55e; text-shadow: none; }
-                    71.0% { color: #3b82f6; text-shadow: none; }
-                    85.2% { color: #a855f7; text-shadow: none; }
-                  }
-                `}</style>
               </span>
               <span className="hidden sm:block text-[10px] text-slate-400 uppercase tracking-widest ml-2">
                 Global Pi Newsroom
               </span>
             </div>
             
-            {/* 우측 단일 레이아웃 컨트롤러 */}
+            {/* 우측 레이아웃 컨트롤러 */}
             <div className="flex items-center gap-3">
               {/* 후원하기 */}
               <button 
@@ -246,43 +238,3 @@ export function GpnrHeader({
               <div className="grid grid-cols-7 text-center text-[11px] font-bold text-slate-500 mb-2">
                 <div className="text-red-400">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div className="text-blue-400">토</div>
               </div>
-              
-              <div className="grid grid-cols-7 text-center gap-y-2 text-xs text-slate-300">
-                {startBlankDays.map((_, index) => (
-                  <div key={`blank-${index}`} className="text-slate-700"></div>
-                ))}
-                
-                {daysArray.map((day) => {
-                  const isToday = 
-                    localToday.getDate() === day && 
-                    localToday.getMonth() === calendarMonth && 
-                    localToday.getFullYear() === calendarYear;
-
-                  return (
-                    <div key={`day-${day}`} className="flex items-center justify-center">
-                      {isToday ? (
-                        <div className="bg-[#f7a145] text-slate-950 font-black rounded-full w-6 h-6 flex items-center justify-center shadow-md">
-                          {day}
-                        </div>
-                      ) : (
-                        <span className="w-6 h-6 flex items-center justify-center">{day}</span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-              
-              <div className="mt-4 pt-3 border-t border-slate-800/60 text-[11px] text-slate-400">
-                <div className="flex items-center gap-2 text-[#f7a145] font-semibold mb-1">
-                  <span className="w-1.5 h-1.5 bg-[#f7a145] rounded-full"></span>
-                  <span>[안내]</span>
-                </div>
-                <p className="pl-3.5">· 파이 네트워크 글로벌 에코시스템 뉴스 카운트다운 연동 중</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
