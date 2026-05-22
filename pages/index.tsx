@@ -2,10 +2,12 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Header } from "../components/Header"; 
-import { CategoryTabs } from "../components/category-tabs";
-import NewsFeed from "../components/news-feed";
 
-// [수정] "poll" 카테고리를 두 번째 자리에 명시적으로 추가 (총 18개 카테고리 스키마)
+// [수정] 폴더 내 실제 대소문자 파일 이름 규격을 맞춰 에러를 방지합니다.
+import { CategoryTabs } from "../components/Category-tabs";
+import { NewsFeed } from "../components/News-feed";
+
+// "poll" 카테고리를 두 번째 자리에 명시적으로 추가한 18개 고유 ID 스키마 매핑
 const CATEGORIES = [
   "all", "poll", "mainnet", "node", "mining", "wallet", "browser", 
   "roadmap", "whitepaper", "community", "commerce", "kyc", 
@@ -120,7 +122,7 @@ export default function Home() {
         />
       </div>
 
-      {/* 4. 메인 콘텐츠 영역 (NewsFeed 내부에서 activeCategory가 'poll'일 때 투표 UI를 띄워줌) */}
+      {/* 4. 메인 뉴스 피드 리스트 */}
       <div className="max-w-3xl mx-auto px-4 transition-opacity duration-300 mt-4">
         <NewsFeed selectedCategory={activeCategory} />
       </div>
