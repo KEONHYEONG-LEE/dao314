@@ -2,22 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Header } from "../components/Header"; 
+import { CategoryTabs } from "../components/category-tabs"; // 소문자 경로로 유지
+import NewsFeed from "../components/news-feed"; // default import 규격으로 원상복구
 
-// 1. CategoryTabs 임포트 (대문자 파일명 매싱)
-import { CategoryTabs } from "../components/Category-tabs";
-
-// 2. NewsFeed 임포트 (Default Export와 Named Export 에러를 모두 방어하기 위해 분리 선언)
-import * as NewsFeedModule from "../components/news-feed";
-import * as NewsFeedModuleUpper from "../components/News-feed";
-
-// 어떤 환경이든 안전하게 컴포넌트를 추출하는 안전장치
-const NewsFeed = 
-  (NewsFeedModule as any).NewsFeed || 
-  (NewsFeedModule as any).default || 
-  (NewsFeedModuleUpper as any).NewsFeed || 
-  (NewsFeedModuleUpper as any).default;
-
-// "poll" 카테고리를 두 번째 자리에 명시적으로 추가한 18개 고유 ID 스키마 매핑
+// [기능 1] 투표(poll) 탭이 정상 작동하도록 카테고리 배열에 명시적 포함
 const CATEGORIES = [
   "all", "poll", "mainnet", "node", "mining", "wallet", "browser", 
   "roadmap", "whitepaper", "community", "commerce", "kyc", 
@@ -110,7 +98,6 @@ export default function Home() {
         className="w-full bg-gradient-to-r from-slate-100 via-white to-slate-100 border-b border-slate-300 py-2.5 overflow-hidden sticky top-[60px] z-[55] shadow-md shadow-black/20"
       >
         <div className="flex whitespace-nowrap gap-16 text-[12px] font-bold text-slate-900 tracking-wide compliance-marquee">
-          {/* 무한 루프 롤링 레이아웃 */}
           <div className="flex gap-16 shrink-0 justify-around min-w-full">
             {tickerStats.map((stat, idx) => (
               <span key={`stat-1-${idx}`} className="hover:text-blue-600 transition-colors">{stat}</span>
@@ -132,9 +119,9 @@ export default function Home() {
         />
       </div>
 
-      {/* 4. 메인 뉴스 피드 리스트 */}
+      {/* 4. 메인 뉴스 및 투표 피드 리스트 영역 */}
       <div className="max-w-3xl mx-auto px-4 transition-opacity duration-300 mt-4">
-        {NewsFeed && <NewsFeed selectedCategory={activeCategory} />}
+        <NewsFeed selectedCategory={activeCategory} />
       </div>
 
       {/* 전광판 애니메이션 주입 */}
@@ -150,3 +137,8 @@ export default function Home() {
           .compliance-marquee:active, .compliance-marquee:hover {
             animation-play-state: paused !important;
           }
+        </style>
+      `}} />
+    </main>
+  );
+}
