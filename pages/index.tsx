@@ -5,9 +5,9 @@ import { Header } from "../components/Header";
 import { CategoryTabs } from "../components/category-tabs";
 import NewsFeed from "../components/news-feed";
 
-// 달력 관련 카테고리(events)를 완전히 제외한 17개 고유 ID 스키마 매핑
+// [수정] "poll" 카테고리를 두 번째 자리에 명시적으로 추가 (총 18개 카테고리 스키마)
 const CATEGORIES = [
-  "all", "mainnet", "node", "mining", "wallet", "browser", 
+  "all", "poll", "mainnet", "node", "mining", "wallet", "browser", 
   "roadmap", "whitepaper", "community", "commerce", "kyc", 
   "developer", "ecosystem", "outlook", "price", "security", 
   "legal"
@@ -32,7 +32,7 @@ export default function Home() {
         if (allNews && allNews.length > 0) {
           const cleanText = (text: string) => text.replace(/<\/?[^>]+(>|$)/g, "").trim();
           
-          // [수정] 100% 우리말 포맷으로 헤드라인 넘버링 구성
+          // 100% 우리말 포맷으로 헤드라인 넘버링 구성
           const hotHeadlines = allNews.slice(0, 5).map((item: any, idx: number) => {
             return `🔥 [실시간 핫이슈 ${idx + 1}] ${cleanText(item.title)}`;
           });
@@ -93,7 +93,7 @@ export default function Home() {
         onCategoryChange={setActiveCategory}
       />
 
-      {/* 2. [디자인 리뉴얼] 눈에 확 띄는 화이트 계열 백라이트 스타일 전광판 */}
+      {/* 2. 눈에 확 띄는 화이트 계열 백라이트 스타일 전광판 */}
       <div 
         className="w-full bg-gradient-to-r from-slate-100 via-white to-slate-100 border-b border-slate-300 py-2.5 overflow-hidden sticky top-[60px] z-[55] shadow-md shadow-black/20"
       >
@@ -112,7 +112,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 3. 카테고리 가로 스크롤 탭 바 (전광판 높이에 맞춰 sticky top 정밀 보정) */}
+      {/* 3. 카테고리 가로 스크롤 탭 바 */}
       <div className="sticky top-[93px] z-50 bg-[#0f172a]/95 backdrop-blur-sm">
         <CategoryTabs 
           selectedCategory={activeCategory} 
@@ -120,7 +120,7 @@ export default function Home() {
         />
       </div>
 
-      {/* 4. 메인 뉴스 피드 리스트 */}
+      {/* 4. 메인 콘텐츠 영역 (NewsFeed 내부에서 activeCategory가 'poll'일 때 투표 UI를 띄워줌) */}
       <div className="max-w-3xl mx-auto px-4 transition-opacity duration-300 mt-4">
         <NewsFeed selectedCategory={activeCategory} />
       </div>
