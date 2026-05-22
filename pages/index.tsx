@@ -2,10 +2,12 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Header } from "../components/Header"; 
-import { CategoryTabs } from "../components/category-tabs"; // 소문자 경로로 유지
-import NewsFeed from "../components/news-feed"; // default import 규격으로 원상복구
 
-// [기능 1] 투표(poll) 탭이 정상 작동하도록 카테고리 배열에 명시적 포함
+// [수정] 실제 폴더 안의 대소문자 파일명(CategoryTabs.tsx, NewsFeed.tsx)과 100% 일치시킴
+import CategoryTabs from "../components/CategoryTabs";
+import NewsFeed from "../components/NewsFeed";
+
+// 투표(poll) 기능이 정상 작동하도록 18개 카테고리 배열에 포함
 const CATEGORIES = [
   "all", "poll", "mainnet", "node", "mining", "wallet", "browser", 
   "roadmap", "whitepaper", "community", "commerce", "kyc", 
@@ -119,7 +121,7 @@ export default function Home() {
         />
       </div>
 
-      {/* 4. 메인 뉴스 및 투표 피드 리스트 영역 */}
+      {/* 4. 메인 콘텐츠 및 투표 피드 영역 */}
       <div className="max-w-3xl mx-auto px-4 transition-opacity duration-300 mt-4">
         <NewsFeed selectedCategory={activeCategory} />
       </div>
