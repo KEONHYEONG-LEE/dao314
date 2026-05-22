@@ -3,9 +3,19 @@
 import { useState, useRef, useEffect } from "react";
 import { Header } from "../components/Header"; 
 
-// [수정] 폴더 내 실제 대소문자 파일 이름 규격을 맞춰 에러를 방지합니다.
+// 1. CategoryTabs 임포트 (대문자 파일명 매싱)
 import { CategoryTabs } from "../components/Category-tabs";
-import { NewsFeed } from "../components/News-feed";
+
+// 2. NewsFeed 임포트 (Default Export와 Named Export 에러를 모두 방어하기 위해 분리 선언)
+import * as NewsFeedModule from "../components/news-feed";
+import * as NewsFeedModuleUpper from "../components/News-feed";
+
+// 어떤 환경이든 안전하게 컴포넌트를 추출하는 안전장치
+const NewsFeed = 
+  (NewsFeedModule as any).NewsFeed || 
+  (NewsFeedModule as any).default || 
+  (NewsFeedModuleUpper as any).NewsFeed || 
+  (NewsFeedModuleUpper as any).default;
 
 // "poll" 카테고리를 두 번째 자리에 명시적으로 추가한 18개 고유 ID 스키마 매핑
 const CATEGORIES = [
@@ -124,7 +134,7 @@ export default function Home() {
 
       {/* 4. 메인 뉴스 피드 리스트 */}
       <div className="max-w-3xl mx-auto px-4 transition-opacity duration-300 mt-4">
-        <NewsFeed selectedCategory={activeCategory} />
+        {NewsFeed && <NewsFeed selectedCategory={activeCategory} />}
       </div>
 
       {/* 전광판 애니메이션 주입 */}
@@ -140,8 +150,3 @@ export default function Home() {
           .compliance-marquee:active, .compliance-marquee:hover {
             animation-play-state: paused !important;
           }
-        </style>
-      `}} />
-    </main>
-  );
-}
