@@ -3,11 +3,11 @@
 import { useState, useRef, useEffect } from "react";
 import { Header } from "../components/Header"; 
 
-// [수정] 실제 폴더 안의 대소문자 파일명(CategoryTabs.tsx, NewsFeed.tsx)과 100% 일치시킴
-import CategoryTabs from "../components/CategoryTabs";
-import NewsFeed from "../components/NewsFeed";
+// [완벽 수정] 실제 폴더 구조의 소문자-하이픈 파일명과 정확히 매싱합니다.
+import { CategoryTabs } from "../components/category-tabs";
+import { CategoryNews } from "../components/category-news";
 
-// 투표(poll) 기능이 정상 작동하도록 18개 카테고리 배열에 포함
+// [기능 유지] "poll" 카테고리를 두 번째 자리에 명시적으로 포함한 18개 고유 ID 스키마
 const CATEGORIES = [
   "all", "poll", "mainnet", "node", "mining", "wallet", "browser", 
   "roadmap", "whitepaper", "community", "commerce", "kyc", 
@@ -100,6 +100,7 @@ export default function Home() {
         className="w-full bg-gradient-to-r from-slate-100 via-white to-slate-100 border-b border-slate-300 py-2.5 overflow-hidden sticky top-[60px] z-[55] shadow-md shadow-black/20"
       >
         <div className="flex whitespace-nowrap gap-16 text-[12px] font-bold text-slate-900 tracking-wide compliance-marquee">
+          {/* 무한 루프 롤링 레이아웃 */}
           <div className="flex gap-16 shrink-0 justify-around min-w-full">
             {tickerStats.map((stat, idx) => (
               <span key={`stat-1-${idx}`} className="hover:text-blue-600 transition-colors">{stat}</span>
@@ -121,9 +122,9 @@ export default function Home() {
         />
       </div>
 
-      {/* 4. 메인 콘텐츠 및 투표 피드 영역 */}
+      {/* 4. 메인 콘텐츠 및 투표 피드 영역 (CategoryNews에 선택된 카테고리 필터값 전달) */}
       <div className="max-w-3xl mx-auto px-4 transition-opacity duration-300 mt-4">
-        <NewsFeed selectedCategory={activeCategory} />
+        <CategoryNews selectedCategory={activeCategory} />
       </div>
 
       {/* 전광판 애니메이션 주입 */}
