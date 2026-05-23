@@ -10,31 +10,35 @@ export const NEWS_DATA: NewsItem[] = [
     },
     author: "GPNR Reporter",
     publishedAt: "2026-05-10T01:00:00Z",
-    imageUrl: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=2000",
+    imageUrl: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=800",
     sourceUrl: "https://minepi.com",
     tags: ["PiNetwork", "Mainnet", "Crypto"],
-    // [중요] 여기가 전문입니다. 이 데이터가 있어야 UI에 나타납니다.
     content: {
-      ko: "파이 네트워크(Pi Network)가 드디어 오픈 메인넷으로의 전환을 위한 최종 단계에 진입했습니다. 이번 업데이트에는 GCV(Global Consensus Value) 트렌드를 반영한 생태계 확장 계획과 노드 운영자들을 위한 최적화 패치가 포함되었습니다.\n\n특히 한국 사용자들의 높은 참여율을 바탕으로 한 P2P 거래 활성화 방안이 논의되고 있으며, 보안 강화를 위한 새로운 지갑 프로토콜도 도입될 예정입니다.",
-      en: "Pi Network has finally entered the final stage for transition to the Open Mainnet. This update includes ecosystem expansion plans reflecting GCV trends..."
-    }
+      ko: "파이 네트워크(Pi Network)가 오픈 메인넷 전환을 위한 최종 점검 단계에 진입했습니다. 이번 업데이트에는 글로벌 커뮤니티의 생태계 확장 계획과 노드 운영 환경 최적화 패치가 포함되었습니다. 특히 보안을 강화한 새로운 지갑 프로토콜 연동 및 안정적인 P2P 거래 활성화 방안이 함께 논의되고 있습니다.",
+      en: "Pi Network has entered the final stage for transition to the Open Mainnet. This update includes ecosystem expansion plans and node optimization patches."
+    },
+    readCount: 0,
+    starCount: 0,
+    likeCount: 0
   },
   {
     id: "2",
     category: "TECH",
     title: { 
-      ko: "삼성물산 하이테크 품질 관리 자동화 도입", 
-      en: "Samsung C&T Introduces Quality Management Automation" 
+      ko: "글로벌 파이 생태계 앱 연동 및 인터페이스 개선", 
+      en: "Global Pi Ecosystem App Integration and Interface Improvements" 
     },
-    author: "Z-News",
+    author: "GPNR Tech",
     publishedAt: "2026-05-09T15:00:00Z",
-    imageUrl: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80&w=2000",
-    sourceUrl: "https://www.samsungcnt.com",
-    tags: ["Construction", "Quality", "Automation"],
+    imageUrl: "https://images.unsplash.com/photo-1547082299-de196ea013d6?auto=format&fit=crop&w=800",
+    sourceUrl: "https://minepi.com",
+    tags: ["Ecosystem", "PiBrowser", "Tech"],
     content: {
-      ko: "평택 캠퍼스를 중심으로 삼성물산 하이테크 품질팀은 건설 현장의 안전과 품질을 혁신하기 위한 인공지능 기반 모니터링 시스템을 본격 가동합니다. 이번 시스템은 ISO 9001 기준을 완벽히 준수하며 용접 및 배관 작업의 정밀도를 실시간으로 분석합니다.",
-      en: "Samsung C&T High-tech Quality Team is launching an AI-based monitoring system..."
-    }
+      ko: "파이 브라우저(Pi Browser) 인터페이스 리뉴얼과 함께 주요 유틸리티 앱들의 메인넷 API 마이그레이션이 가속화되고 있습니다. 사용자 경험을 극대화하기 위한 로딩 속도 최적화 및 다국어 지원 모듈이 추가되어 글로벌 파이오니어들의 접근성이 한층 향상되었습니다.",
+      en: "The migration of utility apps to the mainnet API is accelerating along with the Pi Browser interface renewal."
+    },
+    readCount: 0,
+    starCount: 0,
+    likeCount: 0
   }
 ];
-
