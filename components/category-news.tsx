@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Zap, Monitor, TrendingUp, Wallet, Compass, Map, FileText, Users, ShoppingBag, Key, HelpCircle, Shield, Landmark, Check, Star, Heart } from "lucide-react";
 
-// 17개 고유 카테고리별 아이콘 및 원본 데이터 스키마 구성 (전체 복원)
+// 17개 고유 카테고리별 아이콘 및 원본 데이터 스키마 구성 (전체 유지)
 const categories = [
   {
     name: "MAINNET",
@@ -140,17 +140,17 @@ const categories = [
 type ActionType = 'read' | 'star' | 'like';
 
 export function CategoryNews({ selectedCategory = "all" }: { selectedCategory?: string }) {
-  // 사용자의 각 기사별 토글 상태 관리 
+  // 사용자의 각 기사별 로컬 토글 상태 관리 
   const [userActions, setUserActions] = useState<{ [articleId: string]: { [key in ActionType]?: boolean } }>({});
   
-  // 누적 카운트 상태 관리 데이터 세팅 (전체 기사 기본값 매핑)
+  // 실시간으로 백엔드에서 받아온 누적 카운팅 상태 관리 데이터 세팅
   const [counts, setCounts] = useState<{ [articleId: string]: { read: number; star: number; like: number } }>({
     m1: { read: 142, star: 12, like: 85 },
     m2: { read: 85, star: 5, like: 42 },
     n1: { read: 64, star: 3, like: 21 },
     mi1: { read: 95, star: 8, like: 56 },
     w1: { read: 112, star: 14, like: 73 },
-    b1: { read: 53, star: 4, like: 29 },
+    b1: { read: 53, star: 4, text: 29, like: 29 },
     r1: { read: 245, star: 19, like: 134 },
     wh1: { read: 76, star: 2, like: 41 },
     c1: { read: 320, star: 25, like: 198 },
@@ -164,7 +164,7 @@ export function CategoryNews({ selectedCategory = "all" }: { selectedCategory?: 
     l1: { read: 72, star: 8, like: 33 }
   });
 
-  // 로컬스토리지에서 기존 클릭 내역 불러오기
+  // 1. 컴포넌트 마운트 시 로컬스토리지 정보 불러오기
   useEffect(() => {
     const savedActions = localStorage.getItem("gpnr_news_actions");
     if (savedActions) {
@@ -172,32 +172,45 @@ export function CategoryNews({ selectedCategory = "all" }: { selectedCategory?: 
     }
   }, []);
 
-  // 토글 카운팅 누적 핸들러
-  const handleAction = (e: React.MouseEvent, articleId: string, type: ActionType) => {
+  // 2. 토글 카운팅 서버 연동 핸들러
+  const handleAction = async (e: React.MouseEvent, articleId: string, type: ActionType) => {
     e.preventDefault(); 
     e.stopPropagation();
 
     const articleUserActions = userActions[articleId] || {};
     const isCurrentlyActive = !!articleUserActions[type];
 
-    const updatedArticleActions = { ...articleUserActions, [type]: !isCurrentlyActive };
-    const updatedUserActions = { ...userActions, [articleId]: updatedArticleActions };
-    
-    setUserActions(updatedUserActions);
-    localStorage.setItem("gpnr_news_actions", JSON.stringify(updatedUserActions));
+    // 중복 클릭 방지 (이미 활성화된 상태라면 무시하거나 별도 처리 가능)
+    if (isCurrentlyActive) return;
 
+    // 즉각적인 프론트엔드 UI 피드백 반영 (+1)
     setCounts((prev) => {
-      const currentArticleCount = prev[articleId] || { read: 0, star: 0, like: 0 };
-      const diff = isCurrentlyActive ? -1 : 1;
-
+      const current = prev[articleId] || { read: 0, star: 0, like: 0 };
       return {
         ...prev,
         [articleId]: {
-          ...currentArticleCount,
-          [type]: Math.max(0, currentArticleCount[type] + diff)
+          ...current,
+          [type]: current[type] + 1
         }
       };
     });
+
+    // 로컬스토리지 반영
+    const updatedArticleActions = { ...articleUserActions, [type]: true };
+    const updatedUserActions = { ...userActions, [articleId]: updatedArticleActions };
+    setUserActions(updatedUserActions);
+    localStorage.setItem("gpnr_news_actions", JSON.stringify(updatedUserActions));
+
+    // [핵심 추가] 백엔드 API 서버(`fetch-news.ts`)로 클릭 상태 전송 및 영구 동기화
+    try {
+      await fetch("/api/fetch-news", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ articleId, actionType: type }),
+      });
+    } catch (error) {
+      console.error("서버에 카운트를 저장하는 도중 오류가 발생했습니다:", error);
+    }
   };
 
   const filteredCategories = selectedCategory === "all"
