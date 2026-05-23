@@ -28,9 +28,9 @@ export function Header({
       <header className="sticky top-0 z-[60] w-full bg-[#0f172a]/90 border-b border-slate-800 backdrop-blur-xl transition-colors notranslate">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex h-[60px] items-center justify-between">
-            {/* 로고 (원하셨던 선명한 파이 보라색 테마 완벽 적용) */}
+            {/* 로고 (붉은 기를 완전히 빼고 선명한 파이 보라색 단색으로 변경) */}
             <div className="flex items-center gap-2">
-              <span className="font-black text-2xl tracking-tighter bg-gradient-to-r from-purple-500 via-fuchsia-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(147,51,234,0.6)]">
+              <span className="font-black text-2xl tracking-tighter text-purple-500 drop-shadow-[0_2px_10px_rgba(168,85,247,0.5)]">
                 GPNR
               </span>
               <span className="hidden sm:block text-[10px] text-slate-400 uppercase tracking-widest ml-2">
@@ -42,4 +42,18 @@ export function Header({
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setIsLauncherOpen(!isLauncherOpen)}
-                className={`p-2 rounded-xl text-2xl font-bold transition-all ${isLauncherOpen ? 'bg-slate-800 text-
+                className={`p-2 rounded-xl text-lg font-bold transition-all ${
+                  isLauncherOpen ? 'bg-slate-800 text-purple-400' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
+                }`}
+              >
+                {/* 메뉴 격자 아이콘 텍스트 대체 형태 또는 PiLogin 래퍼 */}
+                <span className="block w-5 h-5 text-center leading-none">⋮⋮⋮</span>
+              </button>
+              <PiLogin />
+            </div>
+          </div>
+        </div>
+      </header>
+    </>
+  );
+}
