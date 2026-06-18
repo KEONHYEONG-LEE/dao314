@@ -22,23 +22,23 @@ export function Header({
   if (!mounted) return null;
 
   return (
-    <>
-      {/* 본체 헤더 영역 (notranslate 추가로 로고 직역 방지) */}
-      <header className="sticky top-0 z-[60] w-full bg-[#0f172a]/90 border-b border-slate-800 backdrop-blur-xl transition-colors notranslate">
+    // 최상단 빈 태그(<></>) 대신 notranslate 클래스를 가진 div로 전체를 감싸서, 
+    // 나중에 이 내부에 추가될 어떤 메뉴나 하위 컴포넌트(PiLogin 등)도 구글 번역이 건드리지 못하게 원천 차단합니다.
+    <div className="notranslate" translate="no">
+      {/* 본체 헤더 영역 */}
+      <header className="sticky top-0 z-[60] w-full bg-[#0f172a]/90 border-b border-slate-800 backdrop-blur-xl transition-colors">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex h-[60px] items-center justify-between">
             
-            {/* 로고 (구글 번역 오염 원천 차단 속성 추가) */}
+            {/* 로고 영역 */}
             <div className="flex items-center gap-2">
               <span 
-                translate="no" 
-                className="notranslate font-black text-2xl tracking-tighter text-purple-500 drop-shadow-[0_2px_10px_rgba(168,85,247,0.5)]"
+                className="font-black text-2xl tracking-tighter text-purple-500 drop-shadow-[0_2px_10px_rgba(168,85,247,0.5)]"
               >
                 GPNR
               </span>
               <span 
-                translate="no"
-                className="notranslate hidden sm:block text-[10px] text-slate-400 uppercase tracking-widest ml-2"
+                className="hidden sm:block text-[10px] text-slate-400 uppercase tracking-widest ml-2"
               >
                 Global Pi Newsroom
               </span>
@@ -60,6 +60,6 @@ export function Header({
           </div>
         </div>
       </header>
-    </>
+    </div>
   );
 }
