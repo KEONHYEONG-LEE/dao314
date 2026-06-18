@@ -46,13 +46,13 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         strategy="afterInteractive"
       />
 
-      {/* [복구] 핵심 구글 번역 API 엔진 및 다국어 스크립트 */}
+      {/* [업데이트] 새로 추가한 다국어 코드를 엔진에 등록하여 정상 작동 유도 */}
       <Script id="google-translate-config" strategy="afterInteractive">
         {`
           function googleTranslateElementInit() {
             new google.translate.TranslateElement({
               pageLanguage: 'en',
-              includedLanguages: 'ko,en',
+              includedLanguages: 'en,ko,ja,zh-CN,es,vi',
               autoDisplay: false
             }, 'google_translate_element');
           }
