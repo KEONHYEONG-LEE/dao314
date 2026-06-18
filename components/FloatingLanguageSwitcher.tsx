@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Globe, ChevronUp } from "lucide-react";
 
-// 1. 지원할 다국어 리스트 정의 (앱 속도에 전혀 영향 없음)
+// 1. 지원할 다국어 리스트 정의
 const LANGUAGES = [
   { code: "en", label: "English" },
   { code: "ko", label: "한국어" },
@@ -50,10 +50,12 @@ export function FloatingLanguageSwitcher() {
     localStorage.setItem("gpnr_lang", langCode);
     
     if (langCode === 'en') {
-      // 영어 선택 시: 구글 번역 쿠키 초기화 후 새로고침 (원본 유지)
+      // 영어 선택 시: 구글 번역 쿠키 확실하게 삭제 처리
       document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
-      window.location.href = window.location.pathname;
+      
+      // [404 에러 방지] 주소가 꼬이는 pathname 대신 메인 루트 도메인 주소로 안전하게 이동시킵니다.
+      window.location.href = window.location.origin;
     } else {
       // 선택한 다국어로 번역 엔진 작동
       const combo = document.querySelector(".goog-te-combo") as HTMLSelectElement;
@@ -62,6 +64,7 @@ export function FloatingLanguageSwitcher() {
         combo.dispatchEvent(new Event("change"));
         setCurrentLang(langCode);
       } else {
+        // 만약 구글 번역 셀렉터가 준비되지 않은 상태라면 안전하게 새로고침 처리
         window.location.reload();
       }
     }
