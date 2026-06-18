@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Globe, ChevronUp } from "lucide-react";
 
-// 1. 지원할 다국어 리스트 정의
+// 지원할 다국어 리스트 정의
 const LANGUAGES = [
   { code: "en", label: "English" },
   { code: "ko", label: "한국어" },
@@ -18,11 +18,11 @@ export function FloatingLanguageSwitcher() {
   const [currentLang, setCurrentLang] = useState("en");
 
   useEffect(() => {
-    // 초기 언어 설정 확인 (로컬 스토리지 우선)
+    // 초기 저장된 언어 로드
     const savedLang = localStorage.getItem("gpnr_lang") || "en";
     setCurrentLang(savedLang);
 
-    // 2. 구글 기본 UI 배너 강제 숨기기 & 특정 클래스 번역 방지 스타일 추가
+    // 구글 기본 UI 배너 강제 숨기기 스타일
     const style = document.createElement("style");
     style.innerHTML = `
       .goog-te-banner-frame, .skiptranslate, #goog-gt-tt, .goog-te-balloon-frame { 
@@ -33,7 +33,7 @@ export function FloatingLanguageSwitcher() {
     `;
     document.head.appendChild(style);
 
-    // 초기 로드 시 영어가 아닌 다른 다국어라면 구글 엔진 작동 유도
+    // 영어가 아닐 때 구글 번역 셀렉터 제어
     if (savedLang !== "en") {
       const timer = setTimeout(() => {
         const combo = document.querySelector(".goog-te-combo") as HTMLSelectElement;
@@ -49,29 +49,34 @@ export function FloatingLanguageSwitcher() {
   const handleLanguageChange = (langCode: string) => {
     localStorage.setItem("gpnr_lang", langCode);
     
+    // 1. 모든 경로와 도메인의 구글 번역 쿠키를 싹 다 밀어버립니다.
+    const domains = [window.location.hostname, "." + window.location.hostname, ""];
+    domains.forEach(domain => {
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;${domain ? ` domain=${domain};` : ""}`;
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/html;${domain ? ` domain=${domain};` : ""}`;
+    });
+
     if (langCode === 'en') {
-      // 영어 선택 시: 구글 번역 쿠키 확실하게 삭제 처리
-      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
-      
-      // [404 에러 방지] 주소가 꼬이는 pathname 대신 메인 루트 도메인 주소로 안전하게 이동시킵니다.
+      // 영어 선택 시: 메인 홈 주소로 클린 새로고침
       window.location.href = window.location.origin;
     } else {
-      // 선택한 다국어로 번역 엔진 작동
+      // 다국어 선택 시: 새로운 쿠키를 주입하여 구글 번역 강제 갱신 유도
+      document.cookie = `googtrans=/en/${langCode}; path=/;`;
+      document.cookie = `googtrans=/en/${langCode}; path=/; domain=${window.location.hostname};`;
+      
       const combo = document.querySelector(".goog-te-combo") as HTMLSelectElement;
       if (combo) {
         combo.value = langCode;
         combo.dispatchEvent(new Event("change"));
         setCurrentLang(langCode);
-      } else {
-        // 만약 구글 번역 셀렉터가 준비되지 않은 상태라면 안전하게 새로고침 처리
-        window.location.reload();
       }
+      
+      // 화면 전환을 확실하게 적용하기 위한 즉시 새로고침
+      window.location.reload();
     }
     setIsOpen(false);
   };
 
-  // 현재 선택된 언어의 표시용 텍스트 찾기
   const currentLabel = LANGUAGES.find(l => l.code === currentLang)?.label || "English";
 
   return (
