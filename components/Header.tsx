@@ -28,12 +28,18 @@ export function Header({
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex h-[60px] items-center justify-between">
             
-            {/* 로고 (붉은 기를 완전히 뺀 선명한 파이 보라색 단색 적용) */}
+            {/* 로고 (구글 번역 오염 원천 차단 속성 추가) */}
             <div className="flex items-center gap-2">
-              <span className="font-black text-2xl tracking-tighter text-purple-500 drop-shadow-[0_2px_10px_rgba(168,85,247,0.5)]">
+              <span 
+                translate="no" 
+                className="notranslate font-black text-2xl tracking-tighter text-purple-500 drop-shadow-[0_2px_10px_rgba(168,85,247,0.5)]"
+              >
                 GPNR
               </span>
-              <span className="hidden sm:block text-[10px] text-slate-400 uppercase tracking-widest ml-2">
+              <span 
+                translate="no"
+                className="notranslate hidden sm:block text-[10px] text-slate-400 uppercase tracking-widest ml-2"
+              >
                 Global Pi Newsroom
               </span>
             </div>
