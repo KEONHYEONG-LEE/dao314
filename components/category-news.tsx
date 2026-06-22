@@ -3,15 +3,15 @@
 import Link from "next/link";
 import { Zap, Monitor, TrendingUp, Wallet, Compass, Map, FileText, Users, ShoppingBag, Key, HelpCircle, Shield, Landmark } from "lucide-react";
 
-// 17개 고유 카테고리별 원본 데이터 스키마 구성 (100% 완전 복원)
+// 17개 고유 카테고리별 원본 데이터 스키마 구성 (100% 완전 복원 및 이미지 주소 안정화)
 const categories = [
   {
     name: "MAINNET",
     id: "mainnet",
     icon: <Zap className="w-4 h-4 text-yellow-500" />,
     articles: [
-      { id: "m1", title: "Pi Network 메인넷 전환 가속화: 노드 활성도 역대 최고치 기록", image: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&h=300&fit=crop", date: "2026.05.23", source: "블록코노미" },
-      { id: "m2", title: "프로토콜 22 업데이트 요약 및 보안 강화 안내", image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc48?w=400&h=300&fit=crop", date: "2026.05.23", source: "GPNR Official" },
+      { id: "m1", title: "Pi Network 메인넷 전환 가속화: 노드 활성도 역대 최고치 기록", image: "https://picsum.photos/400/300?sig=mainnet-1&q=server,network", date: "2026.05.23", source: "블록코노미" },
+      { id: "m2", title: "프로토콜 22 업데이트 요약 및 보안 강화 안내", image: "https://picsum.photos/400/300?sig=mainnet-2&q=security,network", date: "2026.05.23", source: "GPNR Official" },
     ],
   },
   {
@@ -19,7 +19,7 @@ const categories = [
     id: "node",
     icon: <Monitor className="w-4 h-4 text-blue-500" />,
     articles: [
-      { id: "n1", title: "글로벌 파이 노드 안정성 향상을 위한 최적화 가이드", image: "https://images.unsplash.com/photo-1600132806370-bf17e65e942f?w=400&h=300&fit=crop", date: "2026.05.23", source: "GPNR Tech" }
+      { id: "n1", title: "글로벌 파이 노드 안정성 향상을 위한 최적화 가이드", image: "https://picsum.photos/400/300?sig=node-1&q=data,cloud", date: "2026.05.23", source: "GPNR Tech" }
     ]
   },
   {
@@ -27,7 +27,7 @@ const categories = [
     id: "mining",
     icon: <TrendingUp className="w-4 h-4 text-emerald-500" />,
     articles: [
-      { id: "mi1", title: "반감기 이후 기본 채굴률 변동 추이 분석 보고서", image: "https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=400&h=300&fit=crop", date: "2026.05.22", source: "GPNR Analytics" }
+      { id: "mi1", title: "반감기 이후 기본 채굴률 변동 추이 분석 보고서", image: "https://picsum.photos/400/300?sig=mining-1&q=hardware,mining", date: "2026.05.22", source: "GPNR Analytics" }
     ]
   },
   {
@@ -35,7 +35,7 @@ const categories = [
     id: "wallet",
     icon: <Wallet className="w-4 h-4 text-purple-500" />,
     articles: [
-      { id: "w1", title: "파이 지갑 보안 설정 강화: 비밀구절 관리 주의사항", image: "https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=400&h=300&fit=crop", date: "2026.05.22", source: "GPNR Security" }
+      { id: "w1", title: "파이 지갑 보안 설정 강화: 비밀구절 관리 주의사항", image: "https://picsum.photos/400/300?sig=wallet-1&q=wallet,money", date: "2026.05.22", source: "GPNR Security" }
     ]
   },
   {
@@ -43,7 +43,7 @@ const categories = [
     id: "browser",
     icon: <Compass className="w-4 h-4 text-cyan-500" />,
     articles: [
-      { id: "b1", title: "Pi Browser 생태계 앱 연동 인터페이스 대규모 리뉴얼 예고", image: "https://images.unsplash.com/photo-1547082299-de196ea013d6?w=400&h=300&fit=crop", date: "2026.05.22", source: "GPNR Dev" }
+      { id: "b1", title: "Pi Browser 생태계 앱 연동 인터페이스 대규모 리뉴얼 예고", image: "https://picsum.photos/400/300?sig=browser-1&q=web,safari", date: "2026.05.22", source: "GPNR Dev" }
     ]
   },
   {
@@ -51,7 +51,7 @@ const categories = [
     id: "roadmap",
     icon: <Map className="w-4 h-4 text-orange-500" />,
     articles: [
-      { id: "r1", title: "V2 로드맵 최종 단계 점검: 오픈메인넷 조건 충족 현황", image: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=400&h=300&fit=crop", date: "2026.05.21", source: "GPNR Center" }
+      { id: "r1", title: "V2 로드맵 최종 단계 점검: 오픈메인넷 조건 충족 현황", image: "https://picsum.photos/400/300?sig=roadmap-1&q=timeline,map", date: "2026.05.21", source: "GPNR Center" }
     ]
   },
   {
@@ -59,7 +59,7 @@ const categories = [
     id: "whitepaper",
     icon: <FileText className="w-4 h-4 text-gray-400" />,
     articles: [
-      { id: "wh1", title: "백서 개정안에 담긴 토큰 이코노미 핵심 메커니즘 해석", image: "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=400&h=300&fit=crop", date: "2026.05.21", source: "GPNR Editor" }
+      { id: "wh1", title: "백서 개정안에 담긴 토큰 이코노미 핵심 메커니즘 해석", image: "https://picsum.photos/400/300?sig=whitepaper-1&q=document,book", date: "2026.05.21", source: "GPNR Editor" }
     ]
   },
   {
@@ -67,7 +67,7 @@ const categories = [
     id: "community",
     icon: <Users className="w-4 h-4 text-indigo-400" />,
     articles: [
-      { id: "c1", title: "글로벌 파이어니어 5500만 명 돌파 기념 커뮤니티 이벤트 개최", image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=300&fit=crop", date: "2026.05.20", source: "GPNR News" }
+      { id: "c1", title: "글로벌 파이어니어 5500만 명 돌파 기념 커뮤니티 이벤트 개최", image: "https://picsum.photos/400/300?sig=community-1&q=people,chat", date: "2026.05.20", source: "GPNR News" }
     ]
   },
   {
@@ -75,7 +75,7 @@ const categories = [
     id: "commerce",
     icon: <ShoppingBag className="w-4 h-4 text-pink-500" />,
     articles: [
-      { id: "co1", title: "온·오프라인 파이 결제 매장 확산 추세와 GCV 동향", image: "https://images.unsplash.com/photo-1472851294608-062f824d296e?w=400&h=300&fit=crop", date: "2026.05.20", source: "GPNR Biz" }
+      { id: "co1", title: "온·오프라인 파이 결제 매장 확산 추세와 GCV 동향", image: "https://picsum.photos/400/300?sig=commerce-1&q=shopping,business", date: "2026.05.20", source: "GPNR Biz" }
     ]
   },
   {
@@ -83,7 +83,7 @@ const categories = [
     id: "kyc",
     icon: <Key className="w-4 h-4 text-teal-500" />,
     articles: [
-      { id: "k1", title: "KYC 인증 지연 해소를 위한 AI 알고리즘 고도화 패치 완료", image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&h=300&fit=crop", date: "2026.05.19", source: "GPNR Tech" }
+      { id: "k1", title: "KYC 인증 지연 해소를 위한 AI 알고리즘 고도화 패치 완료", image: "https://picsum.photos/400/300?sig=kyc-1&q=security,id", date: "2026.05.19", source: "GPNR Tech" }
     ]
   },
   {
@@ -91,7 +91,7 @@ const categories = [
     id: "developer",
     icon: <FileText className="w-4 h-4 text-blue-400" />,
     articles: [
-      { id: "d1", title: "해커톤 우수 수상작들의 메인넷 API 마이그레이션 가이드", image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop", date: "2026.05.18", source: "GPNR Dev" }
+      { id: "d1", title: "해커톤 우수 수상작들의 메인넷 API 마이그레이션 가이드", image: "https://picsum.photos/400/300?sig=developer-1&q=coding,developer", date: "2026.05.18", source: "GPNR Dev" }
     ]
   },
   {
@@ -99,7 +99,7 @@ const categories = [
     id: "ecosystem",
     icon: <HelpCircle className="w-4 h-4 text-lime-500" />,
     articles: [
-      { id: "e1", title: "유틸리티 기반 대형 DApp 생태계 공식 온보딩 일정 공개", image: "https://images.unsplash.com/photo-1581092921461-eab62e97a780?w=400&h=300&fit=crop", date: "2026.05.17", source: "GPNR Official" }
+      { id: "e1", title: "유틸리티 기반 대형 DApp 생태계 공식 온보딩 일정 공개", image: "https://picsum.photos/400/300?sig=ecosystem-1&q=nature,globe", date: "2026.05.17", source: "GPNR Official" }
     ]
   },
   {
@@ -107,7 +107,7 @@ const categories = [
     id: "outlook",
     icon: <TrendingUp className="w-4 h-4 text-violet-500" />,
     articles: [
-      { id: "ou1", title: "2026년 가상자산 시장 규제 변화와 파이의 전망", image: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=400&h=300&fit=crop", date: "2026.05.16", source: "GPNR Economy" }
+      { id: "ou1", title: "2026년 가상자산 시장 규제 변화와 파이의 전망", image: "https://picsum.photos/400/300?sig=outlook-1&q=chart,stock", date: "2026.05.16", source: "GPNR Economy" }
     ]
   },
   {
@@ -115,7 +115,7 @@ const categories = [
     id: "price",
     icon: <Landmark className="w-4 h-4 text-amber-600" />,
     articles: [
-      { id: "p1", title: "각국 커뮤니티별 GCV 합의 가격대 모니터링 분석", image: "https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=400&h=300&fit=crop", date: "2026.05.15", source: "GPNR Market" }
+      { id: "p1", title: "각국 커뮤니티별 GCV 합의 가격대 모니터링 분석", image: "https://picsum.photos/400/300?sig=price-1&q=finance,coin", date: "2026.05.15", source: "GPNR Market" }
     ]
   },
   {
@@ -123,7 +123,7 @@ const categories = [
     id: "security",
     icon: <Shield className="w-4 h-4 text-red-500" />,
     articles: [
-      { id: "s1", title: "피싱 사이트 및 가짜 파이 코인 거래소 사기 근절 방지 대책", image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&h=300&fit=crop", date: "2026.05.14", source: "GPNR Security" }
+      { id: "s1", title: "피싱 사이트 및 가짜 파이 코인 거래소 사기 근절 방지 대책", image: "https://picsum.photos/400/300?sig=security-1&q=lock,cyber", date: "2026.05.14", source: "GPNR Security" }
     ]
   },
   {
@@ -131,7 +131,7 @@ const categories = [
     id: "legal",
     icon: <Landmark className="w-4 h-4 text-slate-400" />,
     articles: [
-      { id: "l1", title: "미국 SEC 가상자산 프레임워크 변경이 웹3 생태계에 미치는 영향", image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=300&fit=crop", date: "2026.05.13", source: "GPNR Legal" }
+      { id: "l1", title: "미국 SEC 가상자산 프레임워크 변경이 웹3 생태계에 미치는 영향", image: "https://picsum.photos/400/300?sig=legal-1&q=law,court", date: "2026.05.13", source: "GPNR Legal" }
     ]
   }
 ];
@@ -168,7 +168,7 @@ export function CategoryNews({ selectedCategory = "all" }: { selectedCategory?: 
                         {article.title}
                       </h3>
                       
-                      {/* 하단 정보 영역 (피드백 아이콘 제거 완료) */}
+                      {/* 하단 정보 영역 */}
                       <div className="flex items-center justify-between gap-2 mt-3">
                         <div className="flex items-center gap-2 text-[10px] text-slate-500 whitespace-nowrap">
                           <span className="text-blue-500 font-bold">{article.source}</span>
@@ -177,11 +177,11 @@ export function CategoryNews({ selectedCategory = "all" }: { selectedCategory?: 
                       </div>
                     </div>
 
-                    {/* 이미지 영역 */}
-                    <div className="relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border border-white/[0.05]">
+                    {/* 🚀 이미지 영역 (구글 번역에 의한 DOM 증발 방지 속성 주입 완료) */}
+                    <div className="relative w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden border border-white/[0.05] notranslate" translate="no">
                       <img
                         src={article.image}
-                        alt={article.title}
+                        alt="" // alt 속성을 비워 번역 타겟에서 원천 배제
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                     </div>
