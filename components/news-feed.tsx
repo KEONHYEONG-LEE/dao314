@@ -70,16 +70,16 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
     <section className={`pb-24 space-y-3 mt-4 transition-opacity duration-300 ${loading ? 'opacity-50' : 'opacity-100'}`}>
       {news.length > 0 ? (
         news.map((item, index) => {
-          // 🚀 [해결책 1] 주소 유실을 방지하기 위해 심플한 다이렉트 랜덤 인덱스 할당
-          const imgIndex = (index % 5) + 1; 
-          const fallbackUrl = `https://picsum.photos/id/${imgIndex + 10}/200/200`;
+          // 구글 번역기가 주소를 부수는 것에 대비한 순수 로컬 인덱스 기반 서브 백업 경로
+          const localImgId = 10 + (index % 30);
+          const finalUrl = item.imageUrl || `https://picsum.photos/id/${localImgId}/200/200`;
 
           return (
             <div key={item.id} className="block bg-[#1e293b] rounded-xl border border-slate-700/50 shadow-md overflow-hidden">
               <div onClick={() => setExpandedId(expandedId === item.id ? null : item.id)} className="p-4 cursor-pointer active:bg-slate-800 transition-colors">
                 <div className="flex gap-4 items-center justify-between">
                   
-                  {/* 왼쪽 글자 영역 */}
+                  {/* 왼쪽 텍스트 정보 영역 */}
                   <div className="flex-1 flex flex-col justify-between min-w-0">
                     <div>
                       <span className="text-[10px] font-bold text-amber-500 uppercase notranslate" translate="no">
@@ -101,22 +101,24 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
                     </div>
                   </div>
                   
-                  {/* 🚀 [해결책 2] 번역기 습격 및 외부 캐시 서버 차단을 우회하는 절대 방어존 생성 */}
-                  {/* 정적 그라데이션 컬러 배경(bg-gradient-to-br)을 기저에 깔아두어, 외부 이미지가 터져도 박스가 절대 깨지지 않고 고급스러운 UI 유지 */}
+                  {/* 🚀 [최종 해결의 열쇠] 엑박 아이콘 강제 삭제 및 완벽 방어존 */}
+                  {/* bg-gradient-to-br 세팅으로 외부 이미지가 순간 차단되어도 흉한 엑박이 뜨지 않고 깔끔한 딥 블루-그레이 컬러 그래픽이 자리를 채웁니다. */}
                   <div 
-                    className="w-20 h-20 flex-shrink-0 rounded-lg bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-center border border-slate-600/40 shadow-inner translate-z-0"
-                    style={{ backgroundImage: `url(${item.imageUrl || fallbackUrl})` }}
+                    className="w-20 h-20 flex-shrink-0 rounded-lg bg-gradient-to-br from-slate-700 via-indigo-950 to-slate-900 bg-cover bg-center border border-slate-600/40 shadow-inner notranslate relative overflow-hidden"
+                    style={{ backgroundImage: `url(${finalUrl})` }}
                     data-google-lang="no"
                     translate="no"
                   >
-                    {/* 일반 <img> 태그를 숨겨놓아 브라우저가 정식 렌더링에 실패하더라도 캐시 엑박이 부모 박스를 망가뜨리지 못하게 격리 */}
+                    {/* 브라우저단에서 캐싱 차단이 나면 투명 처리를 시켜 뒤쪽의 고급스러운 그라데이션만 노출되도록 제어하는 무적의 히든 태그 */}
                     <img 
-                      src={item.imageUrl || fallbackUrl} 
+                      src={finalUrl} 
                       alt="" 
-                      className="hidden" 
+                      className="absolute inset-0 w-full h-full object-cover opacity-100 min-w-full min-h-full"
                       onError={(e) => {
-                        // 🛑 에러 발생 시 부모 박스의 배경 이미지를 제거하여 완벽하고 깔끔한 다크 그라데이션 박스로 대체
-                        (e.currentTarget.parentElement as HTMLElement).style.backgroundImage = 'none';
+                        e.currentTarget.style.display = 'none';
+                        if(e.currentTarget.parentElement) {
+                          e.currentTarget.parentElement.style.backgroundImage = 'none';
+                        }
                       }}
                     />
                   </div>
