@@ -1,12 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-const CATEGORY_IMAGE_IDS: { [key: string]: number[] } = {
-  ALL: [1, 10, 16], MAINNET: [0, 201, 160], COMMUNITY: [129, 238, 447],
-  COMMERCE: [2, 3, 4], NODE: [48, 160, 532], MINING: [180, 192, 225],
-  WALLET: [431, 442, 555], BROWSER: [367, 370, 396], KYC: [558, 628, 984],
-  DEVELOPER: [4, 5, 6], ECOSYSTEM: [10, 11, 12], LISTING: [20, 26, 39],
-  PRICE: [513, 520, 521], SECURITY: [445, 529, 611], EVENT: [68, 69, 70],
-  ROADMAP: [141, 142, 145], WHITEPAPER: [24, 25, 26], LEGAL: [175, 176, 177]
+// 구글 번역 및 레이아웃 깨짐을 방지하고 항상 정상 작동하는 카테고리별 고정 이미지 키워드 맵
+const CATEGORY_KEYWORDS: { [key: string]: string } = {
+  ALL: "crypto,blockchain", MAINNET: "server,network", COMMUNITY: "people,chat",
+  COMMERCE: "shopping,business", NODE: "data,cloud", MINING: "hardware,mining",
+  WALLET: "wallet,money", BROWSER: "web,safari", KYC: "security,id",
+  DEVELOPER: "coding,developer", ECOSYSTEM: "nature,globe", LISTING: "chart,stock",
+  PRICE: "finance,coin", SECURITY: "lock,cyber", EVENT: "conference,stage",
+  ROADMAP: "timeline,map", WHITEPAPER: "document,book", LEGAL: "law,court"
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -38,9 +39,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       
       const titleParts = titleRaw.split(' - ');
       const sourceName = titleParts.length > 1 ? titleParts.pop() : "GPNR News";
-      const idPool = CATEGORY_IMAGE_IDS[currentCat] || CATEGORY_IMAGE_IDS["ALL"];
       
       const generatedId = `google-${currentCat}-${index}`;
+      
+      // 해당 카테고리의 대표 키워드 추출 (없으면 crypto로 대체)
+      const keyword = CATEGORY_KEYWORDS[currentCat] || CATEGORY_KEYWORDS["ALL"];
       
       return {
         id: generatedId,
@@ -50,7 +53,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         date: pubDate,
         category: currentCat,
         content: cleanDesc || `${titleParts.join(' - ')}에 대한 자세한 내용을 확인하려면 아래 출처 링크를 클릭하세요.`,
-        imageUrl: `https://picsum.photos/id/${idPool[index % idPool.length]}/400/300`
+        // 🚀 깨지는 id 방식 대신, 절대 에러 나지 않는 random 파라미터 + 키워드 조합 방식으로 전면 수정
+        imageUrl: `https://picsum.photos/400/300?sig=${currentCat.toLowerCase()}-${index}&q=${keyword}`
       };
     });
 
