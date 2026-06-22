@@ -72,53 +72,43 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
         news.map((item) => {
           return (
             <div key={item.id} className="block bg-[#1e293b] rounded-xl border border-slate-700/50 shadow-md overflow-hidden">
-              <div onClick={() => setExpandedId(expandedId === item.id ? null : item.id)} className="p-4 cursor-pointer active:bg-slate-800 transition-colors">
-                
-                {/* 🚀 사진 박스를 완전히 삭제하고 단일 텍스트 레이아웃으로 변경 */}
-                <div className="flex flex-col justify-between w-full">
+              <div 
+                onClick={() => setExpandedId(expandedId === item.id ? null : item.id)} 
+                className="p-4 cursor-pointer active:bg-slate-800 transition-colors"
+              >
+                {/* 🚀 우측 사진 컴포넌트 구조를 완전히 도려내고 100% 세로형 풀 텍스트 배치로 전환 */}
+                <div className="w-full flex flex-col justify-between">
                   <div>
+                    {/* 카테고리 태그 */}
                     <span className="text-[10px] font-bold text-amber-500 uppercase notranslate" translate="no">
                       {CATEGORY_MAP[item.category.toUpperCase()] || item.category}
                     </span>
-                    {/* line-clamp-2를 유지하거나 제외하여 긴 제목도 시원하게 다 보이도록 설정 가능합니다. */}
-                    <h3 className="text-[15px] font-semibold text-slate-100 leading-snug mt-1 break-all">
+                    
+                    {/* 뉴스 제목 - 우측 제약이 없어졌으므로 가로 전체 영역을 활용해 막힘없이 표출 */}
+                    <h3 className="text-[15px] font-semibold text-slate-100 leading-snug mt-1 break-words">
                       {stripHtml(item.title)}
                     </h3>
                   </div>
                   
-                  <div className="flex items-center gap-2 mt-3 text-[11px] text-slate-400">
-                    <span className="truncate max-w-[150px]">{item.source}</span>
+                  {/* 하단 메타 정보 & 아이콘 영역 */}
+                  <div className="flex items-center gap-2 mt-4 text-[11px] text-slate-400 w-full">
+                    <span className="truncate max-w-[140px]">{item.source}</span>
                     <span>•</span>
                     <span>{item.date ? new Date(item.date).toLocaleDateString() : ""}</span>
                     
+                    {/* 체크, 별, 하트 액션 버튼 우측 정렬 유지 */}
                     <div className="flex items-center gap-3 ml-auto text-sm">
-                      <button onClick={(e)=>toggleStatus(item.id,'read',e)}>{status[item.id]?.read ? <span className="text-green-500">✔️</span> : "○"}</button>
+                      <button onClick={(e)=>toggleStatus(item.id,'read',e)}>
+                        {status[item.id]?.read ? <span className="text-green-500">✔️</span> : "○"}
+                      </button>
                       <button onClick={(e)=>toggleStatus(item.id,'star',e)} className={status[item.id]?.star ? "text-yellow-400":"text-slate-500"}>★</button>
                       <button onClick={(e)=>toggleStatus(item.id,'heart',e)} className={status[item.id]?.heart ? "text-red-500":"text-slate-500"}>♥</button>
                     </div>
                   </div>
                 </div>
-
               </div>
 
+              {/* 아코디언 상세 내용 본문 영역 */}
               <div className={`transition-all duration-300 ease-in-out ${expandedId === item.id ? 'max-h-[2000px] opacity-100 border-t border-slate-700/50' : 'max-h-0 opacity-0 overflow-hidden'}`}>
                 <div className="p-4 bg-slate-900/50">
-                  <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap mb-4">
-                    {stripHtml(item.content || "") || `${stripHtml(item.title)}에 대한 자세한 내용을 확인하려면 아래 출처 링크를 클릭하세요.`}
-                  </div>
-                  <div className="flex justify-end">
-                    <a href={item.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-xs font-bold text-blue-400 hover:text-blue-300">
-                      출처 기사 보기 →
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })
-      ) : (
-        <div className="text-center py-12 text-slate-500 text-sm">아직 등록된 실시간 뉴스가 없습니다.</div>
-      )}
-    </section>
-  );
-}
+                  <div className="text-slate
