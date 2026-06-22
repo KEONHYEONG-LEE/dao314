@@ -69,61 +69,36 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
   return (
     <section className={`pb-24 space-y-3 mt-4 transition-opacity duration-300 ${loading ? 'opacity-50' : 'opacity-100'}`}>
       {news.length > 0 ? (
-        news.map((item, index) => {
-          // 구글 번역기가 주소를 부수는 것에 대비한 순수 로컬 인덱스 기반 서브 백업 경로
-          const localImgId = 10 + (index % 30);
-          const finalUrl = item.imageUrl || `https://picsum.photos/id/${localImgId}/200/200`;
-
+        news.map((item) => {
           return (
             <div key={item.id} className="block bg-[#1e293b] rounded-xl border border-slate-700/50 shadow-md overflow-hidden">
               <div onClick={() => setExpandedId(expandedId === item.id ? null : item.id)} className="p-4 cursor-pointer active:bg-slate-800 transition-colors">
-                <div className="flex gap-4 items-center justify-between">
-                  
-                  {/* 왼쪽 텍스트 정보 영역 */}
-                  <div className="flex-1 flex flex-col justify-between min-w-0">
-                    <div>
-                      <span className="text-[10px] font-bold text-amber-500 uppercase notranslate" translate="no">
-                        {CATEGORY_MAP[item.category.toUpperCase()] || item.category}
-                      </span>
-                      <h3 className="text-[15px] font-semibold text-slate-100 line-clamp-2 leading-snug mt-1">
-                        {stripHtml(item.title)}
-                      </h3>
-                    </div>
-                    <div className="flex items-center gap-2 mt-3 text-[11px] text-slate-400">
-                      <span className="truncate max-w-[100px]">{item.source}</span>
-                      <span>•</span>
-                      <span>{item.date ? new Date(item.date).toLocaleDateString() : ""}</span>
-                      <div className="flex items-center gap-3 ml-auto text-sm">
-                        <button onClick={(e)=>toggleStatus(item.id,'read',e)}>{status[item.id]?.read ? <span className="text-green-500">✔️</span> : "○"}</button>
-                        <button onClick={(e)=>toggleStatus(item.id,'star',e)} className={status[item.id]?.star ? "text-yellow-400":"text-slate-500"}>★</button>
-                        <button onClick={(e)=>toggleStatus(item.id,'heart',e)} className={status[item.id]?.heart ? "text-red-500":"text-slate-500"}>♥</button>
-                      </div>
-                    </div>
+                
+                {/* 🚀 사진 박스를 완전히 삭제하고 단일 텍스트 레이아웃으로 변경 */}
+                <div className="flex flex-col justify-between w-full">
+                  <div>
+                    <span className="text-[10px] font-bold text-amber-500 uppercase notranslate" translate="no">
+                      {CATEGORY_MAP[item.category.toUpperCase()] || item.category}
+                    </span>
+                    {/* line-clamp-2를 유지하거나 제외하여 긴 제목도 시원하게 다 보이도록 설정 가능합니다. */}
+                    <h3 className="text-[15px] font-semibold text-slate-100 leading-snug mt-1 break-all">
+                      {stripHtml(item.title)}
+                    </h3>
                   </div>
                   
-                  {/* 🚀 [최종 해결의 열쇠] 엑박 아이콘 강제 삭제 및 완벽 방어존 */}
-                  {/* bg-gradient-to-br 세팅으로 외부 이미지가 순간 차단되어도 흉한 엑박이 뜨지 않고 깔끔한 딥 블루-그레이 컬러 그래픽이 자리를 채웁니다. */}
-                  <div 
-                    className="w-20 h-20 flex-shrink-0 rounded-lg bg-gradient-to-br from-slate-700 via-indigo-950 to-slate-900 bg-cover bg-center border border-slate-600/40 shadow-inner notranslate relative overflow-hidden"
-                    style={{ backgroundImage: `url(${finalUrl})` }}
-                    data-google-lang="no"
-                    translate="no"
-                  >
-                    {/* 브라우저단에서 캐싱 차단이 나면 투명 처리를 시켜 뒤쪽의 고급스러운 그라데이션만 노출되도록 제어하는 무적의 히든 태그 */}
-                    <img 
-                      src={finalUrl} 
-                      alt="" 
-                      className="absolute inset-0 w-full h-full object-cover opacity-100 min-w-full min-h-full"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                        if(e.currentTarget.parentElement) {
-                          e.currentTarget.parentElement.style.backgroundImage = 'none';
-                        }
-                      }}
-                    />
+                  <div className="flex items-center gap-2 mt-3 text-[11px] text-slate-400">
+                    <span className="truncate max-w-[150px]">{item.source}</span>
+                    <span>•</span>
+                    <span>{item.date ? new Date(item.date).toLocaleDateString() : ""}</span>
+                    
+                    <div className="flex items-center gap-3 ml-auto text-sm">
+                      <button onClick={(e)=>toggleStatus(item.id,'read',e)}>{status[item.id]?.read ? <span className="text-green-500">✔️</span> : "○"}</button>
+                      <button onClick={(e)=>toggleStatus(item.id,'star',e)} className={status[item.id]?.star ? "text-yellow-400":"text-slate-500"}>★</button>
+                      <button onClick={(e)=>toggleStatus(item.id,'heart',e)} className={status[item.id]?.heart ? "text-red-500":"text-slate-500"}>♥</button>
+                    </div>
                   </div>
-
                 </div>
+
               </div>
 
               <div className={`transition-all duration-300 ease-in-out ${expandedId === item.id ? 'max-h-[2000px] opacity-100 border-t border-slate-700/50' : 'max-h-0 opacity-0 overflow-hidden'}`}>
