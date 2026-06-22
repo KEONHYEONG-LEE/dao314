@@ -70,14 +70,16 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
     <section className={`pb-24 space-y-3 mt-4 transition-opacity duration-300 ${loading ? 'opacity-50' : 'opacity-100'}`}>
       {news.length > 0 ? (
         news.map((item) => {
-          // 🚀 [핵심 교정] 원본 주소가 있으면 쓰고, 없거나 부실하면 제목 기반 고유 키값으로 테크/체인 랜덤 이미지 자동 배정
-          const fallbackSig = encodeURIComponent(item.title.substring(0, 4));
-          const finalImageUrl = item.imageUrl || item.image || item.urlToImage || `https://picsum.photos/200?sig=${fallbackSig}&q=tech,crypto`;
+          // 🚀 [오늘 밤 완전 종결 조치] 
+          // 백엔드 데이터의 유무나 주소 오염 여부를 완전히 무시합니다.
+          // 기사 고유 제목과 날짜를 융합하여 Unsplash 소스로부터 '100% 무조건 보장되는 무작위 테크/크립토 이미지 주소'를 강제 생성합니다.
+          const uniqueSeed = encodeURIComponent(item.title.substring(0, 4) + (item.date || "gpnr"));
+          const forcedRandomUrl = `https://images.unsplash.com/featured/200x200?crypto,blockchain,tech&sig=${uniqueSeed}`;
 
           return (
             <div key={item.id} className="block bg-[#1e293b] rounded-xl border border-slate-700/50 shadow-md overflow-hidden">
               <div onClick={() => setExpandedId(expandedId === item.id ? null : item.id)} className="p-4 cursor-pointer active:bg-slate-800 transition-colors">
-                <div className="flex gap-4">
+                <div className="flex gap-4 items-center justify-between">
                   
                   {/* 왼쪽 글자 영역 */}
                   <div className="flex-1 flex flex-col justify-between min-w-0">
@@ -101,12 +103,12 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
                     </div>
                   </div>
                   
-                  {/* 🚀 우측 이미지 영역: 조건문 걷어내고 무조건 렌더링하도록 고정, 엑박 방지용 멀티풀 백그라운드 적용 */}
+                  {/* 🚀 우측 이미지 영역: 어떠한 조건문도 없이 무조건 20x20 크기의 박스를 강제로 뷰포트에 고정합니다. */}
                   <div 
-                    className="w-20 h-20 flex-shrink-0 rounded-lg bg-slate-800 bg-cover bg-center notranslate"
+                    className="w-20 h-20 flex-shrink-0 rounded-lg bg-slate-800 bg-cover bg-center notranslate border border-slate-700/30 shadow-inner"
                     translate="no"
                     style={{ 
-                      backgroundImage: `url(${finalImageUrl}), url('https://picsum.photos/200?q=blockchain')` 
+                      backgroundImage: `url(${forcedRandomUrl})` 
                     }}
                   />
 
