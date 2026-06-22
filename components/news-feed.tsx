@@ -7,8 +7,8 @@ export interface NewsItem {
   category: string;
   title: string;      
   imageUrl?: string;  
-  image?: string;       // 백엔드 API 변경 대비 대체 변수 1
-  urlToImage?: string;  // 백엔드 API 변경 대비 대체 변수 2
+  image?: string;       
+  urlToImage?: string;  
   url: string;
   source: string;
   date: string;
@@ -23,26 +23,14 @@ const CATEGORY_MAP: Record<string, string> = {
   WHITEPAPER: "백서", LEGAL: "관련법규"
 };
 
-/**
- * 뉴스 본문에서 HTML 태그와 특수 엔티티(&lt; 등)를 완벽히 제거하는 함수
- */
 const stripHtml = (html: string) => {
   if (!html) return "";
-  
   try {
-    // 1. HTML 엔티티(&lt;, &gt;, &nbsp; 등)를 실제 기호(<, >, 공백)로 변환
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
-    const decodedText = doc.body.textContent || "";
-
-    // 2. 변환된 텍스트에서 <a>, <font> 등 남아있는 모든 HTML 태그 제거
-    return decodedText.replace(/<\/?[^>]+(>|$)/g, "").trim();
+    return (doc.body.textContent || "").replace(/<\/?[^>]+(>|$)/g, "").trim();
   } catch (e) {
-    // 만약 브라우저 환경이 아닐 경우를 대비한 대체 정규식 처리
-    return html
-      .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-      .replace(/&quot;/g, '"').replace(/&nbsp;/g, ' ')
-      .replace(/<\/?[^>]+(>|$)/g, "").trim();
+    return html.replace(/<\/?[^>]+(>|$)/g, "").trim();
   }
 };
 
@@ -61,14 +49,6 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
       try {
         const response = await fetch(`/api/fetch-news?category=${selectedCategory}`); 
         const allData = await response.json();
-        
-        console.log("=== GPNR 받아온 뉴스 데이터 샘플 ===");
-        if (allData && allData.length > 0) {
-          console.log("첫 번째 뉴스 객체 전체 구조:", allData[0]);
-        } else {
-          console.log("받아온 뉴스 데이터 배열이 비어있습니다.");
-        }
-
         setNews(allData || []);
       } catch (error) {
         console.error("데이터 로드 실패:", error);
@@ -76,7 +56,6 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
         setLoading(false);
       }
     };
-
     fetchLatestNews();
   }, [selectedCategory]); 
 
@@ -87,29 +66,20 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
     localStorage.setItem('gpnr_status', JSON.stringify(newStatus));
   };
 
-  const handleToggleExpand = (id: string) => {
-    setExpandedId(expandedId === id ? null : id);
-  };
-
   return (
     <section className={`pb-24 space-y-3 mt-4 transition-opacity duration-300 ${loading ? 'opacity-50' : 'opacity-100'}`}>
       {news.length > 0 ? (
         news.map((item) => {
-          // 백엔드 데이터에서 가용한 이미지 주소 추출
-          const validImageUrl = item.imageUrl || item.image || item.urlToImage;
-          const fallbackSig = encodeURIComponent(item.title.substring(0, 5));
-          const fallbackUrl = `https://picsum.photos/400/300?sig=${fallbackSig}&q=crypto`;
+          // 🚀 [핵심 교정] 원본 주소가 있으면 쓰고, 없거나 부실하면 제목 기반 고유 키값으로 테크/체인 랜덤 이미지 자동 배정
+          const fallbackSig = encodeURIComponent(item.title.substring(0, 4));
+          const finalImageUrl = item.imageUrl || item.image || item.urlToImage || `https://picsum.photos/200?sig=${fallbackSig}&q=tech,crypto`;
 
           return (
-            <div 
-              key={item.id} 
-              className="block bg-[#1e293b] rounded-xl border border-slate-700/50 shadow-md transition-all overflow-hidden"
-            >
-              <div 
-                onClick={() => handleToggleExpand(item.id)}
-                className="p-4 cursor-pointer active:bg-slate-800 transition-colors"
-              >
+            <div key={item.id} className="block bg-[#1e293b] rounded-xl border border-slate-700/50 shadow-md overflow-hidden">
+              <div onClick={() => setExpandedId(expandedId === item.id ? null : item.id)} className="p-4 cursor-pointer active:bg-slate-800 transition-colors">
                 <div className="flex gap-4">
+                  
+                  {/* 왼쪽 글자 영역 */}
                   <div className="flex-1 flex flex-col justify-between min-w-0">
                     <div>
                       <span className="text-[10px] font-bold text-amber-500 uppercase notranslate" translate="no">
@@ -124,42 +94,32 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
                       <span>•</span>
                       <span>{item.date ? new Date(item.date).toLocaleDateString() : ""}</span>
                       <div className="flex items-center gap-3 ml-auto text-sm">
-                        <button onClick={(e)=>toggleStatus(item.id,'read',e)}>
-                          {status[item.id]?.read ? <span className="text-green-500">✔️</span> : "○"}
-                        </button>
+                        <button onClick={(e)=>toggleStatus(item.id,'read',e)}>{status[item.id]?.read ? <span className="text-green-500">✔️</span> : "○"}</button>
                         <button onClick={(e)=>toggleStatus(item.id,'star',e)} className={status[item.id]?.star ? "text-yellow-400":"text-slate-500"}>★</button>
                         <button onClick={(e)=>toggleStatus(item.id,'heart',e)} className={status[item.id]?.heart ? "text-red-500":"text-slate-500"}>♥</button>
                       </div>
                     </div>
                   </div>
                   
-                  {/* 🚀 구글 번역 버그 및 404 차단을 우회하기 위한 CSS 배경 주입 방식 레이아웃 */}
-                  {validImageUrl && (
-                    <div 
-                      className="w-20 h-20 flex-shrink-0 rounded-lg bg-slate-800 bg-cover bg-center notranslate"
-                      translate="no"
-                      style={{ 
-                        backgroundImage: `url(${validImageUrl}), url(${fallbackUrl})` 
-                      }}
-                    />
-                  )}
+                  {/* 🚀 우측 이미지 영역: 조건문 걷어내고 무조건 렌더링하도록 고정, 엑박 방지용 멀티풀 백그라운드 적용 */}
+                  <div 
+                    className="w-20 h-20 flex-shrink-0 rounded-lg bg-slate-800 bg-cover bg-center notranslate"
+                    translate="no"
+                    style={{ 
+                      backgroundImage: `url(${finalImageUrl}), url('https://picsum.photos/200?q=blockchain')` 
+                    }}
+                  />
+
                 </div>
               </div>
 
-              <div 
-                className={`transition-all duration-300 ease-in-out ${expandedId === item.id ? 'max-h-[2000px] opacity-100 border-t border-slate-700/50' : 'max-h-0 opacity-0 overflow-hidden'}`}
-              >
+              <div className={`transition-all duration-300 ease-in-out ${expandedId === item.id ? 'max-h-[2000px] opacity-100 border-t border-slate-700/50' : 'max-h-0 opacity-0 overflow-hidden'}`}>
                 <div className="p-4 bg-slate-900/50">
                   <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap mb-4">
                     {stripHtml(item.content || "") || `${stripHtml(item.title)}에 대한 자세한 내용을 확인하려면 아래 출처 링크를 클릭하세요.`}
                   </div>
                   <div className="flex justify-end">
-                    <a 
-                      href={item.url} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors"
-                    >
+                    <a href={item.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-xs font-bold text-blue-400 hover:text-blue-300">
                       출처 기사 보기 →
                     </a>
                   </div>
@@ -169,9 +129,7 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
           );
         })
       ) : (
-        <div className="text-center py-12 text-slate-500 text-sm">
-          아직 등록된 실시간 뉴스가 없습니다.
-        </div>
+        <div className="text-center py-12 text-slate-500 text-sm">아직 등록된 실시간 뉴스가 없습니다.</div>
       )}
     </section>
   );
