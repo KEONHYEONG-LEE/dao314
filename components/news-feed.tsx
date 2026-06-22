@@ -61,6 +61,15 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
       try {
         const response = await fetch(`/api/fetch-news?category=${selectedCategory}`); 
         const allData = await response.json();
+        
+        // 🚀 [디버깅 로그] 브라우저 개발자 도구(F12) 콘솔에서 데이터 키 구조를 확인하기 위함
+        console.log("=== GPNR 받아온 뉴스 데이터 샘플 ===");
+        if (allData && allData.length > 0) {
+          console.log("첫 번째 뉴스 객체 전체 구조:", allData[0]);
+        } else {
+          console.log("받아온 뉴스 데이터 배열이 비어있습니다.");
+        }
+
         setNews(allData || []);
       } catch (error) {
         console.error("데이터 로드 실패:", error);
@@ -141,22 +150,4 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
               >
                 <div className="p-4 bg-slate-900/50">
                   <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap mb-4">
-                    {/* 정제된 원문 텍스트만 출력 */}
-                    {item.content ? stripHtml(item.content) : "상세 내용을 불러올 수 없습니다."}
-                  </div>
-                  <a 
-                    href={item.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center text-[12px] text-amber-500 font-medium hover:underline"
-                  >
-                    출처에서 원문 보기 →
-                  </a>
-                </div>
-              </div>
-            </div>
-          );
-        })
-      ) : (
-        <div className="text-center py-20 text-slate-500 text-sm">
-          {loading ? "
+                    {/* 정제된 원문 텍스트만 출력
