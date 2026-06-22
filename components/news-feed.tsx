@@ -62,7 +62,6 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
         const response = await fetch(`/api/fetch-news?category=${selectedCategory}`); 
         const allData = await response.json();
         
-        // 🚀 [디버깅 로그] 브라우저 개발자 도구(F12) 콘솔에서 데이터 키 구조를 확인하기 위함
         console.log("=== GPNR 받아온 뉴스 데이터 샘플 ===");
         if (allData && allData.length > 0) {
           console.log("첫 번째 뉴스 객체 전체 구조:", allData[0]);
@@ -98,6 +97,8 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
         news.map((item) => {
           // 백엔드 데이터에서 가용한 이미지 주소 추출
           const validImageUrl = item.imageUrl || item.image || item.urlToImage;
+          const fallbackSig = encodeURIComponent(item.title.substring(0, 5));
+          const fallbackUrl = `https://picsum.photos/400/300?sig=${fallbackSig}&q=crypto`;
 
           return (
             <div 
@@ -132,21 +133,15 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
                     </div>
                   </div>
                   
-                  {/* 🚀 실시간 404 차단 및 구글 프록시 환경 대응 완전 방어 이미지 레이아웃 */}
+                  {/* 🚀 구글 번역 버그 및 404 차단을 우회하기 위한 CSS 배경 주입 방식 레이아웃 */}
                   {validImageUrl && (
-                    <div className="w-20 h-20 flex-shrink-0 notranslate" translate="no">
-                      <img 
-                        src={validImageUrl} 
-                        alt="" 
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover rounded-lg bg-slate-800" 
-                        onError={(e) => {
-                          // 링크가 깨졌거나 차단당한 경우, 테크니컬한 가상 고정 이미지로 실시간 교체하여 엑박 원천 방지
-                          const fallbackSig = encodeURIComponent(item.title.substring(0, 5));
-                          (e.target as HTMLImageElement).src = `https://picsum.photos/400/300?sig=${fallbackSig}&q=crypto`;
-                        }}
-                      />
-                    </div>
+                    <div 
+                      className="w-20 h-20 flex-shrink-0 rounded-lg bg-slate-800 bg-cover bg-center notranslate"
+                      translate="no"
+                      style={{ 
+                        backgroundImage: `url(${validImageUrl}), url(${fallbackUrl})` 
+                      }}
+                    />
                   )}
                 </div>
               </div>
