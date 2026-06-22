@@ -132,13 +132,19 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
                     </div>
                   </div>
                   
-                  {/* 이미지 주소가 존재할 때만 우측에 레이아웃을 렌더링 (구글 번역 버그 방지 속성 포함) */}
+                  {/* 🚀 실시간 404 차단 및 구글 프록시 환경 대응 완전 방어 이미지 레이아웃 */}
                   {validImageUrl && (
                     <div className="w-20 h-20 flex-shrink-0 notranslate" translate="no">
                       <img 
                         src={validImageUrl} 
                         alt="" 
+                        referrerPolicy="no-referrer"
                         className="w-full h-full object-cover rounded-lg bg-slate-800" 
+                        onError={(e) => {
+                          // 링크가 깨졌거나 차단당한 경우, 테크니컬한 가상 고정 이미지로 실시간 교체하여 엑박 원천 방지
+                          const fallbackSig = encodeURIComponent(item.title.substring(0, 5));
+                          (e.target as HTMLImageElement).src = `https://picsum.photos/400/300?sig=${fallbackSig}&q=crypto`;
+                        }}
                       />
                     </div>
                   )}
@@ -150,4 +156,28 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
               >
                 <div className="p-4 bg-slate-900/50">
                   <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap mb-4">
-                    {/* 정제된 원문 텍스트만 출력
+                    {stripHtml(item.content || "") || `${stripHtml(item.title)}에 대한 자세한 내용을 확인하려면 아래 출처 링크를 클릭하세요.`}
+                  </div>
+                  <div className="flex justify-end">
+                    <a 
+                      href={item.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors"
+                    >
+                      출처 기사 보기 →
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })
+      ) : (
+        <div className="text-center py-12 text-slate-500 text-sm">
+          아직 등록된 실시간 뉴스가 없습니다.
+        </div>
+      )}
+    </section>
+  );
+}
