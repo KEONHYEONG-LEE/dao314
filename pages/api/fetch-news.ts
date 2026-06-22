@@ -11,7 +11,6 @@ const CATEGORY_KEYWORDS: { [key: string]: string } = {
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // GET 요청(뉴스 조회)만 순수하게 허용
   if (req.method !== 'GET') {
     return res.status(405).json({ error: "허용되지 않는 요청 메서드입니다." });
   }
@@ -43,11 +42,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const generatedId = `google-${currentCat}-${index}`;
       const cleanTitle = titleParts.join(' - ');
 
-      // 🚀 [오늘 밤 엑박 버그 최종 격파]
-      // 구글 번역 프록시와 Vercel CDN 캐시가 복잡한 쿼리(?keyword&sig=...)를 만나면 주소를 부수고 404를 냅니다.
-      // 이를 방지하기 위해 주소창 구조를 가장 원시적이고 완벽한 단일 경로 형태(id/숫자)로 고정합니다.
-      // 인덱스 기반으로 10번부터 50번까지 고유한 이미지가 겹치지 않고 순서대로 100% 서빙됩니다.
-      const imageId = 10 + (index % 40); 
+      // 🚀 구글 번역 프록시와 캐시 차단을 완전히 우회하기 위해 가장 정적이고 정형화된 경로로 고정합니다.
+      const imageId = 10 + (index % 30);
       
       return {
         id: generatedId,
@@ -57,8 +53,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         date: pubDate,
         category: currentCat,
         content: cleanDesc || `${cleanTitle}에 대한 자세한 내용을 확인하려면 아래 출처 링크를 클릭하세요.`,
-        
-        // 🛠️ 번역기와 캐시 서버가 절대 주소를 변형할 수 없는 'ID 다이렉트 고정식' 무적 주소 체계
         imageUrl: `https://picsum.photos/id/${imageId}/200/200`
       };
     });
