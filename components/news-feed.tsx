@@ -69,12 +69,10 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
   return (
     <section className={`pb-24 space-y-3 mt-4 transition-opacity duration-300 ${loading ? 'opacity-50' : 'opacity-100'}`}>
       {news.length > 0 ? (
-        news.map((item) => {
-          // 🚀 [오늘 밤 완전 종결 조치] 
-          // 백엔드 데이터의 유무나 주소 오염 여부를 완전히 무시합니다.
-          // 기사 고유 제목과 날짜를 융합하여 Unsplash 소스로부터 '100% 무조건 보장되는 무작위 테크/크립토 이미지 주소'를 강제 생성합니다.
-          const uniqueSeed = encodeURIComponent(item.title.substring(0, 4) + (item.date || "gpnr"));
-          const forcedRandomUrl = `https://images.unsplash.com/featured/200x200?crypto,blockchain,tech&sig=${uniqueSeed}`;
+        news.map((item, index) => {
+          // 🚀 [해결책 1] 주소 유실을 방지하기 위해 심플한 다이렉트 랜덤 인덱스 할당
+          const imgIndex = (index % 5) + 1; 
+          const fallbackUrl = `https://picsum.photos/id/${imgIndex + 10}/200/200`;
 
           return (
             <div key={item.id} className="block bg-[#1e293b] rounded-xl border border-slate-700/50 shadow-md overflow-hidden">
@@ -103,14 +101,25 @@ export default function NewsFeed({ selectedCategory }: { selectedCategory: strin
                     </div>
                   </div>
                   
-                  {/* 🚀 우측 이미지 영역: 어떠한 조건문도 없이 무조건 20x20 크기의 박스를 강제로 뷰포트에 고정합니다. */}
+                  {/* 🚀 [해결책 2] 번역기 습격 및 외부 캐시 서버 차단을 우회하는 절대 방어존 생성 */}
+                  {/* 정적 그라데이션 컬러 배경(bg-gradient-to-br)을 기저에 깔아두어, 외부 이미지가 터져도 박스가 절대 깨지지 않고 고급스러운 UI 유지 */}
                   <div 
-                    className="w-20 h-20 flex-shrink-0 rounded-lg bg-slate-800 bg-cover bg-center notranslate border border-slate-700/30 shadow-inner"
+                    className="w-20 h-20 flex-shrink-0 rounded-lg bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-center border border-slate-600/40 shadow-inner translate-z-0"
+                    style={{ backgroundImage: `url(${item.imageUrl || fallbackUrl})` }}
+                    data-google-lang="no"
                     translate="no"
-                    style={{ 
-                      backgroundImage: `url(${forcedRandomUrl})` 
-                    }}
-                  />
+                  >
+                    {/* 일반 <img> 태그를 숨겨놓아 브라우저가 정식 렌더링에 실패하더라도 캐시 엑박이 부모 박스를 망가뜨리지 못하게 격리 */}
+                    <img 
+                      src={item.imageUrl || fallbackUrl} 
+                      alt="" 
+                      className="hidden" 
+                      onError={(e) => {
+                        // 🛑 에러 발생 시 부모 박스의 배경 이미지를 제거하여 완벽하고 깔끔한 다크 그라데이션 박스로 대체
+                        (e.currentTarget.parentElement as HTMLElement).style.backgroundImage = 'none';
+                      }}
+                    />
+                  </div>
 
                 </div>
               </div>
