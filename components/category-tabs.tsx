@@ -3,36 +3,56 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// [수정] 달력(event) 완전 삭제 및 9개 점 메뉴판 아이콘 배치 순서/한글 제목과 100% 일치화
+// [수정] 기본 영어 모드 지원을 위해 enLabel 필드 추가
 const categories = [
-  { id: "all", label: "주요뉴스" },
-  { id: "mainnet", label: "메인넷" },
-  { id: "node", label: "노드" },
-  { id: "mining", label: "채굴" },
-  { id: "wallet", label: "지갑" },
-  { id: "browser", label: "브라우저" },
-  { id: "roadmap", label: "로드맵" },
-  { id: "whitepaper", label: "백서" },
-  { id: "community", label: "커뮤니티" },
-  { id: "commerce", label: "커머스" },
-  { id: "kyc", label: "KYC" },
-  { id: "developer", label: "개발자" },
-  { id: "ecosystem", label: "부동산" },     // [매핑 통일] 9개 점 메뉴의 '부동산'
-  { id: "outlook", label: "전망시세" },     // [매핑 통일] 기존 listing -> index.tsx의 outlook과 싱크 맞춤
-  { id: "price", label: "가격" },
-  { id: "security", label: "보안" },
-  { id: "legal", label: "관련법규" }
+  { id: "all", label: "주요뉴스", enLabel: "Top News" },
+  { id: "mainnet", label: "메인넷", enLabel: "Mainnet" },
+  { id: "node", label: "노드", enLabel: "Node" },
+  { id: "mining", label: "채굴", enLabel: "Mining" },
+  { id: "wallet", label: "지갑", enLabel: "Wallet" },
+  { id: "browser", label: "브라우저", enLabel: "Browser" },
+  { id: "roadmap", label: "로드맵", enLabel: "Roadmap" },
+  { id: "whitepaper", label: "백서", enLabel: "Whitepaper" },
+  { id: "community", label: "커뮤니티", enLabel: "Community" },
+  { id: "commerce", label: "커머스", enLabel: "Commerce" },
+  { id: "kyc", label: "KYC", enLabel: "KYC" },
+  { id: "developer", label: "개발자", enLabel: "Developers" },
+  { id: "ecosystem", label: "부동산", enLabel: "Real Estate" },
+  { id: "outlook", label: "전망시세", enLabel: "Price Outlook" },
+  { id: "price", label: "가격", enLabel: "Price" },
+  { id: "security", label: "보안", enLabel: "Security" },
+  { id: "legal", label: "관련법규", enLabel: "Regulations" }
 ];
 
 interface CategoryTabsProps {
   selectedCategory: string;
   onCategoryChange: (category: string) => void;
+  language?: string; // [추가] 부모 컴포넌트에서 언어 상태를 직접 넘겨받을 수 있도록 허용
 }
 
-export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTabsProps) {
+export function CategoryTabs({ selectedCategory, onCategoryChange, language }: CategoryTabsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
+  const [currentLang, setCurrentLang] = useState(language || "en"); // 기본 영어 모드
+
+  // [추가] Props로 language가 안 넘어올 경우를 대비해 localStorage 연동 안전장치 구성
+  useEffect(() => {
+    if (language) {
+      setCurrentLang(language);
+    } else {
+      const savedLang = localStorage.getItem("language") || "en";
+      setCurrentLang(savedLang);
+
+      // 언어 변경 이벤트 감지
+      const handleStorageChange = () => {
+        const updatedLang = localStorage.getItem("language") || "en";
+        setCurrentLang(updatedLang);
+      };
+      window.addEventListener("storage", handleStorageChange);
+      return () => window.removeEventListener("storage", handleStorageChange);
+    }
+  }, [language]);
 
   const handleScroll = () => {
     if (scrollRef.current) {
@@ -102,7 +122,8 @@ export function CategoryTabs({ selectedCategory, onCategoryChange }: CategoryTab
                   : "bg-slate-800/40 text-slate-400 border-white/[0.05] hover:border-slate-600"
               }`}
             >
-              {category.label}
+              {/* [수정] 영어 모드('en')일 때는 enLabel을, 한국어 모드일 때는 label을 출력 */}
+              {currentLang === "en" ? category.enLabel : category.label}
             </button>
           ))}
         </div>
