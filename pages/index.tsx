@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Header } from "../components/Header"; 
 
-// [완벽 수정] 실제 폴더 구조의 소문자-하이픈 파일명과 정확히 매싱합니다.
+// [완벽 수정] 실제 폴더 구조의 소문자-하이픈 파일명과 정확히 매칭합니다.
 import { CategoryTabs } from "../components/category-tabs";
 import { CategoryNews } from "../components/category-news";
 
@@ -48,7 +48,7 @@ export default function Home() {
           setTickerStats(hotHeadlines);
         }
       } catch (error) {
-        console.error("전광판 실시간 뉴스 연동 실패:", order);
+        console.error("전광판 실시간 뉴스 연동 실패:", error);
       }
     };
 
@@ -89,7 +89,7 @@ export default function Home() {
   };
 
   // -------------------------------------------------------------
-  // [인증 가드 로직 추가] 
+  // [인증 가드 로직 고도화 및 보완] 
   // 1. Pi 브라우저 및 SDK 로딩 중일 때는 화면을 완전히 가려서 통과하지 못하게 차단합니다.
   if (isLoading) {
     return (
@@ -100,18 +100,24 @@ export default function Home() {
     );
   }
 
-  // 2. 로딩이 끝났는데 유저 정보가 없거나 Pi ID(username)를 정상적으로 가져오지 못했다면 진입을 막습니다.
+  // 2. 56자리 지갑 주소 형태의 식별자(username 또는 uid)가 비어 있거나 인증이 유효하지 않은 경우 진입 차단
   if (!isAuthenticated || !user || !user.username) {
     return (
       <div className="min-h-screen bg-[#0f172a] flex flex-col justify-center items-center text-slate-100 px-6 text-center">
-        <p className="text-base font-bold text-red-400 mb-2">인증 오류</p>
-        <p className="text-sm text-slate-400">Pi ID를 확인할 수 없습니다. Pi 브라우저를 통해 정상적으로 다시 접속해 주세요.</p>
+        <p className="text-base font-bold text-red-400 mb-2">지갑 연동 실패</p>
+        <p className="text-sm text-slate-400">파이 네트워크 지갑 식별 정보를 가져올 수 없습니다.</p>
+        <p className="text-xs text-slate-500 mt-1">Pi 브라우저를 통해 정상적으로 다시 접속해 주세요.</p>
       </div>
     );
   }
   // -------------------------------------------------------------
 
-  // 3. 위의 모든 방어벽(인증)을 통과한 정상 유저(user.username 존재)에게만 메인 레이아웃을 표출합니다.
+  // UI 가독성을 위해 56자리의 긴 아이디를 앞 6자리, 뒤 6자리로 축약합니다 (예: GAC7XH...ZXXPBB)
+  const displayId = user.username.length > 15
+    ? `${user.username.substring(0, 6)}...${user.username.substring(user.username.length - 6)}`
+    : user.username;
+
+  // 3. 위의 모든 방어벽(인증)을 통과한 정상 유저(56자리 주소 존재)에게만 메인 레이아웃을 표출합니다.
   return (
     <main 
       className="min-h-screen bg-[#0f172a] text-slate-100 touch-pan-y"
@@ -152,8 +158,21 @@ export default function Home() {
         />
       </div>
 
-      {/* 4. 메인 콘텐츠 및 투표 피드 영역 (CategoryNews에 선택된 카테고리 필터값 전달) */}
-      <div className="max-w-3xl mx-auto px-4 transition-opacity duration-300 mt-4">
+      {/* 4. 연동 정보 배너 (56자리 주소 인식 성공 여부 직관적 표시) */}
+      <div className="max-w-3xl mx-auto px-4 mt-3">
+        <div className="bg-[#1e293b] border border-slate-700/60 rounded-xl p-3 flex items-center justify-between shadow-inner">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span className="text-xs text-slate-400 font-medium">Pi 네트워크 지갑 연동됨</span>
+          </div>
+          <span className="text-xs font-mono font-bold text-purple-400 bg-purple-950/40 px-2 py-1 rounded border border-purple-800/30">
+            {displayId}
+          </span>
+        </div>
+      </div>
+
+      {/* 5. 메인 콘텐츠 및 투표 피드 영역 (CategoryNews에 선택된 카테고리 필터값 전달) */}
+      <div className="max-w-3xl mx-auto px-4 transition-opacity duration-300 mt-2">
         <CategoryNews selectedCategory={activeCategory} />
       </div>
 
