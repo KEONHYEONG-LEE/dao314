@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 
 const PiLogin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // undefined 오류 방지를 위해 로그인한 유저의 실제 Pi ID를 담는 상태 추가
+  const [piUserId, setPiUserId] = useState<string | null>(null);
   const [isBottomLangOpen, setIsBottomLangOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -20,8 +22,12 @@ const PiLogin = () => {
     };
     initPi();
 
+    // 초기 로드 시 로컬 스토리지에서 ID 확인 및 상태 동기화
     const savedId = localStorage.getItem('pi_user_id');
-    if (savedId) setIsLoggedIn(true);
+    if (savedId) {
+      setIsLoggedIn(true);
+      setPiUserId(savedId);
+    }
 
     if (typeof document !== 'undefined') {
       const style = document.createElement('style');
@@ -83,27 +89,50 @@ const PiLogin = () => {
       if (confirm("로그아웃 하시겠습니까?")) {
         localStorage.removeItem('pi_user_id');
         setIsLoggedIn(false);
+        setPiUserId(null);
         window.location.reload();
       }
       return;
     }
 
-    try {
-      if (window.Pi?.authenticate) {
-        const auth = await window.Pi.authenticate(['payments'], (payment: any) => {});
-        localStorage.setItem('pi_user_id', auth.user.uid);
-        setIsLoggedIn(true);
-        alert(`${auth.user.username}님, 환영합니다!`);
-      } else {
-        throw new Error("SDK not ready");
-      }
-    } catch (err) {
-      const id = prompt("Pi ID를 입력해주세요:");
-      if (id && id.length >= 20) {
-        localStorage.setItem('pi_user_id', id);
-        setIsLoggedIn(true);
-      }
+    if (!window.Pi || !window.Pi.authenticate) {
+      alert("Pi SDK가 로드되지 않았거나 지원하지 않는 환경입니다.");
+      return;
     }
+
+    // Pi SDK 올바른 인증 흐름으로 구조 개편
+    window.Pi.authenticate(['payments'], (payment: any) => {
+      console.log("Payment callback activated:", payment);
+    })
+    .then((auth: any) => {
+      if (auth && auth.user && auth.user.uid) {
+        const uid = auth.user.uid;
+        const username = auth.user.username || "Pi 유저";
+        
+        localStorage.setItem('pi_user_id', uid);
+        setPiUserId(uid);
+        setIsLoggedIn(true);
+        alert(`${username}님, 환영합니다!`);
+      } else {
+        throw new Error("인증 데이터 구조가 올바르지 않습니다.");
+      }
+    })
+    .catch((err: any) => {
+      console.error("Pi SDK 인증 실패, 수동 입력으로 전환:", err);
+      
+      const id = prompt("Pi SDK 자동 연동 실패. Pi ID(지갑 식별자)를 직접 입력해주세요:");
+      if (id) {
+        const cleanedId = id.trim();
+        if (cleanedId.length >= 20) {
+          localStorage.setItem('pi_user_id', cleanedId);
+          setPiUserId(cleanedId);
+          setIsLoggedIn(true);
+          alert("입력하신 ID로 연동되었습니다.");
+        } else {
+          alert("올바르지 않은 ID 형식입니다. (20자 이상 필요)");
+        }
+      }
+    });
   };
 
   const handleLanguageChange = (code: string) => {
@@ -133,6 +162,7 @@ const PiLogin = () => {
 
         <button 
           onClick={handleLogin}
+          title={isLoggedIn && piUserId ? `접속된 ID: ${piUserId}` : "로그인"}
           className={cn(
             "flex items-center justify-center h-9 w-9 rounded-full border transition-all",
             isLoggedIn ? "bg-blue-600 border-blue-400 shadow-lg" : "bg-[#1e293b] border-slate-700"
