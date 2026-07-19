@@ -1,50 +1,66 @@
-import { useEffect } from 'react';
-import { usePiNetworkAuthentication } from '../hooks/use-pi-network-authentication';
+import { useState, useEffect } from 'react';
 
-export default function HomePage() {
-  // 훅에서 user, isAuthenticated, isLoading을 모두 가져옵니다.
-  const { user, isAuthenticated, isLoading } = usePiNetworkAuthentication();
+// 파이 네트워크 유저 객체 타입 정의
+interface PiUser {
+  username: string; // 56자리 지갑 주소/UID가 들어갈 자리
+  uid?: string;
+}
+
+export function usePiNetworkAuthentication() {
+  const [user, setUser] = useState<PiUser | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // 1. 아직 SDK가 인증 정보를 로딩 중이라면 아무것도 하지 않고 대기합니다.
-    if (isLoading) return;
+    // 브라우저 환경이 아닐 경우 예외 처리
+    if (typeof window === 'undefined') return;
 
-    // 2. 로딩은 끝났는데 인증이 실패했거나 유저 정보가 없다면 넘어가지 못하게 막습니다.
-    if (!isAuthenticated || !user || !user.username) {
-      console.log("Pi 네트워크 인증을 기다리고 있거나 실패했습니다.");
-      return;
-    }
+    const initializePiAuth = async () => {
+      try {
+        // 1. 파이 브라우저 및 SDK 로드 확인
+        if (!window.Pi) {
+          console.warn("Pi SDK를 찾을 수 없습니다. 파이 브라우저로 접속 중인지 확인하세요.");
+          setIsLoading(false);
+          return;
+        }
 
-    // 3. Pi ID(username)가 확실하게 존재할 때만 환영 메시지를 띄우고 다음 로직을 실행합니다.
-    alert(`${user.username}님, 환영합니다!`);
-    
-    // 이후 로그인 완료 후 페이지 전환이나 데이터 로드 로직 실행...
-    
-  }, [isLoading, isAuthenticated, user]);
+        // 파이 SDK 초기화 (샌드박스 플래그는 환경에 맞게 조절 가능)
+        window.Pi.init({ version: "2.0", sandbox: false });
 
-  // Pi 브라우저에서 인증이 완료될 때까지 로딩 화면을 보여주어 진입을 막습니다.
-  if (isLoading) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <p>Pi Network 로그인 확인 중...</p>
-      </div>
-    );
-  }
+        // 2. 파이 네트워크 인증 스트림 시작
+        const scopes = ['username', 'payments', 'wallet_address'];
+        
+        const authResult = await window.Pi.authenticate(scopes, (onIncompletePaymentFound) => {
+          console.log("미완료된 결제 발견:", onIncompletePaymentFound);
+        });
 
-  if (!isAuthenticated || !user) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column' }}>
-        <p>Pi 브라우저를 통해 정상적으로 접속해 주세요.</p>
-      </div>
-    );
-  }
+        // 3. 인증 성공 시 데이터 매핑
+        if (authResult && authResult.user) {
+          // SDK 버전에 따라 uid, username, 혹은 wallet_address 중 56자리 값을 낚아챕니다.
+          const rawId = authResult.user.uid || authResult.user.username || '';
+          
+          if (rawId) {
+            setUser({
+              // 메인 페이지에서 혼선이 없도록 56자리 긴 ID를 username 필드에 강제로 할당합니다.
+              username: rawId, 
+              uid: authResult.user.uid
+            });
+            setIsAuthenticated(true);
+          } else {
+            console.error("인증은 성공했으나 유저 식별자(ID)를 추출할 수 없습니다.");
+          }
+        }
+      } catch (error) {
+        console.error("Pi Network 인증 중 오류 발생:", error);
+        setIsAuthenticated(false);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  // 본문 화면 렌더링
-  return (
-    <div>
-      {/* GPNR 메인 콘텐츠 */}
-      <h1>GPNR 뉴스룸</h1>
-      <p>{user.username}님 로그인됨</p>
-    </div>
-  );
+    initializePiAuth();
+  }, []);
+
+  return { user, isAuthenticated, isLoading };
 }
