@@ -7,6 +7,9 @@ import { Header } from "../components/Header";
 import { CategoryTabs } from "../components/category-tabs";
 import { CategoryNews } from "../components/category-news";
 
+// [추가] Pi 네트워크 인증 상태를 체크하기 위한 커스텀 훅 임포트
+import { usePiNetworkAuthentication } from "../hooks/use-pi-network-authentication";
+
 // [기능 유지] "poll" 카테고리를 두 번째 자리에 명시적으로 포함한 18개 고유 ID 스키마
 const CATEGORIES = [
   "all", "poll", "mainnet", "node", "mining", "wallet", "browser", 
@@ -18,6 +21,9 @@ const CATEGORIES = [
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState('all');
   
+  // [추가] Pi ID 인증 상태 및 유저 데이터 가져오기
+  const { user, isAuthenticated, isLoading } = usePiNetworkAuthentication();
+
   // 한국어 버전 전광판 기본 메시지 세팅
   const [tickerStats, setTickerStats] = useState<string[]>([
     "📢 실시간 글로벌 파이 뉴스룸 핫이슈 동기화 중입니다...",
@@ -42,7 +48,7 @@ export default function Home() {
           setTickerStats(hotHeadlines);
         }
       } catch (error) {
-        console.error("전광판 실시간 뉴스 연동 실패:", error);
+        console.error("전광판 실시간 뉴스 연동 실패:", order);
       }
     };
 
@@ -82,6 +88,30 @@ export default function Home() {
     eXRef.current = null;
   };
 
+  // -------------------------------------------------------------
+  // [인증 가드 로직 추가] 
+  // 1. Pi 브라우저 및 SDK 로딩 중일 때는 화면을 완전히 가려서 통과하지 못하게 차단합니다.
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#0f172a] flex flex-col justify-center items-center text-slate-100">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-purple-500 mb-4"></div>
+        <p className="text-sm font-medium tracking-wide">Pi Network 로그인 정보 동기화 중...</p>
+      </div>
+    );
+  }
+
+  // 2. 로딩이 끝났는데 유저 정보가 없거나 Pi ID(username)를 정상적으로 가져오지 못했다면 진입을 막습니다.
+  if (!isAuthenticated || !user || !user.username) {
+    return (
+      <div className="min-h-screen bg-[#0f172a] flex flex-col justify-center items-center text-slate-100 px-6 text-center">
+        <p className="text-base font-bold text-red-400 mb-2">인증 오류</p>
+        <p className="text-sm text-slate-400">Pi ID를 확인할 수 없습니다. Pi 브라우저를 통해 정상적으로 다시 접속해 주세요.</p>
+      </div>
+    );
+  }
+  // -------------------------------------------------------------
+
+  // 3. 위의 모든 방어벽(인증)을 통과한 정상 유저(user.username 존재)에게만 메인 레이아웃을 표출합니다.
   return (
     <main 
       className="min-h-screen bg-[#0f172a] text-slate-100 touch-pan-y"
