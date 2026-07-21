@@ -1,8 +1,9 @@
 // @ts-nocheck
 "use client";
 
-import PiLogin from "./PiLogin"; 
 import { useEffect, useState, useMemo, useCallback } from "react";
+// [핵심] 공통 파이 인증 훅 연결 (undefined 알림 유발하는 PiLogin 제거)
+import { usePiNetworkAuthentication } from "../hooks/use-pi-network-authentication";
 
 interface GpnrHeaderProps {
   currentCategory?: string;                     
@@ -14,24 +15,26 @@ interface LauncherItem {
   id: string;
   icon: string;
   label: string;
-  enLabel: string; // [추가] 영어 기본 모드용 라벨 정의
+  enLabel: string;
 }
 
 export function GpnrHeader({ 
   currentCategory = "all", 
   onCategoryChange,
-  currentLanguage // [수정] 기본값 지정을 제거하고, 아래 useEffect에서 하이브리드로 체크하도록 개선
+  currentLanguage
 }: GpnrHeaderProps) {
   const [mounted, setMounted] = useState<boolean>(false);
   const [isLauncherOpen, setIsLauncherOpen] = useState<boolean>(false); 
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false); 
-  const [currentLang, setCurrentLang] = useState<string>("en"); // [추가] 기본 영어 모드로 초기화
+  const [currentLang, setCurrentLang] = useState<string>("en");
+
+  // 공통 Pi 인증 상태 및 로그아웃/ID 재설정 함수
+  const { user, isAuthenticated, logout } = usePiNetworkAuthentication();
 
   const localToday = useMemo(() => new Date(), []);
   const [calendarYear, setCalendarYear] = useState<number>(2026);
   const [calendarMonth, setCalendarMonth] = useState<number>(4);
 
-  // [추가] 언어 설정 로컬 스토리지 동기화 및 감지
   useEffect(() => {
     setMounted(true);
     setCalendarYear(localToday.getFullYear());
@@ -75,7 +78,7 @@ export function GpnrHeader({
       setCalendarYear(calendarYear + 1);
       setCalendarMonth(0);
     } else {
-      setCalendarMonth(calendarMonth - 1);
+      setCalendarMonth(calendarMonth + 1);
     }
   };
 
@@ -84,7 +87,7 @@ export function GpnrHeader({
       try {
         await (window as any).Pi.createPayment({
           amount: 0.001,
-          memo: currentLang === "ko" ? "GPNR 서비스 후원" : "GPNR Service Donation", // [수정] 후원 메모 다국어 적용
+          memo: currentLang === "ko" ? "GPNR 서비스 후원" : "GPNR Service Donation",
           metadata: { type: "one-time-donation", app: "GPNR" }
         }, {
           onReadyForServerApproval: (paymentId: string) => {
@@ -105,7 +108,6 @@ export function GpnrHeader({
     }
   }, [currentLang]);
 
-  // [수정] 영어 기본 모드 연동을 위해 모든 카테고리에 enLabel 추가 완료
   const FIXED_LAUNCHER_ITEMS: LauncherItem[] = [
     { id: "all", icon: "📱", label: "전체", enLabel: "Top News" },
     { id: "mainnet", icon: "⚡", label: "메인넷", enLabel: "Mainnet" },
@@ -130,11 +132,19 @@ export function GpnrHeader({
 
   if (!mounted) return null;
 
+  // 유저 지갑/KYC ID 축약 표시 (예: GAC7XH...ZXXPBB)
+  const displayId = user?.username
+    ? user.username.length > 12
+      ? `${user.username.substring(0, 5)}...${user.username.substring(user.username.length - 4)}`
+      : user.username
+    : "";
+
   return (
     <>
       <header className="sticky top-0 z-[60] w-full bg-[#0f172a]/80 border-b border-slate-800 backdrop-blur-xl transition-colors notranslate">
         <div className="mx-auto max-w-7xl px-3">
           <div className="flex h-[44px] items-center justify-between">
+            {/* 로고 영역 */}
             <div className="flex items-center gap-2">
               <span 
                 className="font-black text-lg tracking-tighter" 
@@ -155,7 +165,9 @@ export function GpnrHeader({
               </span>
             </div>
             
+            {/* 우측 아이콘 및 지갑 인증 배너 */}
             <div className="flex items-center gap-2">
+              {/* 후원 버튼 */}
               <button 
                 onClick={handleDonation} 
                 className="flex items-center gap-0.5 bg-[#f7a145]/20 text-[#f7a145] px-2 py-0.5 rounded-full border border-[#f7a145]/30 hover:bg-[#f7a145]/30 transition-colors text-[10px] font-bold"
@@ -164,6 +176,7 @@ export function GpnrHeader({
                 <span>0.001</span>
               </button>
 
+              {/* 9개 점 / 카테고리 메뉴 토글 버튼 */}
               <button
                 onClick={() => setIsLauncherOpen(!isLauncherOpen)}
                 className={`px-2 py-1 rounded-lg text-lg font-bold transition-all ${isLauncherOpen ? 'bg-slate-800 text-[#deff9a]' : 'text-slate-300 hover:bg-slate-800/60'}`}
@@ -171,9 +184,17 @@ export function GpnrHeader({
                 ☰
               </button>
 
-              <div className="flex items-center scale-90 origin-right">
-                <PiLogin />
-              </div>
+              {/* [수정 완료] 기존 PiLogin을 대체하여 안전하게 지갑 상태 표출 */}
+              {isAuthenticated && user ? (
+                <div className="flex items-center gap-1.5 bg-purple-950/40 border border-purple-800/40 px-2 py-0.5 rounded-lg text-[10px] font-mono text-purple-300 font-bold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>{displayId}</span>
+                </div>
+              ) : (
+                <div className="text-[10px] text-amber-400 bg-amber-950/30 border border-amber-800/40 px-2 py-0.5 rounded-lg font-medium">
+                  🔑 ID 미인증
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -196,7 +217,6 @@ export function GpnrHeader({
                   className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all group ${isSelected ? 'bg-slate-800 border-slate-600 font-bold' : 'bg-slate-800/40 border-transparent hover:bg-slate-800 hover:border-slate-700'}`}
                 >
                   <span className="text-2xl mb-1 group-hover:scale-110 transition-transform">{item.icon}</span>
-                  {/* [수정] 영어 모드일 때 enLabel 출력 */}
                   <span className="text-[11px] text-slate-300 text-center font-medium truncate w-full whitespace-nowrap">
                     {currentLang === "ko" ? item.label : item.enLabel}
                   </span>
@@ -204,6 +224,21 @@ export function GpnrHeader({
               );
             })}
           </div>
+
+          {/* 인증 상태일 때 ID 변경 / 해제 버튼 추가 */}
+          {isAuthenticated && (
+            <div className="mt-4 pt-3 border-t border-slate-800">
+              <button
+                onClick={() => {
+                  logout();
+                  setIsLauncherOpen(false);
+                }}
+                className="w-full py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 font-semibold text-xs rounded-xl transition-colors"
+              >
+                {currentLang === "ko" ? "KYC ID 해제 및 다시 입력" : "Reset KYC ID"}
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -219,7 +254,6 @@ export function GpnrHeader({
             </div>
             <div className="p-4">
               <div className="flex justify-between items-center mb-3">
-                {/* [수정] 연도 및 월 표기 방식 영어/한국어 최적화 */}
                 <div className="text-sm font-black text-[#deff9a] flex items-center gap-1">
                   {currentLang === "ko" ? (
                     <><span>{calendarYear}</span>년 <span>{calendarMonth + 1}</span>월</>
@@ -232,7 +266,6 @@ export function GpnrHeader({
                   <button onClick={handleNextMonth} className="hover:text-white px-2 py-0.5 bg-slate-800 rounded transition-colors">▶</button>
                 </div>
               </div>
-              {/* [수정] 요일 텍스트 다국어 처리 */}
               <div className="grid grid-cols-7 text-center text-[11px] font-bold text-slate-500 mb-2">
                 {currentLang === "ko" ? (
                   <><div className="text-red-400">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div className="text-blue-400">토</div></>
@@ -251,7 +284,6 @@ export function GpnrHeader({
                   );
                 })}
               </div>
-              {/* [수정] 하단 안내 문구 다국어 처리 */}
               <div className="mt-4 pt-3 border-t border-slate-800/60 text-[11px] text-slate-400">
                 <div className="flex items-center gap-2 text-[#f7a145] font-semibold mb-1">
                   <span className="w-1.5 h-1.5 bg-[#f7a145] rounded-full"></span>
