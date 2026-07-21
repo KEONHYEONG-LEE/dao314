@@ -3,14 +3,13 @@
 import { useState, useRef, useEffect } from "react";
 import { Header } from "../components/Header"; 
 
-// [완벽 수정] 실제 폴더 구조의 소문자-하이픈 파일명과 정확히 매칭합니다.
+// 실제 폴더 구조의 소문자-하이픈 파일명과 정확히 매칭
 import { CategoryTabs } from "../components/category-tabs";
 import { CategoryNews } from "../components/category-news";
 
-// [추가] Pi 네트워크 인증 상태를 체크하기 위한 커스텀 훅 임포트
+// Pi 네트워크 인증 상태 및 수동 로그인 함수 임포트
 import { usePiNetworkAuthentication } from "../hooks/use-pi-network-authentication";
 
-// [기능 유지] "poll" 카테고리를 두 번째 자리에 명시적으로 포함한 18개 고유 ID 스키마
 const CATEGORIES = [
   "all", "poll", "mainnet", "node", "mining", "wallet", "browser", 
   "roadmap", "whitepaper", "community", "commerce", "kyc", 
@@ -21,8 +20,12 @@ const CATEGORIES = [
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState('all');
   
-  // [추가] Pi ID 인증 상태 및 유저 데이터 가져오기
-  const { user, isAuthenticated, isLoading } = usePiNetworkAuthentication();
+  // Pi ID 인증 상태, 유저 데이터 및 수동 로그인/로그아웃 함수
+  const { user, isAuthenticated, isLoading, loginWithKycId, logout } = usePiNetworkAuthentication();
+
+  // KYC ID 수동 입력 팝업 상태 관리
+  const [inputKycId, setInputKycId] = useState("");
+  const [inputError, setInputError] = useState("");
 
   // 한국어 버전 전광판 기본 메시지 세팅
   const [tickerStats, setTickerStats] = useState<string[]>([
@@ -40,7 +43,6 @@ export default function Home() {
         if (allNews && allNews.length > 0) {
           const cleanText = (text: string) => text.replace(/<\/?[^>]+(>|$)/g, "").trim();
           
-          // 100% 우리말 포맷으로 헤드라인 넘버링 구성
           const hotHeadlines = allNews.slice(0, 5).map((item: any, idx: number) => {
             return `🔥 [실시간 핫이슈 ${idx + 1}] ${cleanText(item.title)}`;
           });
@@ -53,8 +55,6 @@ export default function Home() {
     };
 
     loadHotNewsForTicker();
-    
-    // 10분마다 데이터 자동 리로드
     const interval = setInterval(loadHotNewsForTicker, 10 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
@@ -88,55 +88,106 @@ export default function Home() {
     eXRef.current = null;
   };
 
-  // -------------------------------------------------------------
-  // [인증 가드 로직 고도화 및 보완] 
-  // 1. Pi 브라우저 및 SDK 로딩 중일 때는 화면을 완전히 가려서 통과하지 못하게 차단합니다.
+  // 수동 로그인 제출 핸들러
+  const handleManualLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputKycId.trim()) {
+      setInputError("KYC 인증 ID 또는 지갑 주소를 입력해 주세요.");
+      return;
+    }
+    
+    const success = loginWithKycId(inputKycId);
+    if (success) {
+      setInputError("");
+      const shortId = inputKycId.length > 12 
+        ? `${inputKycId.substring(0, 6)}...${inputKycId.substring(inputKycId.length - 6)}` 
+        : inputKycId;
+      alert(`${shortId}님, 환영합니다!`);
+    }
+  };
+
+  // 1. 로딩 중 UI
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#0f172a] flex flex-col justify-center items-center text-slate-100">
         <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-purple-500 mb-4"></div>
-        <p className="text-sm font-medium tracking-wide">Pi Network 로그인 정보 동기화 중...</p>
+        <p className="text-sm font-medium tracking-wide">Pi Network 인증 정보 확인 중...</p>
       </div>
     );
   }
 
-  // 2. 56자리 지갑 주소 형태의 식별자(username 또는 uid)가 비어 있거나 인증이 유효하지 않은 경우 진입 차단
-  if (!isAuthenticated || !user || !user.username) {
-    return (
-      <div className="min-h-screen bg-[#0f172a] flex flex-col justify-center items-center text-slate-100 px-6 text-center">
-        <p className="text-base font-bold text-red-400 mb-2">지갑 연동 실패</p>
-        <p className="text-sm text-slate-400">파이 네트워크 지갑 식별 정보를 가져올 수 없습니다.</p>
-        <p className="text-xs text-slate-500 mt-1">Pi 브라우저를 통해 정상적으로 다시 접속해 주세요.</p>
-      </div>
-    );
-  }
-  // -------------------------------------------------------------
+  // UI 가독성을 위한 축약 ID 계산
+  const displayId = user?.username
+    ? user.username.length > 15
+      ? `${user.username.substring(0, 6)}...${user.username.substring(user.username.length - 6)}`
+      : user.username
+    : "";
 
-  // UI 가독성을 위해 56자리의 긴 아이디를 앞 6자리, 뒤 6자리로 축약합니다 (예: GAC7XH...ZXXPBB)
-  const displayId = user.username.length > 15
-    ? `${user.username.substring(0, 6)}...${user.username.substring(user.username.length - 6)}`
-    : user.username;
-
-  // 3. 위의 모든 방어벽(인증)을 통과한 정상 유저(56자리 주소 존재)에게만 메인 레이아웃을 표출합니다.
   return (
     <main 
-      className="min-h-screen bg-[#0f172a] text-slate-100 touch-pan-y"
+      className="min-h-screen bg-[#0f172a] text-slate-100 touch-pan-y relative"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
+      {/* --- [핵심] 미인증 시 노출되는 KYC ID 인증 팝업 (모달) --- */}
+      {(!isAuthenticated || !user || !user.username) && (
+        <div className="fixed inset-0 z-[999] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#1e293b] border border-purple-500/40 rounded-2xl p-6 w-full max-w-md shadow-2xl text-left">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2.5 bg-purple-600/20 rounded-xl border border-purple-500/30">
+                <span className="text-xl">🔐</span>
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-white">KYC 인증 ID 로그인</h2>
+                <p className="text-xs text-slate-400">10단계 통과 및 GPNR 앱 진입 단계</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed mb-4 bg-slate-800/80 p-3 rounded-lg border border-slate-700">
+              파이 네트워크 KYC 인증 ID 또는 56자리 지갑 주소를 입력하시면 지갑이 정상 연동되며 앱 메인에 진입합니다.
+            </p>
+
+            <form onSubmit={handleManualLogin} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-purple-300 mb-1.5">
+                  KYC 인증 ID / Wallet Address
+                </label>
+                <textarea
+                  rows={3}
+                  value={inputKycId}
+                  onChange={(e) => {
+                    setInputKycId(e.target.value);
+                    if (inputError) setInputError("");
+                  }}
+                  placeholder="예: GAC7XH... 또는 파이 KYC 식별자 입력"
+                  className="w-full bg-[#0f172a] border border-slate-700 rounded-xl p-3 text-xs text-white font-mono placeholder:text-slate-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all resize-none"
+                />
+                {inputError && (
+                  <p className="text-xs text-rose-400 mt-1 font-medium">{inputError}</p>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-purple-900/30 transition-all duration-200 active:scale-[0.98]"
+              >
+                인증 확인 및 앱 진입하기
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* 1. 글로벌 상단 헤더 */}
       <Header 
         currentCategory={activeCategory} 
         onCategoryChange={setActiveCategory}
       />
 
-      {/* 2. 눈에 확 띄는 화이트 계열 백라이트 스타일 전광판 */}
-      <div 
-        className="w-full bg-gradient-to-r from-slate-100 via-white to-slate-100 border-b border-slate-300 py-2.5 overflow-hidden sticky top-[60px] z-[55] shadow-md shadow-black/20"
-      >
+      {/* 2. 전광판 */}
+      <div className="w-full bg-gradient-to-r from-slate-100 via-white to-slate-100 border-b border-slate-300 py-2.5 overflow-hidden sticky top-[60px] z-[55] shadow-md shadow-black/20">
         <div className="flex whitespace-nowrap gap-16 text-[12px] font-bold text-slate-900 tracking-wide compliance-marquee">
-          {/* 무한 루프 롤링 레이아웃 */}
           <div className="flex gap-16 shrink-0 justify-around min-w-full">
             {tickerStats.map((stat, idx) => (
               <span key={`stat-1-${idx}`} className="hover:text-blue-600 transition-colors">{stat}</span>
@@ -150,7 +201,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 3. 카테고리 가로 스크롤 탭 바 */}
+      {/* 3. 카테고리 탭 바 */}
       <div className="sticky top-[93px] z-50 bg-[#0f172a]/95 backdrop-blur-sm">
         <CategoryTabs 
           selectedCategory={activeCategory} 
@@ -158,25 +209,35 @@ export default function Home() {
         />
       </div>
 
-      {/* 4. 연동 정보 배너 (56자리 주소 인식 성공 여부 직관적 표시) */}
-      <div className="max-w-3xl mx-auto px-4 mt-3">
-        <div className="bg-[#1e293b] border border-slate-700/60 rounded-xl p-3 flex items-center justify-between shadow-inner">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="text-xs text-slate-400 font-medium">Pi 네트워크 지갑 연동됨</span>
+      {/* 4. 연동 정보 배너 */}
+      {isAuthenticated && user && (
+        <div className="max-w-3xl mx-auto px-4 mt-3">
+          <div className="bg-[#1e293b] border border-slate-700/60 rounded-xl p-3 flex items-center justify-between shadow-inner">
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span className="text-xs text-slate-400 font-medium">Pi 네트워크 지갑 연동 완료</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono font-bold text-purple-400 bg-purple-950/40 px-2.5 py-1 rounded border border-purple-800/30">
+                {displayId}
+              </span>
+              <button 
+                onClick={logout} 
+                className="text-[10px] text-slate-400 hover:text-rose-400 underline ml-1"
+              >
+                ID 변경
+              </button>
+            </div>
           </div>
-          <span className="text-xs font-mono font-bold text-purple-400 bg-purple-950/40 px-2 py-1 rounded border border-purple-800/30">
-            {displayId}
-          </span>
         </div>
-      </div>
+      )}
 
-      {/* 5. 메인 콘텐츠 및 투표 피드 영역 (CategoryNews에 선택된 카테고리 필터값 전달) */}
+      {/* 5. 메인 콘텐츠 및 투표 피드 영역 */}
       <div className="max-w-3xl mx-auto px-4 transition-opacity duration-300 mt-2">
         <CategoryNews selectedCategory={activeCategory} />
       </div>
 
-      {/* 전광판 애니메이션 주입 */}
+      {/* 전광판 애니메이션 */}
       <span dangerouslySetInnerHTML={{ __html: `
         <style>
           @keyframes gpnrMarquee {
