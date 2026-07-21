@@ -1,7 +1,7 @@
 "use client";
 
-import PiLogin from "./PiLogin"; 
 import { useState, useEffect } from "react";
+import { usePiNetworkAuthentication } from "../hooks/use-pi-network-authentication";
 
 interface HeaderProps {
   currentCategory?: string;                     
@@ -14,28 +14,29 @@ export function Header({
 }: HeaderProps) {
   const [mounted, setMounted] = useState(false);
   const [isLauncherOpen, setIsLauncherOpen] = useState(false); 
-  // 헤더단에서도 필요한 경우 유저 ID를 추적할 수 있도록 상태 공간 마련
-  const [piUserId, setPiUserId] = useState<string | null>(null);
+  
+  // 공통 인증 훅 사용 (스토리지 키 gpnr_kyc_id 연동 및 로그아웃/로그인 상태 공유)
+  const { user, isAuthenticated, logout } = usePiNetworkAuthentication();
 
   useEffect(() => {
     setMounted(true);
-    // 마운트 시점에 로컬스토리지에서 지갑 ID가 있는지 확인하여 헤더 상태와 동기화
-    if (typeof window !== "undefined") {
-      const savedId = localStorage.getItem('pi_user_id');
-      if (savedId) setPiUserId(savedId);
-    }
   }, []);
 
-  // SSR 단계에서 레이아웃 튐(Layout Shift)을 방지하기 위해 최소한의 높이를 가진 투명 헤더 틀을 반환합니다.
+  // SSR 단계 레이아웃 튐 방지
   if (!mounted) {
     return (
       <header className="w-full h-[60px] bg-[#0f172a]/90 border-b border-slate-800"></header>
     );
   }
 
+  // 지갑주소/KYC ID 축약 표시 (예: GAC7XH...ZXXPBB)
+  const displayId = user?.username
+    ? user.username.length > 15
+      ? `${user.username.substring(0, 6)}...${user.username.substring(user.username.length - 6)}`
+      : user.username
+    : "";
+
   return (
-    // 최상단 빈 태그(<></>) 대신 notranslate 클래스를 가진 div로 전체를 감싸서, 
-    // 나중에 이 내부에 추가될 어떤 메뉴나 하위 컴포넌트(PiLogin 등)도 구글 번역이 건드리지 못하게 원천 차단합니다.
     <div className="notranslate" translate="no">
       {/* 본체 헤더 영역 */}
       <header className="sticky top-0 z-[60] w-full bg-[#0f172a]/90 border-b border-slate-800 backdrop-blur-xl transition-colors">
@@ -56,8 +57,21 @@ export function Header({
               </span>
             </div>
             
-            {/* 우측 아이콘 메뉴 및 로그인 */}
-            <div className="flex items-center gap-4">
+            {/* 우측 상단 유저 상태 및 메뉴 */}
+            <div className="flex items-center gap-3">
+              {isAuthenticated && user ? (
+                <div className="flex items-center gap-2 bg-slate-800/80 border border-slate-700/80 px-3 py-1.5 rounded-xl">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span className="text-xs font-mono text-purple-300 font-medium">
+                    {displayId}
+                  </span>
+                </div>
+              ) : (
+                <div className="text-xs text-amber-400/90 bg-amber-950/30 border border-amber-800/40 px-2.5 py-1 rounded-lg">
+                  🔑 ID 미인증
+                </div>
+              )}
+
               <button
                 onClick={() => setIsLauncherOpen(!isLauncherOpen)}
                 title="메뉴 열기"
@@ -67,22 +81,30 @@ export function Header({
               >
                 <span className="block w-5 h-5 text-center leading-none">⋮⋮⋮</span>
               </button>
-              
-              {/* PiLogin 컴포넌트 호출 */}
-              <PiLogin />
             </div>
 
           </div>
         </div>
       </header>
 
-      {/* [옵션] 런처 메뉴(앱 토글러)가 켜졌을 때 유저 지갑 정보를 보여주거나 연동할 수 있는 영역 예시 */}
+      {/* 런처 메뉴(앱 토글러) 드롭다운 */}
       {isLauncherOpen && (
-        <div className="absolute right-4 top-[65px] z-50 w-64 bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-2xl animate-in fade-in slide-in-from-top-2">
-          <div className="text-xs text-slate-400 font-medium mb-1">연동된 Pi 네트워크 정보</div>
-          <div className="text-sm font-bold text-slate-200 truncate select-all bg-slate-950 p-2 rounded-xl border border-slate-800/50">
-            {piUserId ? piUserId : "로그인이 필요합니다."}
+        <div className="absolute right-4 top-[65px] z-50 w-72 bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-2xl animate-in fade-in slide-in-from-top-2">
+          <div className="text-xs text-slate-400 font-medium mb-1">연동된 KYC ID / 지갑 주소</div>
+          <div className="text-xs font-bold font-mono text-slate-200 break-all select-all bg-slate-950 p-2.5 rounded-xl border border-slate-800/50 mb-3">
+            {user?.username ? user.username : "등록된 ID가 없습니다."}
           </div>
+          {isAuthenticated && (
+            <button
+              onClick={() => {
+                logout();
+                setIsLauncherOpen(false);
+              }}
+              className="w-full py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 font-semibold text-xs rounded-xl transition-colors"
+            >
+              KYC ID 해제 및 다시 입력하기
+            </button>
+          )}
         </div>
       )}
     </div>
