@@ -3,11 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import { Header } from "../components/Header"; 
 
-// 실제 폴더 구조의 소문자-하이픈 파일명과 정확히 매칭
 import { CategoryTabs } from "../components/category-tabs";
 import { CategoryNews } from "../components/category-news";
 
-// Pi 네트워크 인증 상태 및 수동 로그인 함수 임포트
 import { usePiNetworkAuthentication } from "../hooks/use-pi-network-authentication";
 
 const CATEGORIES = [
@@ -20,20 +18,16 @@ const CATEGORIES = [
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState('all');
   
-  // Pi ID 인증 상태, 유저 데이터 및 수동 로그인/로그아웃 함수
   const { user, isAuthenticated, isLoading, loginWithKycId, logout } = usePiNetworkAuthentication();
 
-  // KYC ID 수동 입력 팝업 상태 관리
   const [inputKycId, setInputKycId] = useState("");
   const [inputError, setInputError] = useState("");
 
-  // 한국어 버전 전광판 기본 메시지 세팅
   const [tickerStats, setTickerStats] = useState<string[]>([
     "📢 실시간 글로벌 파이 뉴스룸 핫이슈 동기화 중입니다...",
     "📢 최신 생태계 핵심 소식 및 마이그레이션 모니터링 가동"
   ]);
 
-  // --- 실시간 핫이슈 소식 API 자동 연동 로직 ---
   useEffect(() => {
     const loadHotNewsForTicker = async () => {
       try {
@@ -59,7 +53,6 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  // --- 스와이프 로직 ---
   const sXRef = useRef<number | null>(null);
   const eXRef = useRef<number | null>(null);
 
@@ -88,7 +81,6 @@ export default function Home() {
     eXRef.current = null;
   };
 
-  // 수동 로그인 제출 핸들러
   const handleManualLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputKycId.trim()) {
@@ -99,14 +91,11 @@ export default function Home() {
     const success = loginWithKycId(inputKycId);
     if (success) {
       setInputError("");
-      const shortId = inputKycId.length > 12 
-        ? `${inputKycId.substring(0, 6)}...${inputKycId.substring(inputKycId.length - 6)}` 
-        : inputKycId;
-      alert(`${shortId}님, 환영합니다!`);
+      // 알림창(alert) 없이 곧바로 메인 앱 화면이 렌더링되도록 처리
     }
   };
 
-  // 1. 로딩 중 UI
+  // 1. 인증 정보 로딩 중일 때
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#0f172a] flex flex-col justify-center items-center text-slate-100">
@@ -116,13 +105,64 @@ export default function Home() {
     );
   }
 
-  // UI 가독성을 위한 축약 ID 계산
+  // 2. [핵심 수정] 미인증 상태일 때: Header나 뉴스 등 본체는 읽지도 않고 오직 팝업만 단독 리턴!
+  if (!isAuthenticated || !user || !user.username) {
+    return (
+      <div className="fixed inset-0 z-[99999] bg-[#0f172a] flex items-center justify-center p-4">
+        <div className="bg-[#1e293b] border border-purple-500/40 rounded-2xl p-6 w-full max-w-md shadow-2xl text-left">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2.5 bg-purple-600/20 rounded-xl border border-purple-500/30">
+              <span className="text-xl">🔐</span>
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-white">KYC 인증 ID 로그인</h2>
+              <p className="text-xs text-slate-400">10단계 통과 및 GPNR 앱 진입 단계</p>
+            </div>
+          </div>
+
+          <p className="text-xs text-slate-300 leading-relaxed mb-4 bg-slate-800/80 p-3 rounded-lg border border-slate-700">
+            파이 네트워크 KYC 인증 ID 또는 56자리 지갑 주소를 입력하시면 지갑이 정상 연동되며 앱 메인에 진입합니다.
+          </p>
+
+          <form onSubmit={handleManualLogin} className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-purple-300 mb-1.5">
+                KYC 인증 ID / Wallet Address
+              </label>
+              <textarea
+                rows={3}
+                value={inputKycId}
+                onChange={(e) => {
+                  setInputKycId(e.target.value);
+                  if (inputError) setInputError("");
+                }}
+                placeholder="예: GAC7XH... 또는 파이 KYC 식별자 입력"
+                className="w-full bg-[#0f172a] border border-slate-700 rounded-xl p-3 text-xs text-white font-mono placeholder:text-slate-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all resize-none"
+              />
+              {inputError && (
+                <p className="text-xs text-rose-400 mt-1 font-medium">{inputError}</p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-purple-900/30 transition-all duration-200 active:scale-[0.98]"
+            >
+              인증 확인 및 앱 진입하기
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   const displayId = user?.username
     ? user.username.length > 15
       ? `${user.username.substring(0, 6)}...${user.username.substring(user.username.length - 6)}`
       : user.username
     : "";
 
+  // 3. 인증이 통과되었을 때만 비로소 아래 메인 GPNR 앱 화면을 그립니다.
   return (
     <main 
       className="min-h-screen bg-[#0f172a] text-slate-100 touch-pan-y relative"
@@ -130,55 +170,6 @@ export default function Home() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* --- [핵심] 미인증 시 노출되는 KYC ID 인증 팝업 (모달) --- */}
-      {(!isAuthenticated || !user || !user.username) && (
-        <div className="fixed inset-0 z-[999] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#1e293b] border border-purple-500/40 rounded-2xl p-6 w-full max-w-md shadow-2xl text-left">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2.5 bg-purple-600/20 rounded-xl border border-purple-500/30">
-                <span className="text-xl">🔐</span>
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-white">KYC 인증 ID 로그인</h2>
-                <p className="text-xs text-slate-400">10단계 통과 및 GPNR 앱 진입 단계</p>
-              </div>
-            </div>
-
-            <p className="text-xs text-slate-300 leading-relaxed mb-4 bg-slate-800/80 p-3 rounded-lg border border-slate-700">
-              파이 네트워크 KYC 인증 ID 또는 56자리 지갑 주소를 입력하시면 지갑이 정상 연동되며 앱 메인에 진입합니다.
-            </p>
-
-            <form onSubmit={handleManualLogin} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-purple-300 mb-1.5">
-                  KYC 인증 ID / Wallet Address
-                </label>
-                <textarea
-                  rows={3}
-                  value={inputKycId}
-                  onChange={(e) => {
-                    setInputKycId(e.target.value);
-                    if (inputError) setInputError("");
-                  }}
-                  placeholder="예: GAC7XH... 또는 파이 KYC 식별자 입력"
-                  className="w-full bg-[#0f172a] border border-slate-700 rounded-xl p-3 text-xs text-white font-mono placeholder:text-slate-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all resize-none"
-                />
-                {inputError && (
-                  <p className="text-xs text-rose-400 mt-1 font-medium">{inputError}</p>
-                )}
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-purple-900/30 transition-all duration-200 active:scale-[0.98]"
-              >
-                인증 확인 및 앱 진입하기
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-
       {/* 1. 글로벌 상단 헤더 */}
       <Header 
         currentCategory={activeCategory} 
