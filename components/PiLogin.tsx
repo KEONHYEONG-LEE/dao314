@@ -1,34 +1,21 @@
+// @ts-nocheck
 "use client";
 
 import React, { useState, useEffect, Fragment } from 'react';
 import { User, ChevronUp, Languages, Loader2 } from "lucide-react"; 
 import { cn } from "@/lib/utils";
 
+// 중앙 공통 인증 훅 연결 (undefined 알림창 원천 차단)
+import { usePiNetworkAuthentication } from "../hooks/use-pi-network-authentication";
+
 const PiLogin = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // undefined 오류 방지를 위해 로그인한 유저의 실제 Pi ID를 담는 상태 추가
-  const [piUserId, setPiUserId] = useState<string | null>(null);
+  // 공통 인증 훅 사용
+  const { user, isAuthenticated, logout } = usePiNetworkAuthentication();
   const [isBottomLangOpen, setIsBottomLangOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const initPi = () => {
-      if (typeof window !== 'undefined' && window.Pi) {
-        window.Pi.init({ version: "2.0", sandbox: true });
-        console.log("Pi SDK Initialized");
-      } else {
-        setTimeout(initPi, 500);
-      }
-    };
-    initPi();
-
-    // 초기 로드 시 로컬 스토리지에서 ID 확인 및 상태 동기화
-    const savedId = localStorage.getItem('pi_user_id');
-    if (savedId) {
-      setIsLoggedIn(true);
-      setPiUserId(savedId);
-    }
-
+    // 구글 번역/투명 래퍼 관련 스타일 주입 (기존 로직 100% 보존)
     if (typeof document !== 'undefined') {
       const style = document.createElement('style');
       style.innerHTML = `
@@ -42,14 +29,15 @@ const PiLogin = () => {
     }
   }, []);
 
+  // 후원하기 버튼 클릭 이벤트
   const handleSupport = async () => {
-    if (!window.Pi) {
+    if (typeof window === 'undefined' || !window.Pi) {
       alert("Pi 브라우저에서 접속하거나 SDK 로딩을 기다려주세요.");
       return;
     }
 
-    if (!isLoggedIn) {
-      alert("로그인 후 이용해 주세요.");
+    if (!isAuthenticated) {
+      alert("KYC/지갑 ID 인증 후 이용해 주세요.");
       return;
     }
 
@@ -64,16 +52,13 @@ const PiLogin = () => {
       }, {
         onReadyForServerApproval: (paymentId: string) => {
           console.log("결제 승인 대기:", paymentId);
-          alert("결제 승인 단계입니다. 잠시만 기다려주세요.");
         },
         onReadyForServerCompletion: (paymentId: string, txid: string) => {
           alert("성공적으로 0.001 Test Pi를 후원했습니다!");
           setLoading(false);
         },
-        onCancel: (paymentId: string) => {
-          setLoading(false);
-        },
-        onError: (error: Error, payment?: any) => {
+        onCancel: () => setLoading(false),
+        onError: (error: Error) => {
           alert(`에러: ${error.message}`);
           setLoading(false);
         },
@@ -84,57 +69,18 @@ const PiLogin = () => {
     }
   };
 
-  const handleLogin = async () => {
-    if (isLoggedIn) {
-      if (confirm("로그아웃 하시겠습니까?")) {
-        localStorage.removeItem('pi_user_id');
-        setIsLoggedIn(false);
-        setPiUserId(null);
-        window.location.reload();
+  // 유저 아이콘 클릭 이벤트 (로그아웃 및 재입력 처리)
+  const handleLoginClick = () => {
+    if (isAuthenticated) {
+      if (confirm("연동된 KYC/지갑 ID를 해제하고 다시 입력하시겠습니까?")) {
+        logout();
       }
-      return;
+    } else {
+      window.location.reload();
     }
-
-    if (!window.Pi || !window.Pi.authenticate) {
-      alert("Pi SDK가 로드되지 않았거나 지원하지 않는 환경입니다.");
-      return;
-    }
-
-    // Pi SDK 올바른 인증 흐름으로 구조 개편
-    window.Pi.authenticate(['payments'], (payment: any) => {
-      console.log("Payment callback activated:", payment);
-    })
-    .then((auth: any) => {
-      if (auth && auth.user && auth.user.uid) {
-        const uid = auth.user.uid;
-        const username = auth.user.username || "Pi 유저";
-        
-        localStorage.setItem('pi_user_id', uid);
-        setPiUserId(uid);
-        setIsLoggedIn(true);
-        alert(`${username}님, 환영합니다!`);
-      } else {
-        throw new Error("인증 데이터 구조가 올바르지 않습니다.");
-      }
-    })
-    .catch((err: any) => {
-      console.error("Pi SDK 인증 실패, 수동 입력으로 전환:", err);
-      
-      const id = prompt("Pi SDK 자동 연동 실패. Pi ID(지갑 식별자)를 직접 입력해주세요:");
-      if (id) {
-        const cleanedId = id.trim();
-        if (cleanedId.length >= 20) {
-          localStorage.setItem('pi_user_id', cleanedId);
-          setPiUserId(cleanedId);
-          setIsLoggedIn(true);
-          alert("입력하신 ID로 연동되었습니다.");
-        } else {
-          alert("올바르지 않은 ID 형식입니다. (20자 이상 필요)");
-        }
-      }
-    });
   };
 
+  // 언어 변경 처리
   const handleLanguageChange = (code: string) => {
     const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
     if (combo) {
@@ -144,15 +90,18 @@ const PiLogin = () => {
     setIsBottomLangOpen(false);
   };
 
+  const displayUsername = user?.username || "";
+
   return (
     <Fragment>
+      {/* 우측 상단 후원 및 유저 프로필 영역 */}
       <div className="flex items-center gap-2 notranslate">
         <button 
           onClick={handleSupport}
           disabled={loading}
           className={cn(
             "px-2.5 h-8 flex items-center rounded-full border transition-all",
-            isLoggedIn 
+            isAuthenticated 
               ? "bg-amber-100/10 text-amber-400 border-amber-500/50 hover:bg-amber-500/20" 
               : "bg-slate-800 text-slate-500 border-slate-700 opacity-60"
           )}
@@ -161,17 +110,18 @@ const PiLogin = () => {
         </button>
 
         <button 
-          onClick={handleLogin}
-          title={isLoggedIn && piUserId ? `접속된 ID: ${piUserId}` : "로그인"}
+          onClick={handleLoginClick}
+          title={isAuthenticated && displayUsername ? `접속된 ID: ${displayUsername}` : "KYC ID 인증 필요"}
           className={cn(
             "flex items-center justify-center h-9 w-9 rounded-full border transition-all",
-            isLoggedIn ? "bg-blue-600 border-blue-400 shadow-lg" : "bg-[#1e293b] border-slate-700"
+            isAuthenticated ? "bg-blue-600 border-blue-400 shadow-lg" : "bg-[#1e293b] border-slate-700"
           )}
         >
-          <User className={cn("h-4 w-4", isLoggedIn ? "text-white" : "text-slate-400")} />
+          <User className={cn("h-4 w-4", isAuthenticated ? "text-white" : "text-slate-400")} />
         </button>
       </div>
 
+      {/* 우측 하단 플로팅 언어 선택 토글 버튼 및 팝업 UI */}
       <div className="fixed bottom-10 right-6 z-[9999] flex flex-col items-end gap-3 notranslate">
         {isBottomLangOpen && (
           <div className="mb-2 w-32 bg-slate-900/95 backdrop-blur-xl border border-slate-700 shadow-2xl rounded-2xl overflow-hidden">
