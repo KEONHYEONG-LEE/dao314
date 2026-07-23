@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (!PI_API_KEY) {
     console.error('PI_API_KEY is not configured in environment variables.');
-    return res.status(500).json({ error: 'Server configuration error' });
+    return res.status(500).json({ error: 'Server configuration error: PI_API_KEY is missing' });
   }
 
   try {
