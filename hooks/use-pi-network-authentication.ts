@@ -1,8 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+
+// window.Pi 객체 타입 정의 (TypeScript 지원)
+declare global {
+  interface Window {
+    Pi?: any;
+  }
+}
 
 // 파이 네트워크 유저 객체 타입 정의
-interface PiUser {
-  username: string; // 56자리 지갑 주소 또는 KYC ID
+export interface PiUser {
+  username: string; // 56자리 지갑 주소 또는 KYC ID / Username
   uid?: string;
 }
 
@@ -10,6 +17,17 @@ export function usePiNetworkAuthentication() {
   const [user, setUser] = useState<PiUser | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // 미완료 결제 건 처리 함수 (사진 1의 최신 결제 플로우 대비)
+  const handleIncompletePayment = useCallback(async (payment: any) => {
+    console.log("미완료 결제 건 발견 및 처리 시도:", payment);
+    try {
+      // 필요 시 백엔드 API 호출하여 미완료 결제 완료 처리
+      // await fetch('/api/pi/incomplete-payment', { method: 'POST', body: JSON.stringify({ payment }) });
+    } catch (err) {
+      console.error("미완료 결제 처리 중 오류 발생:", err);
+    }
+  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -27,13 +45,12 @@ export function usePiNetworkAuthentication() {
       setIsAuthenticated(true);
       setIsLoading(false);
     } else {
-      // 잘못되거나 유효하지 않은 값("undefined" 등)이 들어있다면 완전히 제거
       localStorage.removeItem('gpnr_kyc_id');
       setUser(null);
       setIsAuthenticated(false);
     }
 
-    // 2. Pi SDK 자동 인증 시도 (SDK가 정상 작동하고 유효한 ID를 반환할 때만 처리)
+    // 2. Pi SDK 자동 인증 시도
     const initializePiAuth = async () => {
       try {
         if (!window.Pi) {
@@ -42,17 +59,18 @@ export function usePiNetworkAuthentication() {
           return;
         }
 
+        // Pi SDK 초기화
         window.Pi.init({ version: "2.0", sandbox: false });
 
         const scopes = ['username', 'payments', 'wallet_address'];
-        const authResult = await window.Pi.authenticate(scopes, (onIncompletePaymentFound) => {
-          console.log("미완료 결제 건 발견:", onIncompletePaymentFound);
-        });
+        const authResult = await window.Pi.authenticate(
+          scopes, 
+          handleIncompletePayment // 미완료 결제 콜백 연결
+        );
 
         if (authResult && authResult.user) {
           const rawId = authResult.user.uid || authResult.user.username || '';
           
-          // 가져온 ID가 유효한 경우에만 인증 성공 처리
           if (rawId && rawId !== 'undefined' && rawId !== 'null' && rawId.trim() !== '') {
             setUser({ username: rawId, uid: authResult.user.uid });
             setIsAuthenticated(true);
@@ -69,9 +87,9 @@ export function usePiNetworkAuthentication() {
     };
 
     initializePiAuth();
-  }, []);
+  }, [handleIncompletePayment]);
 
-  // [핵심] 팝업에서 유저가 56자리 KYC ID 수동 입력 시 호출하는 로그인 함수
+  // 팝업에서 유저가 56자리 KYC ID 수동 입력 시 호출하는 로그인 함수
   const loginWithKycId = (kycId: string) => {
     const cleanId = kycId.trim();
     
