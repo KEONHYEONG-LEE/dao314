@@ -82,10 +82,12 @@ export function GpnrHeader({
     }
   };
 
-  // ✅ 결제 비동기 승인/완료 처리 수정한 후원 함수
+  // ✅ [수정 완료] 절대 경로(window.location.origin) 적용 및 예외 처리 강화
   const handleDonation = useCallback(async () => {
     if (typeof window !== "undefined" && (window as any).Pi) {
       try {
+        const origin = window.location.origin;
+
         await (window as any).Pi.createPayment({
           amount: 0.001,
           memo: currentLang === "ko" ? "GPNR 서비스 후원" : "GPNR Service Donation",
@@ -93,11 +95,14 @@ export function GpnrHeader({
         }, {
           onReadyForServerApproval: async (paymentId: string) => {
             console.log("[Pi Payment] 서버 승인 요청 시작 paymentId:", paymentId);
-            const res = await fetch('/api/payments/approve', { 
+            
+            // 💡 window.location.origin을 추가하여 절대 경로로 호스트 전달 보장
+            const res = await fetch(`${origin}/api/payments/approve`, { 
               method: 'POST', 
               headers: { 'Content-Type': 'application/json' }, 
               body: JSON.stringify({ paymentId }) 
             });
+
             if (!res.ok) {
               const errData = await res.json().catch(() => ({}));
               console.error("[Pi Payment] 서버 승인 실패:", errData);
@@ -107,11 +112,14 @@ export function GpnrHeader({
           },
           onReadyForServerCompletion: async (paymentId: string, txid: string) => {
             console.log("[Pi Payment] 서버 완료 처리 시작 txid:", txid);
-            const res = await fetch('/api/payments/complete', { 
+            
+            // 💡 window.location.origin을 추가하여 절대 경로로 호스트 전달 보장
+            const res = await fetch(`${origin}/api/payments/complete`, { 
               method: 'POST', 
               headers: { 'Content-Type': 'application/json' }, 
               body: JSON.stringify({ paymentId, txid }) 
             });
+
             if (!res.ok) {
               const errData = await res.json().catch(() => ({}));
               console.error("[Pi Payment] 서버 완료 처리 실패:", errData);
@@ -206,7 +214,7 @@ export function GpnrHeader({
                 ☰
               </button>
 
-              {/* [수정 완료] 기존 PiLogin을 대체하여 안전하게 지갑 상태 표출 */}
+              {/* 기존 PiLogin을 대체하여 안전하게 지갑 상태 표출 */}
               {isAuthenticated && user ? (
                 <div className="flex items-center gap-1.5 bg-purple-950/40 border border-purple-800/40 px-2 py-0.5 rounded-lg text-[10px] font-mono text-purple-300 font-bold">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
