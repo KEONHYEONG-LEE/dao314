@@ -78,10 +78,11 @@ export function GpnrHeader({
       setCalendarYear(calendarYear + 1);
       setCalendarMonth(0);
     } else {
-      setCalendarMonth(calendarMonth + 1);
+      setCalendarMonth(calendarMonth - 1);
     }
   };
 
+  // ✅ 결제 비동기 승인/완료 처리 수정한 후원 함수
   const handleDonation = useCallback(async () => {
     if (typeof window !== "undefined" && (window as any).Pi) {
       try {
@@ -90,15 +91,36 @@ export function GpnrHeader({
           memo: currentLang === "ko" ? "GPNR 서비스 후원" : "GPNR Service Donation",
           metadata: { type: "one-time-donation", app: "GPNR" }
         }, {
-          onReadyForServerApproval: (paymentId: string) => {
-            fetch('/api/payments/approve', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ paymentId }) });
+          onReadyForServerApproval: async (paymentId: string) => {
+            console.log("[Pi Payment] 서버 승인 요청 시작 paymentId:", paymentId);
+            const res = await fetch('/api/payments/approve', { 
+              method: 'POST', 
+              headers: { 'Content-Type': 'application/json' }, 
+              body: JSON.stringify({ paymentId }) 
+            });
+            if (!res.ok) {
+              const errData = await res.json().catch(() => ({}));
+              console.error("[Pi Payment] 서버 승인 실패:", errData);
+              throw new Error("Payment approval failed on server.");
+            }
+            console.log("[Pi Payment] 서버 승인 성공!");
           },
-          onReadyForServerCompletion: (paymentId: string, txid: string) => {
-            fetch('/api/payments/complete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ paymentId, txid }) });
+          onReadyForServerCompletion: async (paymentId: string, txid: string) => {
+            console.log("[Pi Payment] 서버 완료 처리 시작 txid:", txid);
+            const res = await fetch('/api/payments/complete', { 
+              method: 'POST', 
+              headers: { 'Content-Type': 'application/json' }, 
+              body: JSON.stringify({ paymentId, txid }) 
+            });
+            if (!res.ok) {
+              const errData = await res.json().catch(() => ({}));
+              console.error("[Pi Payment] 서버 완료 처리 실패:", errData);
+              throw new Error("Payment completion failed on server.");
+            }
             alert(currentLang === "ko" ? "0.001 Pi 후원이 완료되었습니다. 감사합니다!" : "0.001 Pi donation completed. Thank you!");
           },
-          onCancel: (paymentId: string) => console.log("Donation cancelled"),
-          onError: (error: Error) => console.error("Payment error:", error),
+          onCancel: (paymentId: string) => console.log("[Pi Payment] 후원 취소됨:", paymentId),
+          onError: (error: Error) => console.error("[Pi Payment] 결제 에러:", error),
         });
       } catch (err) {
         console.error("Pi SDK payment execution failed:", err);
