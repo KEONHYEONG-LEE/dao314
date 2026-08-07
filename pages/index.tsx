@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Header } from "../components/Header"; 
+// 1. GpnrHeader로 정확히 연결
+import { GpnrHeader } from "../components/gpnr-header"; 
 
 import { CategoryTabs } from "../components/category-tabs";
 import { CategoryNews } from "../components/category-news";
@@ -91,7 +92,6 @@ export default function Home() {
     const success = loginWithKycId(inputKycId);
     if (success) {
       setInputError("");
-      // 알림창(alert) 없이 곧바로 메인 앱 화면이 렌더링되도록 처리
     }
   };
 
@@ -105,8 +105,11 @@ export default function Home() {
     );
   }
 
-  // 2. [핵심 수정] 미인증 상태일 때: Header나 뉴스 등 본체는 읽지도 않고 오직 팝업만 단독 리턴!
-  if (!isAuthenticated || !user || !user.username) {
+  // ID 유효성 체크 헬퍼
+  const validUsername = user?.username && user.username !== 'undefined' && user.username !== 'null' ? user.username : null;
+
+  // 2. 미인증 또는 유효하지 않은 ID 상태일 때: 전면 로그인 모달 출력
+  if (!isAuthenticated || !validUsername) {
     return (
       <div className="fixed inset-0 z-[99999] bg-[#0f172a] flex items-center justify-center p-4">
         <div className="bg-[#1e293b] border border-purple-500/40 rounded-2xl p-6 w-full max-w-md shadow-2xl text-left">
@@ -156,13 +159,11 @@ export default function Home() {
     );
   }
 
-  const displayId = user?.username
-    ? user.username.length > 15
-      ? `${user.username.substring(0, 6)}...${user.username.substring(user.username.length - 6)}`
-      : user.username
-    : "";
+  const displayId = validUsername.length > 15
+    ? `${validUsername.substring(0, 6)}...${validUsername.substring(validUsername.length - 6)}`
+    : validUsername;
 
-  // 3. 인증이 통과되었을 때만 비로소 아래 메인 GPNR 앱 화면을 그립니다.
+  // 3. 정상 인증 상태일 때 메인 앱 화면을 렌더링
   return (
     <main 
       className="min-h-screen bg-[#0f172a] text-slate-100 touch-pan-y relative"
@@ -170,8 +171,8 @@ export default function Home() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* 1. 글로벌 상단 헤더 */}
-      <Header 
+      {/* 1. 글로벌 상단 헤더 (GpnrHeader로 연결) */}
+      <GpnrHeader 
         currentCategory={activeCategory} 
         onCategoryChange={setActiveCategory}
       />
@@ -201,27 +202,25 @@ export default function Home() {
       </div>
 
       {/* 4. 연동 정보 배너 */}
-      {isAuthenticated && user && (
-        <div className="max-w-3xl mx-auto px-4 mt-3">
-          <div className="bg-[#1e293b] border border-slate-700/60 rounded-xl p-3 flex items-center justify-between shadow-inner">
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span className="text-xs text-slate-400 font-medium">Pi 네트워크 지갑 연동 완료</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold text-purple-400 bg-purple-950/40 px-2.5 py-1 rounded border border-purple-800/30">
-                {displayId}
-              </span>
-              <button 
-                onClick={logout} 
-                className="text-[10px] text-slate-400 hover:text-rose-400 underline ml-1"
-              >
-                ID 변경
-              </button>
-            </div>
+      <div className="max-w-3xl mx-auto px-4 mt-3">
+        <div className="bg-[#1e293b] border border-slate-700/60 rounded-xl p-3 flex items-center justify-between shadow-inner">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span className="text-xs text-slate-400 font-medium">Pi 네트워크 지갑 연동 완료</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono font-bold text-purple-400 bg-purple-950/40 px-2.5 py-1 rounded border border-purple-800/30">
+              {displayId}
+            </span>
+            <button 
+              onClick={logout} 
+              className="text-[10px] text-slate-400 hover:text-rose-400 underline ml-1"
+            >
+              ID 변경
+            </button>
           </div>
         </div>
-      )}
+      </div>
 
       {/* 5. 메인 콘텐츠 및 투표 피드 영역 */}
       <div className="max-w-3xl mx-auto px-4 transition-opacity duration-300 mt-2">
