@@ -2,16 +2,18 @@
 "use client";
 
 import React, { useState, useEffect, Fragment } from 'react';
-import { User, ChevronUp, Languages, Loader2 } from "lucide-react"; 
+import { User, ChevronUp, Languages, Loader2, KeyRound, ShieldCheck, X } from "lucide-react"; 
 import { cn } from "@/lib/utils";
 
-// 중앙 공통 인증 훅 연결 (undefined 알림창 원천 차단)
+// 중앙 공통 인증 훅 연결
 import { usePiNetworkAuthentication } from "../hooks/use-pi-network-authentication";
 
 const PiLogin = () => {
   // 공통 인증 훅 사용
-  const { user, isAuthenticated, logout } = usePiNetworkAuthentication();
+  const { user, isAuthenticated, loginWithAddress, logout } = usePiNetworkAuthentication();
   const [isBottomLangOpen, setIsBottomLangOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [inputAddress, setInputAddress] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -38,6 +40,7 @@ const PiLogin = () => {
 
     if (!isAuthenticated) {
       alert("KYC/지갑 ID 인증 후 이용해 주세요.");
+      setIsAuthModalOpen(true);
       return;
     }
 
@@ -69,15 +72,36 @@ const PiLogin = () => {
     }
   };
 
-  // 유저 아이콘 클릭 이벤트 (로그아웃 및 재입력 처리)
+  // 유저 아이콘 클릭 이벤트 (로그인 모달 열기 또는 해제)
   const handleLoginClick = () => {
     if (isAuthenticated) {
       if (confirm("연동된 KYC/지갑 ID를 해제하고 다시 입력하시겠습니까?")) {
         logout();
+        setIsAuthModalOpen(true);
       }
     } else {
+      setIsAuthModalOpen(true);
+    }
+  };
+
+  // 수동 인증 제출 처리
+  const handleAuthSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanAddress = inputAddress.trim();
+    if (!cleanAddress) {
+      alert("KYC인증 ID 또는 지갑주소를 입력해주세요.");
+      return;
+    }
+
+    if (loginWithAddress) {
+      loginWithAddress(cleanAddress);
+    } else {
+      // fallback 저장
+      localStorage.setItem('walletAddress', cleanAddress);
       window.location.reload();
     }
+    setIsAuthModalOpen(false);
+    setInputAddress('');
   };
 
   // 언어 변경 처리
@@ -120,6 +144,52 @@ const PiLogin = () => {
           <User className={cn("h-4 w-4", isAuthenticated ? "text-white" : "text-slate-400")} />
         </button>
       </div>
+
+      {/* KYC 인증 ID / 지갑주소 입력 모달 (메인넷 동일 형태) */}
+      {isAuthModalOpen && (
+        <div className="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 notranslate">
+          <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl relative">
+            <button 
+              onClick={() => setIsAuthModalOpen(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-3 bg-indigo-600/20 text-indigo-400 rounded-2xl border border-indigo-500/30">
+                <KeyRound className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-black text-white">KYC인증ID 로그인</h3>
+                <p className="text-xs text-slate-400">GPNR 글로벌 앱 관리 그룹</p>
+              </div>
+            </div>
+
+            <form onSubmit={handleAuthSubmit} className="space-y-4">
+              <div className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700/50">
+                <p className="text-xs text-slate-300 mb-3 font-medium">자세한 내용을 보려면 로그인하십시오.</p>
+                <label className="block text-[11px] font-bold text-indigo-300 mb-1.5 uppercase">KYC인증 ID / 지갑주소</label>
+                <textarea
+                  value={inputAddress}
+                  onChange={(e) => setInputAddress(e.target.value)}
+                  placeholder="예: GAC7XH... 또는 파이 KYC 입력"
+                  className="w-full h-24 bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 resize-none font-mono"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl text-sm font-bold shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2"
+              >
+                <ShieldCheck className="h-4 w-4" />
+                <span>인증 확인 및 앱 표시하기</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* 우측 하단 플로팅 언어 선택 토글 버튼 및 팝업 UI */}
       <div className="fixed bottom-10 right-6 z-[9999] flex flex-col items-end gap-3 notranslate">
