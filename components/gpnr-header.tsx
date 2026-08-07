@@ -2,8 +2,9 @@
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
-// [핵심] 공통 파이 인증 훅 연결 (undefined 알림 유발하는 PiLogin 제거)
+// 공통 파이 인증 훅 연결
 import { usePiNetworkAuthentication } from "../hooks/use-pi-network-authentication";
+import PiLogin from "./PiLogin";
 
 interface GpnrHeaderProps {
   currentCategory?: string;                     
@@ -78,11 +79,10 @@ export function GpnrHeader({
       setCalendarYear(calendarYear + 1);
       setCalendarMonth(0);
     } else {
-      setCalendarMonth(calendarMonth - 1);
+      setCalendarMonth(calendarMonth + 1);
     }
   };
 
-  // ✅ [수정 완료] 절대 경로(window.location.origin) 적용 및 예외 처리 강화
   const handleDonation = useCallback(async () => {
     if (typeof window !== "undefined" && (window as any).Pi) {
       try {
@@ -95,8 +95,6 @@ export function GpnrHeader({
         }, {
           onReadyForServerApproval: async (paymentId: string) => {
             console.log("[Pi Payment] 서버 승인 요청 시작 paymentId:", paymentId);
-            
-            // 💡 window.location.origin을 추가하여 절대 경로로 호스트 전달 보장
             const res = await fetch(`${origin}/api/payments/approve`, { 
               method: 'POST', 
               headers: { 'Content-Type': 'application/json' }, 
@@ -104,16 +102,11 @@ export function GpnrHeader({
             });
 
             if (!res.ok) {
-              const errData = await res.json().catch(() => ({}));
-              console.error("[Pi Payment] 서버 승인 실패:", errData);
               throw new Error("Payment approval failed on server.");
             }
-            console.log("[Pi Payment] 서버 승인 성공!");
           },
           onReadyForServerCompletion: async (paymentId: string, txid: string) => {
             console.log("[Pi Payment] 서버 완료 처리 시작 txid:", txid);
-            
-            // 💡 window.location.origin을 추가하여 절대 경로로 호스트 전달 보장
             const res = await fetch(`${origin}/api/payments/complete`, { 
               method: 'POST', 
               headers: { 'Content-Type': 'application/json' }, 
@@ -121,8 +114,6 @@ export function GpnrHeader({
             });
 
             if (!res.ok) {
-              const errData = await res.json().catch(() => ({}));
-              console.error("[Pi Payment] 서버 완료 처리 실패:", errData);
               throw new Error("Payment completion failed on server.");
             }
             alert(currentLang === "ko" ? "0.001 Pi 후원이 완료되었습니다. 감사합니다!" : "0.001 Pi donation completed. Thank you!");
@@ -162,10 +153,10 @@ export function GpnrHeader({
 
   if (!mounted) return null;
 
-  // 유저 지갑/KYC ID 축약 표시 (예: GAC7XH...ZXXPBB)
+  // 유저 지갑/KYC ID 축약 표시 (예: GAC7XH...XPBBUQ)
   const displayId = user?.username
     ? user.username.length > 12
-      ? `${user.username.substring(0, 5)}...${user.username.substring(user.username.length - 4)}`
+      ? `${user.username.substring(0, 6)}...${user.username.substring(user.username.length - 6)}`
       : user.username
     : "";
 
@@ -214,11 +205,17 @@ export function GpnrHeader({
                 ☰
               </button>
 
-              {/* 기존 PiLogin을 대체하여 안전하게 지갑 상태 표출 */}
+              {/* 지갑 인증 정보 표출 & ID 변경 연결 */}
               {isAuthenticated && user ? (
                 <div className="flex items-center gap-1.5 bg-purple-950/40 border border-purple-800/40 px-2 py-0.5 rounded-lg text-[10px] font-mono text-purple-300 font-bold">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                   <span>{displayId}</span>
+                  <button 
+                    onClick={logout} 
+                    className="ml-1 text-[9px] text-slate-400 hover:text-white underline"
+                  >
+                    ID 변경
+                  </button>
                 </div>
               ) : (
                 <div className="text-[10px] text-amber-400 bg-amber-950/30 border border-amber-800/40 px-2 py-0.5 rounded-lg font-medium">
@@ -230,7 +227,10 @@ export function GpnrHeader({
         </div>
       </header>
 
-      {/* 2. 9개 점 드롭다운 메뉴 */}
+      {/* PiLogin 렌더링 (팝업/모달 전역 관리) */}
+      <PiLogin />
+
+      {/* 2. 카테고리 드롭다운 메뉴 */}
       {isLauncherOpen && (
         <div className="fixed top-[49px] right-4 z-[70] w-[320px] max-h-[80vh] overflow-y-auto bg-slate-900/95 border border-slate-800 rounded-2xl p-4 shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-top-3 duration-200">
           <div className="grid gap-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
@@ -255,7 +255,7 @@ export function GpnrHeader({
             })}
           </div>
 
-          {/* 인증 상태일 때 ID 변경 / 해제 버튼 추가 */}
+          {/* 인증 상태일 때 ID 해제 버튼 */}
           {isAuthenticated && (
             <div className="mt-4 pt-3 border-t border-slate-800">
               <button
