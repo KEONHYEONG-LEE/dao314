@@ -18,6 +18,13 @@ export function usePiNetworkAuthentication() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  // ID 유효성 검증 헬퍼 함수 (undefined, null, 빈문자열 엄격 체크)
+  const isValidId = (id: any): id is string => {
+    if (!id) return false;
+    const str = String(id).trim();
+    return str !== '' && str !== 'undefined' && str !== 'null' && str !== '[object Object]';
+  };
+
   // 미완료 결제 건 처리 함수
   const handleIncompletePayment = useCallback(async (payment: any) => {
     console.log("미완료 결제 건 발견 및 처리 시도:", payment);
@@ -31,19 +38,16 @@ export function usePiNetworkAuthentication() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // 1. 저장된 KYC ID/지갑주소 확인 및 예외 처리
-    const savedId = localStorage.getItem('gpnr_kyc_id') || localStorage.getItem('walletAddress');
+    // 1. 저장된 KYC ID/지갑주소 검증 및 로드
+    const rawSavedId = localStorage.getItem('gpnr_kyc_id') || localStorage.getItem('walletAddress');
 
-    if (
-      savedId && 
-      savedId !== 'undefined' && 
-      savedId !== 'null' && 
-      savedId.trim() !== ''
-    ) {
-      setUser({ username: savedId, uid: savedId });
+    if (isValidId(rawSavedId)) {
+      const cleanSavedId = rawSavedId.trim();
+      setUser({ username: cleanSavedId, uid: cleanSavedId });
       setIsAuthenticated(true);
       setIsLoading(false);
     } else {
+      // 잘못된 값('undefined' 문자열 등)이 저장되어 있다면 강제 삭제
       localStorage.removeItem('gpnr_kyc_id');
       localStorage.removeItem('walletAddress');
       setUser(null);
@@ -69,12 +73,15 @@ export function usePiNetworkAuthentication() {
         );
 
         if (authResult && authResult.user) {
-          const rawId = authResult.user.uid || authResult.user.username || '';
+          // SDK 결과값에서 유효한 username 또는 uid 추출
+          const extractedId = authResult.user.username || authResult.user.uid;
           
-          if (rawId && rawId !== 'undefined' && rawId !== 'null' && rawId.trim() !== '') {
-            setUser({ username: rawId, uid: authResult.user.uid });
+          if (isValidId(extractedId)) {
+            const cleanId = extractedId.trim();
+            setUser({ username: cleanId, uid: authResult.user.uid || cleanId });
             setIsAuthenticated(true);
-            localStorage.setItem('gpnr_kyc_id', rawId);
+            localStorage.setItem('gpnr_kyc_id', cleanId);
+            localStorage.setItem('walletAddress', cleanId);
           }
         }
       } catch (error) {
@@ -89,11 +96,11 @@ export function usePiNetworkAuthentication() {
 
   // 수동 입력 로그인 처리 함수 (KYC ID / 지갑주소 공통)
   const loginWithKycId = (kycId: string) => {
-    const cleanId = kycId.trim();
-    
-    if (!cleanId || cleanId === 'undefined' || cleanId === 'null') {
+    if (!isValidId(kycId)) {
       return false;
     }
+
+    const cleanId = kycId.trim();
 
     localStorage.setItem('gpnr_kyc_id', cleanId);
     localStorage.setItem('walletAddress', cleanId);
