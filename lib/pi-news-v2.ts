@@ -1,6 +1,7 @@
 import { NewsItem } from "./types";
 
-export const NEWS_DATA: NewsItem[] = [
+// raw 데이터 정의 (기존 데이터 구조 유지)
+const rawNewsData: NewsItem[] = [
   {
     id: "1",
     category: "ECONOMY",
@@ -42,3 +43,22 @@ export const NEWS_DATA: NewsItem[] = [
     likeCount: 0
   }
 ];
+
+// ---------------------------------------------------------------------------
+// 🚨 핵심 검증 및 정렬 안전 처리 로직
+// ---------------------------------------------------------------------------
+
+// 이미지 URL 유효성 검사 (http://, https://, / 로 시작하지 않거나 텍스트가 들어온 경우 차단)
+const isValidUrl = (url?: string) => {
+  if (!url || typeof url !== "string") return false;
+  return url.startsWith("http://") || url.startsWith("https://") || url.startsWith("/");
+};
+
+// 뉴스 데이터를 최신순 정렬 및 imageUrl 안전 처리 후 export
+export const NEWS_DATA: NewsItem[] = [...rawNewsData]
+  .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+  .map((item) => ({
+    ...item,
+    // imageUrl이 유효한 이미지 링크가 아닐 경우 undefined로 처리하여 텍스트 출력을 방지
+    imageUrl: isValidUrl(item.imageUrl) ? item.imageUrl : undefined,
+  }));
