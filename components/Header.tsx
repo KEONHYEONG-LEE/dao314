@@ -3,6 +3,13 @@
 import { useState, useEffect } from "react";
 import { usePiNetworkAuthentication } from "../hooks/use-pi-network-authentication";
 
+// Pi SDK window 객체 타입 확장
+declare global {
+  interface Window {
+    Pi?: any;
+  }
+}
+
 interface HeaderProps {
   currentCategory?: string;                     
   onCategoryChange?: (categoryId: string) => void; 
@@ -14,22 +21,67 @@ export function Header({
 }: HeaderProps) {
   const [mounted, setMounted] = useState(false);
   const [isLauncherOpen, setIsLauncherOpen] = useState(false); 
+  const [isPaying, setIsPaying] = useState(false); // 결제 진행 중 상태
   
-  // 공통 인증 훅 사용 (스토리지 키 gpnr_kyc_id 연동 및 로그아웃/로그인 상태 공유)
   const { user, isAuthenticated, logout } = usePiNetworkAuthentication();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // SSR 단계 레이아웃 튐 방지
+  // Pi SDK 0.01 Pi 후원 결제 로직
+  const handleDonate = async () => {
+    if (isPaying) return;
+
+    if (!window.Pi) {
+      alert("Pi Browser 환경에서만 후원이 가능합니다.");
+      return;
+    }
+
+    try {
+      setIsPaying(true);
+
+      const paymentData = {
+        amount: 0.01,
+        memo: "GPNR App Development Support",
+        metadata: { type: "donation", appId: "gpnr" }
+      };
+
+      const callbacks = {
+        onReadyForServerApproval: (paymentId: string) => {
+          console.log("Payment Approval Required:", paymentId);
+          // 서버 승인 로직이 필요한 경우 백엔드 API 호출, 없을 경우 클라이언트 단 완료 처리 진행
+        },
+        onReadyForServerCompletion: (paymentId: string, txid: string) => {
+          console.log("Payment Complete:", paymentId, txid);
+          alert("0.01 Pi 후원이 성공적으로 완료되었습니다! 감사합니다.");
+          setIsPaying(false);
+        },
+        onCancel: (paymentId: string) => {
+          console.log("Payment Cancelled:", paymentId);
+          setIsPaying(false);
+        },
+        onError: (error: Error, payment?: any) => {
+          console.error("Payment Error:", error);
+          alert("후원 중 오류가 발생했습니다. 다시 시도해 주세요.");
+          setIsPaying(false);
+        }
+      };
+
+      await window.Pi.createPayment(paymentData, callbacks);
+    } catch (error) {
+      console.error("Donate Error:", error);
+      alert("Pi 결제창을 불러오는 중 문제가 발생했습니다.");
+      setIsPaying(false);
+    }
+  };
+
   if (!mounted) {
     return (
       <header className="w-full h-[60px] bg-[#0f172a]/90 border-b border-slate-800"></header>
     );
   }
 
-  // 지갑주소/KYC ID 축약 표시 (예: GAC7XH...ZXXPBB)
   const displayId = user?.username
     ? user.username.length > 15
       ? `${user.username.substring(0, 6)}...${user.username.substring(user.username.length - 6)}`
@@ -57,8 +109,20 @@ export function Header({
               </span>
             </div>
             
-            {/* 우측 상단 유저 상태 및 메뉴 */}
-            <div className="flex items-center gap-3">
+            {/* 우측 상단 유저 상태, 후원 버튼 및 메뉴 */}
+            <div className="flex items-center gap-2.5">
+              
+              {/* 0.01 Pi 후원 버튼 */}
+              <button
+                onClick={handleDonate}
+                disabled={isPaying}
+                className="flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold px-3 py-1.5 rounded-xl shadow-lg shadow-purple-500/20 active:scale-95 transition-all disabled:opacity-50"
+              >
+                <span className="text-amber-300 font-bold">π</span>
+                <span>{isPaying ? "진행중..." : "0.01 Pi 후원"}</span>
+              </button>
+
+              {/* 인증 상태 표시 */}
               {isAuthenticated && user ? (
                 <div className="flex items-center gap-2 bg-slate-800/80 border border-slate-700/80 px-3 py-1.5 rounded-xl">
                   <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -72,6 +136,7 @@ export function Header({
                 </div>
               )}
 
+              {/* 드롭다운 토글 버튼 */}
               <button
                 onClick={() => setIsLauncherOpen(!isLauncherOpen)}
                 title="메뉴 열기"
@@ -87,7 +152,7 @@ export function Header({
         </div>
       </header>
 
-      {/* 런처 메뉴(앱 토글러) 드롭다운 */}
+      {/* 런처 메뉴 드롭다운 */}
       {isLauncherOpen && (
         <div className="absolute right-4 top-[65px] z-50 w-72 bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-2xl animate-in fade-in slide-in-from-top-2">
           <div className="text-xs text-slate-400 font-medium mb-1">연동된 KYC ID / 지갑 주소</div>
