@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-// 1. GpnrHeader로 정확히 연결
+// 1. GpnrHeader 연결
 import { GpnrHeader } from "../components/gpnr-header"; 
 
 import { CategoryTabs } from "../components/category-tabs";
@@ -23,13 +23,25 @@ export default function Home() {
 
   const [inputKycId, setInputKycId] = useState("");
   const [inputError, setInputError] = useState("");
+  const [isPatron, setIsPatron] = useState<boolean>(false);
 
   const [tickerStats, setTickerStats] = useState<string[]>([
     "📢 실시간 글로벌 파이 뉴스룸 핫이슈 동기화 중입니다...",
     "📢 최신 생태계 핵심 소식 및 마이그레이션 모니터링 가동"
   ]);
 
+  // 후원자(Patron) 상태 및 전광판 실시간 뉴스 로드
   useEffect(() => {
+    // 0.01 Pi 후원자 상태 체크
+    const checkPatronStatus = () => {
+      const patronStatus = localStorage.getItem("gpnr_is_donator");
+      if (patronStatus === "true") setIsPatron(true);
+    };
+    checkPatronStatus();
+
+    // 후원 이벤트 발생 시 즉시 감지
+    window.addEventListener("storage", checkPatronStatus);
+
     const loadHotNewsForTicker = async () => {
       try {
         const response = await fetch("/api/fetch-news?category=all");
@@ -51,7 +63,10 @@ export default function Home() {
 
     loadHotNewsForTicker();
     const interval = setInterval(loadHotNewsForTicker, 10 * 60 * 1000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("storage", checkPatronStatus);
+    };
   }, []);
 
   const sXRef = useRef<number | null>(null);
@@ -166,55 +181,61 @@ export default function Home() {
   // 3. 정상 인증 상태일 때 메인 앱 화면을 렌더링
   return (
     <main 
-      className="min-h-screen bg-[#0f172a] text-slate-100 touch-pan-y relative"
+      className="min-h-screen bg-[#0f172a] text-slate-100 touch-pan-y relative pb-12"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* 1. 글로벌 상단 헤더 (GpnrHeader로 연결) */}
+      {/* 1. 글로벌 상단 헤더 */}
       <GpnrHeader 
         currentCategory={activeCategory} 
         onCategoryChange={setActiveCategory}
       />
 
       {/* 2. 전광판 */}
-      <div className="w-full bg-gradient-to-r from-slate-100 via-white to-slate-100 border-b border-slate-300 py-2.5 overflow-hidden sticky top-[60px] z-[55] shadow-md shadow-black/20">
-        <div className="flex whitespace-nowrap gap-16 text-[12px] font-bold text-slate-900 tracking-wide compliance-marquee">
+      <div className="w-full bg-gradient-to-r from-slate-100 via-white to-slate-100 border-b border-slate-300 py-2.5 overflow-hidden sticky top-[44px] z-[55] shadow-md shadow-black/20">
+        <div className="flex whitespace-nowrap gap-16 text-[12px] font-bold text-slate-900 tracking-wide compliance-marquee cursor-pointer">
           <div className="flex gap-16 shrink-0 justify-around min-w-full">
             {tickerStats.map((stat, idx) => (
-              <span key={`stat-1-${idx}`} className="hover:text-blue-600 transition-colors">{stat}</span>
+              <span key={`stat-1-${idx}`} className="hover:text-purple-700 transition-colors">{stat}</span>
             ))}
           </div>
           <div className="flex gap-16 shrink-0 justify-around min-w-full">
             {tickerStats.map((stat, idx) => (
-              <span key={`stat-2-${idx}`} className="hover:text-blue-600 transition-colors">{stat}</span>
+              <span key={`stat-2-${idx}`} className="hover:text-purple-700 transition-colors">{stat}</span>
             ))}
           </div>
         </div>
       </div>
 
       {/* 3. 카테고리 탭 바 */}
-      <div className="sticky top-[93px] z-50 bg-[#0f172a]/95 backdrop-blur-sm">
+      <div className="sticky top-[80px] z-50 bg-[#0f172a]/95 backdrop-blur-sm border-b border-slate-800/80">
         <CategoryTabs 
           selectedCategory={activeCategory} 
           onCategoryChange={setActiveCategory} 
         />
       </div>
 
-      {/* 4. 연동 정보 배너 */}
+      {/* 4. 연동 정보 & 후원자 뱃지 배너 */}
       <div className="max-w-3xl mx-auto px-4 mt-3">
         <div className="bg-[#1e293b] border border-slate-700/60 rounded-xl p-3 flex items-center justify-between shadow-inner">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="text-xs text-slate-400 font-medium">Pi 네트워크 지갑 연동 완료</span>
+            <span className="text-xs text-slate-300 font-medium">Pi 네트워크 지갑 연동 완료</span>
+            {isPatron && (
+              <span className="ml-1.5 bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                <span>🌟</span>
+                <span>GPNR Patron</span>
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-bold text-purple-400 bg-purple-950/40 px-2.5 py-1 rounded border border-purple-800/30">
+            <span className="text-xs font-mono font-bold text-purple-300 bg-purple-950/50 px-2.5 py-1 rounded border border-purple-800/40">
               {displayId}
             </span>
             <button 
               onClick={logout} 
-              className="text-[10px] text-slate-400 hover:text-rose-400 underline ml-1"
+              className="text-[10px] text-slate-400 hover:text-rose-400 underline ml-1 transition-colors"
             >
               ID 변경
             </button>
@@ -222,12 +243,15 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 5. 메인 콘텐츠 및 투표 피드 영역 */}
-      <div className="max-w-3xl mx-auto px-4 transition-opacity duration-300 mt-2">
-        <CategoryNews selectedCategory={activeCategory} />
+      {/* 5. 메인 콘텐츠 및 기사 리스트 영역 */}
+      <div className="max-w-3xl mx-auto px-4 transition-opacity duration-300 mt-3">
+        <CategoryNews 
+          selectedCategory={activeCategory} 
+          username={validUsername}
+        />
       </div>
 
-      {/* 전광판 애니메이션 */}
+      {/* 전광판 무한 스크롤 CSS 애니메이션 */}
       <span dangerouslySetInnerHTML={{ __html: `
         <style>
           @keyframes gpnrMarquee {
@@ -235,7 +259,7 @@ export default function Home() {
             100% { transform: translateX(-100%); }
           }
           .compliance-marquee {
-            animation: gpnrMarquee 40s linear infinite !important;
+            animation: gpnrMarquee 35s linear infinite !important;
           }
           .compliance-marquee:active, .compliance-marquee:hover {
             animation-play-state: paused !important;
