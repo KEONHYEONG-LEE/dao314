@@ -28,17 +28,33 @@ export function GpnrHeader({
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false); 
   const [currentLang, setCurrentLang] = useState<string>("en");
   const [isPaying, setIsPaying] = useState<boolean>(false);
+  
+  // 후원자(Patron) 상태 & Toast 알림 메시지 상태
+  const [isPatron, setIsPatron] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const { user, isAuthenticated, logout } = usePiNetworkAuthentication();
 
   const localToday = useMemo(() => new Date(), []);
   const [calendarYear, setCalendarYear] = useState<number>(2026);
-  const [calendarMonth, setCalendarMonth] = useState<number>(8); // 9월 (0-indexed: 8)
+  const [calendarMonth, setCalendarMonth] = useState<number>(8); // 0-indexed (9월)
+
+  // Toast 메시지 자동 소멸 타이머
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3200);
+  };
 
   useEffect(() => {
     setMounted(true);
     setCalendarYear(localToday.getFullYear());
     setCalendarMonth(localToday.getMonth());
+
+    // 후원자 뱃지 보유 여부 로드
+    const patronStatus = localStorage.getItem("gpnr_is_donator");
+    if (patronStatus === "true") {
+      setIsPatron(true);
+    }
 
     const syncLanguage = () => {
       const targetLang = currentLanguage || localStorage.getItem("language") || localStorage.getItem("gpnr-language") || "en";
@@ -82,7 +98,7 @@ export function GpnrHeader({
     }
   };
 
-  // Pi SDK 0.01 Pi 후원 결제 로직
+  // [3번 수정] 0.01 Pi 후원 기능 & 후원자 배지 리워드 부여
   const handleDonation = useCallback(async () => {
     if (isPaying) return;
 
@@ -93,8 +109,8 @@ export function GpnrHeader({
 
         await (window as any).Pi.createPayment({
           amount: 0.01,
-          memo: currentLang === "ko" ? "GPNR 서비스 후원" : "GPNR Service Donation",
-          metadata: { type: "one-time-donation", app: "GPNR" }
+          memo: currentLang === "ko" ? "GPNR 서비스 후원 (0.01 Pi)" : "GPNR Service Support (0.01 Pi)",
+          metadata: { type: "one-time-donation", app: "GPNR", username: user?.username || "anonymous" }
         }, {
           onReadyForServerApproval: async (paymentId: string) => {
             console.log("[Pi Payment] 서버 승인 요청 paymentId:", paymentId);
@@ -120,8 +136,15 @@ export function GpnrHeader({
             } catch (e) {
               console.warn("Client completion fallback active");
             }
-            alert(currentLang === "ko" ? "0.01 Pi 후원이 완료되었습니다. 감사합니다!" : "0.01 Pi donation completed. Thank you!");
+            
+            // 후원자 뱃지 보상 기록
+            localStorage.setItem("gpnr_is_donator", "true");
+            setIsPatron(true);
             setIsPaying(false);
+
+            showToast(currentLang === "ko" 
+              ? "🎉 0.01 Pi 후원 완료! GPNR Patron 뱃지가 부여되었습니다." 
+              : "🎉 0.01 Pi Donation completed! GPNR Patron badge granted.");
           },
           onCancel: (paymentId: string) => {
             console.log("[Pi Payment] 후원 취소:", paymentId);
@@ -130,6 +153,7 @@ export function GpnrHeader({
           onError: (error: Error) => {
             console.error("[Pi Payment] 결제 에러:", error);
             setIsPaying(false);
+            showToast(currentLang === "ko" ? "결제 중 오류가 발생했습니다." : "Payment error occurred.");
           },
         });
       } catch (err) {
@@ -139,7 +163,7 @@ export function GpnrHeader({
     } else {
       alert(currentLang === "ko" ? "Pi Browser에서 접속하거나 SDK 로딩을 확인해주세요." : "Please access through Pi Browser or check SDK loading.");
     }
-  }, [currentLang, isPaying]);
+  }, [currentLang, isPaying, user]);
 
   const FIXED_LAUNCHER_ITEMS: LauncherItem[] = [
     { id: "all", icon: "📱", label: "전체", enLabel: "Top News" },
@@ -179,8 +203,9 @@ export function GpnrHeader({
             {/* 로고 영역 */}
             <div className="flex items-center gap-2">
               <span 
-                className="font-black text-lg tracking-tighter" 
+                className="font-black text-lg tracking-tighter cursor-pointer" 
                 style={{ animation: 'gpnr-lighting 14s steps(1) infinite' }}
+                onClick={() => onCategoryChange && onCategoryChange("all")}
               >
                 GPNR
                 <style>{`
@@ -195,6 +220,14 @@ export function GpnrHeader({
                   }
                 `}</style>
               </span>
+              
+              {/* 후원자(Patron) 배지 표출 */}
+              {isPatron && (
+                <span className="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] px-1.5 py-0.5 rounded-full font-bold flex items-center gap-1">
+                  <span>🌟</span>
+                  <span>Patron</span>
+                </span>
+              )}
             </div>
             
             {/* 우측 아이콘 및 지갑 인증 배너 */}
@@ -238,6 +271,13 @@ export function GpnrHeader({
           </div>
         </div>
       </header>
+
+      {/* 실시간 Toast 메시지 팝업 */}
+      {toastMessage && (
+        <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[100] bg-slate-900/95 border border-amber-500/50 text-amber-300 px-4 py-2 rounded-full text-xs font-semibold shadow-2xl backdrop-blur-md animate-in fade-in zoom-in-95 duration-200">
+          {toastMessage}
+        </div>
+      )}
 
       {/* PiLogin 렌더링 */}
       <PiLogin />
